@@ -11,6 +11,10 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
+    TextToSpeech tts1, tts2;
+    int pitch1, pitch2, speechRate1, speechRate2;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void initTTS(TextToSpeech getTTS, int getPitch, int getSpeechRate, int getLanguage, int getSoundVolume) {
+    public void initTTS(TextToSpeech getTTS, int getPitch, int getSpeechRate) {
 //        textToSpeech = getTTS;
 //        language = getLanguage;
 //        soundVolume = getSoundVolume;

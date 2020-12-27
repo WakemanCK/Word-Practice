@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         };
         lang0EditText = findViewById(R.id.lang0EditText);
         lang1EditText = findViewById(R.id.lang1EditText);
-        lang0Button = findViewById(R.id.lang1Button);
-        lang1Button = findViewById(R.id.lang2Button);
+        lang0Button = findViewById(R.id.lang0Button);
+        lang1Button = findViewById(R.id.lang1Button);
         lang0Button.setText(language[0].toLanguageTag());
         lang1Button.setText(language[1].toLanguageTag());
     }
@@ -190,7 +190,9 @@ public class MainActivity extends AppCompatActivity {
     }
                              
     private void loadExamples(){
-        
+        //debug
+        lang0EditText.setText("apple\norange\nbanana");
+        lang1EditText.setText("蘋果\n橙\n香蕉");
     }
      
     private void showAbout() {

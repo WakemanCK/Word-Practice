@@ -18,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
     int[] speechRate = new int[2];
     Locale[] language = new Locale[2];
     float[] soundVolume = new float[2];
+    int wordDelay, lineDelay, repeatNum;
+   
 
     // Variables
     TextToSpeech[] tts = new TextToSpeech[2];
@@ -85,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadSettings(){
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        wordDelay = sharedPref.getInt(getString(R.string.prefWordDelay), 0);
+        lineDelay = sharedPref.getInt(getString(R.string.prefLineDelay), 1);
+        repeatNum = sharedPref.getInt(getString(R.string.prefRepeatNum), 2);
         pitch[0] = sharedPref.getInt(getString(R.string.prefPitch0), 3);
         pitch[1] = sharedPref.getInt(getString(R.string.prefPitch1), 3);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);

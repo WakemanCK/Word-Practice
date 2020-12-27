@@ -27,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
     int[] wordStart = new int[2];
     int[] wordEnd = new int[2];
     boolean isEnd = false;
-    EditText lang1EditText, lang2EditText;
+    EditText lang0EditText, lang1EditText;
+    Button lang0Button, lang1Button;
 
 
     @Override
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadSetting();
+        loadSettings();
         for (int i = 0; i < 2; i++){
             initVariable(i);
             initTTS(tts[i], pitch[i], speechRate[i]);
@@ -74,20 +75,24 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
+        lang0EditText = findViewById(R.id.lang0EditText);
         lang1EditText = findViewById(R.id.lang1EditText);
-        lang2EditText = findViewById(R.id.lang2EditText);
+        lang0Button = findViewById(R.id.lang1Button);
+        lang1Button = findViewById(R.id.lang2Button);
+        lang0Button.setText(language[0].toLanguageTag());
+        lang1Button.setText(language[1].toLanguageTag());
     }
 
-    private void loadSetting(){
+    private void loadSettings(){
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         pitch[0] = sharedPref.getInt(getString(R.string.prefPitch0), 3);
         pitch[1] = sharedPref.getInt(getString(R.string.prefPitch1), 3);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
-        language[0] = Locale(sharedPref.getString(getString(R.string.prefLanguage0), "en");
-        language[1] = Locale(sharedPref.getString(getString(R.string.prefLanguage1), "cn");
         soundVolume[0] = sharedPref.getFloat(getString(R.string.prefSoundVolume0), 80);
         soundVolume[1] = sharedPref.getFloat(getString(R.string.prefSoundVolume1), 80);
+        language[0] = Locale(sharedPref.getString(getString(R.string.prefLanguage0), "en");
+        language[1] = Locale(sharedPref.getString(getString(R.string.prefLanguage1), "cn");
     }
     
     private void initVariable(int listNum) {
@@ -111,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickPlay(View view) {
-        listString[0] = lang1EditText.getText().toString(); // lang1 = list[0]!!!
-        listString[1] = lang2EditText.getText().toString(); // lang2 = list[1]!!!
+        listString[0] = lang0EditText.getText().toString(); 
+        listString[1] = lang1EditText.getText().toString(); 
         pickWord(0);
     }
 
@@ -162,6 +167,9 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, OPEN_SETTINGS);
                 break;
+            case R.id.loadExamples:
+                loadExamples();
+                break;
             /** case R.id.openHelpTips:
                 intent = new Intent(this, HelpActivity.class);
                 startActivity(intent);
@@ -173,13 +181,44 @@ public class MainActivity extends AppCompatActivity {
             case R.id.shareApp:
                 MobileService msShare = new MobileService();
                 msShare.shareApp(this);
-                break;
+                break;  **/
             case R.id.openAbout:
                 showAbout();
-                break;  **/
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
+                             
+    private void loadExamples(){
+        
+    }
+     
+    private void showAbout() {
+        AboutDialogFragment aboutDialogFragment = new AboutDialogFragment();
+        aboutDialogFragment.show(getSupportFragmentManager(), "about");
+    }
+
+    public static class AboutDialogFragment extends DialogFragment {
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            PackageInfo packageInfo = null;
+            try {
+                packageInfo = getContext().getApplicationContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            String s = String.format(Locale.ENGLISH, "%s v%s\nWakeman Chau\nhauwingstudio@hotmail.com\n© 2021\nAll rights reserved", getString(R.string.app_name), packageInfo.versionName);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.aboutMenuText)
+                    .setMessage(s)
+                    .setPositiveButton(R.string.okText, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+            return builder.create();
+        }
+    }        
                              
     @Override
     protected void onDestroy() {

@@ -35,10 +35,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initVariable(0);
-        initVariable(1);
-        initTTS(tts[0], pitch[0], speechRate[0]);
-        initTTS(tts[1], pitch[1], speechRate[1]);
+        loadSetting();
+        for (int i = 0; i < 2; i++){
+            initVariable(i);
+            initTTS(tts[i], pitch[i], speechRate[i]);
+        }
         utterance[0] = new UtteranceProgressListener() {
             @Override
             public void onStart(String s) {
@@ -78,6 +79,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void loadSetting(){
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        pitch[0] = sharedPref.getInt(getString(R.string.prefPitch0), 3);
+        pitch[1] = sharedPref.getInt(getString(R.string.prefPitch1), 3);
+        speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
+        speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
+        language[0] = Locale.CHINESE;
+        language[1] = Locale.ENGLISH;
+        soundVolume[listNum] = 100f;
+    }
+    
     private void initVariable(int listNum) {
         wordStart[listNum] = 0;
         tts[listNum] = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
@@ -87,13 +99,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // debug: to be implemented
+        /** debug: to be implemented
         pitch[listNum] = 3;
         speechRate[listNum] = 3;
         language[0] = Locale.CHINESE;
         language[1] = Locale.ENGLISH;
         soundVolume[listNum] = 100f;
-        // debug
+        // debug  **/
     }
 
     public void initTTS(TextToSpeech getTTS, int getPitch, int getSpeechRate) {

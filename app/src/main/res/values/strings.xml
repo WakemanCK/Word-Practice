@@ -1,6 +1,22 @@
 <resources>
     <string name="app_name">Word Practice</string>
     <string name="playButton">Play</string>
-    <string name="lang1Button">Language One</string>
-    <string name="lang2Button">Language Two</string>
+    <string name="prefWordDelay">prefWordDelay</string>
+    <string name="prefLineDelay">prefLineDelay</string>
+    <string name="prefRepeatNum">prefRepeatNum</string>
+    <string name="prefPitch0">prefPitch0</string>
+    <string name="prefPitch1">prefPitch1</string>
+    <string name="prefSpeechRate0">prefSpeechRate0</string>
+    <string name="prefSpeechRate1">prefSpeechRate1</string>
+    <string name="prefSoundVolume0">prefSoundVolume0</string>
+    <string name="prefSoundVolume1">prefSoundVolume1</string>
+    <string name="prefLanguage0">prefLanguage0</string>
+    <string name="prefLanguage1">prefLanguage1</string>
+    <string name="settingsMenuText">Settings</string>
+    <string name="loadExamplesText">Load examples</string>
+    <string name="helpMenuText">Help</string>
+    <string name="rateAppMenuText">Rate this app</string>
+    <string name="shareAppMenuText">Share this app</string>
+    <string name="aboutMenuText">About</string>
+    <string name="okText">OK</string>
 </resources>

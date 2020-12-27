@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/openSettings"
+        android:title="@string/settingsMenuText"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/loadExamples"
+        android:title="@string/loadExamplesText"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/openHelpTips"
+        android:title="@string/helpMenuText"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/rateApp"
+        android:title="@string/rateAppMenuText"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/shareApp"
+        android:title="@string/shareAppMenuText"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/openAbout"
+        android:title="@string/aboutMenuText"
+        app:showAsAction="never" />
+</menu>

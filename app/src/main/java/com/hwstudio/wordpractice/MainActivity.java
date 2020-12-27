@@ -1,11 +1,26 @@
 package com.hwstudio.wordpractice;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -13,13 +28,14 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int OPEN_SETTINGS = 10;
     // Settings
     int[] pitch = new int[2];
     int[] speechRate = new int[2];
     Locale[] language = new Locale[2];
     float[] soundVolume = new float[2];
     int wordDelay, lineDelay, repeatNum;
-   
+
 
     // Variables
     TextToSpeech[] tts = new TextToSpeech[2];
@@ -39,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         loadSettings();
-        for (int i = 0; i < 2; i++){
+        for (int i = 0; i < 2; i++) {
             initVariable(i);
             initTTS(tts[i], pitch[i], speechRate[i]);
         }
@@ -81,11 +97,18 @@ public class MainActivity extends AppCompatActivity {
         lang1EditText = findViewById(R.id.lang1EditText);
         lang0Button = findViewById(R.id.lang0Button);
         lang1Button = findViewById(R.id.lang1Button);
-        lang0Button.setText(language[0].toLanguageTag());
-        lang1Button.setText(language[1].toLanguageTag());
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+                lang0Button.setText(language[0].getDisplayLanguage());
+////                //Toast.makeText(MainActivity.this, "lang0 " + language[0].toString(), Toast.LENGTH_SHORT).show();
+                lang1Button.setText(language[1].getDisplayLanguage());
+//            }
+//        }, 1000);
     }
 
-    private void loadSettings(){
+    private void loadSettings() {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         wordDelay = sharedPref.getInt(getString(R.string.prefWordDelay), 0);
         lineDelay = sharedPref.getInt(getString(R.string.prefLineDelay), 1);
@@ -96,10 +119,12 @@ public class MainActivity extends AppCompatActivity {
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
         soundVolume[0] = sharedPref.getFloat(getString(R.string.prefSoundVolume0), 80);
         soundVolume[1] = sharedPref.getFloat(getString(R.string.prefSoundVolume1), 80);
-        language[0] = Locale(sharedPref.getString(getString(R.string.prefLanguage0), "en");
-        language[1] = Locale(sharedPref.getString(getString(R.string.prefLanguage1), "cn");
+        //String s0 = sharedPref.getString(getString(R.string.prefLanguage0), "zh_CN");
+        //language[0] = Locale.forLanguageTag(s0);
+        language[0] = new Locale(sharedPref.getString(getString(R.string.prefLanguage0), "zh_CN"));
+        language[1] = new Locale(sharedPref.getString(getString(R.string.prefLanguage1), "en_US"));
     }
-    
+
     private void initVariable(int listNum) {
         wordStart[listNum] = 0;
         tts[listNum] = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
@@ -121,8 +146,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickPlay(View view) {
-        listString[0] = lang0EditText.getText().toString(); 
-        listString[1] = lang1EditText.getText().toString(); 
+        listString[0] = lang0EditText.getText().toString();
+        listString[1] = lang1EditText.getText().toString();
         pickWord(0);
     }
 
@@ -133,11 +158,9 @@ public class MainActivity extends AppCompatActivity {
             wordString[listNum] = listString[listNum].substring(wordStart[listNum], wordEnd[listNum]);
         } else {
             wordString[listNum] = listString[listNum].substring(wordStart[listNum]);
-            //if (listNum == 1) {
-                isEnd = true;
-            //}
+            isEnd = true;
         }
-        Toast.makeText(this, wordString[listNum], Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, wordString[listNum], Toast.LENGTH_SHORT).show();
         speakString(tts[listNum], language[listNum], soundVolume[listNum], wordString[listNum], utterance[listNum]);
     }
 
@@ -150,17 +173,17 @@ public class MainActivity extends AppCompatActivity {
         getTTS.speak(getString, TextToSpeech.QUEUE_ADD, params
                 , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
     }
-                             
+
     @Override
     public boolean onCreateOptionsMenu(Menu getMenu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionmenu, getMenu);
-   //     muteAlarm = getMenu.findItem(R.id.muteAlarm);
-  //      comboTimer = getMenu.findItem(R.id.comboTimer);
-   //     comboTimer.setVisible(false);
-   //     medAlarm = getMenu.findItem(R.id.medicationAlarm);
-   //     timeItem = getMenu.findItem(R.id.time);
-    //    typeItem = getMenu.findItem(R.id.type);
+        //     muteAlarm = getMenu.findItem(R.id.muteAlarm);
+        //      comboTimer = getMenu.findItem(R.id.comboTimer);
+        //     comboTimer.setVisible(false);
+        //     medAlarm = getMenu.findItem(R.id.medicationAlarm);
+        //     timeItem = getMenu.findItem(R.id.time);
+        //    typeItem = getMenu.findItem(R.id.type);
         return true;
     }
 
@@ -176,30 +199,32 @@ public class MainActivity extends AppCompatActivity {
                 loadExamples();
                 break;
             /** case R.id.openHelpTips:
-                intent = new Intent(this, HelpActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.rateApp:
-                MobileService msRate = new MobileService();
-                msRate.rateApp(this);
-                break;
-            case R.id.shareApp:
-                MobileService msShare = new MobileService();
-                msShare.shareApp(this);
-                break;  **/
+             intent = new Intent(this, HelpActivity.class);
+             startActivity(intent);
+             break;
+             case R.id.rateApp:
+             MobileService msRate = new MobileService();
+             msRate.rateApp(this);
+             break;
+             case R.id.shareApp:
+             MobileService msShare = new MobileService();
+             msShare.shareApp(this);
+             break;  **/
             case R.id.openAbout:
                 showAbout();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
-                             
-    private void loadExamples(){
+
+    private void loadExamples() {
         //debug
-        lang0EditText.setText("apple\norange\nbanana");
-        lang1EditText.setText("蘋果\n橙\n香蕉");
+        lang0EditText.setText("1\n蘋果\n橙\n香蕉");
+        lang1EditText.setText("1\napple\norange\nbanana");
+        lang0Button.setText(language[0].getDisplayLanguage());
+        lang1Button.setText(language[1].getDisplayLanguage());
     }
-     
+
     private void showAbout() {
         AboutDialogFragment aboutDialogFragment = new AboutDialogFragment();
         aboutDialogFragment.show(getSupportFragmentManager(), "about");
@@ -225,8 +250,8 @@ public class MainActivity extends AppCompatActivity {
                     });
             return builder.create();
         }
-    }        
-                             
+    }
+
     @Override
     protected void onDestroy() {
         tts[0].shutdown();

@@ -140,7 +140,47 @@ public class MainActivity extends AppCompatActivity {
         getTTS.speak(getString, TextToSpeech.QUEUE_ADD, params
                 , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
     }
+                             
+    @Override
+    public boolean onCreateOptionsMenu(Menu getMenu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actionmenu, getMenu);
+   //     muteAlarm = getMenu.findItem(R.id.muteAlarm);
+  //      comboTimer = getMenu.findItem(R.id.comboTimer);
+   //     comboTimer.setVisible(false);
+   //     medAlarm = getMenu.findItem(R.id.medicationAlarm);
+   //     timeItem = getMenu.findItem(R.id.time);
+    //    typeItem = getMenu.findItem(R.id.type);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.openSettings:
+                intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, OPEN_SETTINGS);
+                break;
+            /** case R.id.openHelpTips:
+                intent = new Intent(this, HelpActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.rateApp:
+                MobileService msRate = new MobileService();
+                msRate.rateApp(this);
+                break;
+            case R.id.shareApp:
+                MobileService msShare = new MobileService();
+                msShare.shareApp(this);
+                break;
+            case R.id.openAbout:
+                showAbout();
+                break;  **/
+        }
+        return super.onOptionsItemSelected(item);
+    }
+                             
     @Override
     protected void onDestroy() {
         tts[0].shutdown();

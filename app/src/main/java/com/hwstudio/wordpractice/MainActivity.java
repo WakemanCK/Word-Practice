@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
         };
         lang1EditText = findViewById(R.id.lang1EditText);
         lang2EditText = findViewById(R.id.lang2EditText);
-
     }
 
     private void loadSetting(){
@@ -85,9 +84,10 @@ public class MainActivity extends AppCompatActivity {
         pitch[1] = sharedPref.getInt(getString(R.string.prefPitch1), 3);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
-        language[0] = Locale.CHINESE;
-        language[1] = Locale.ENGLISH;
-        soundVolume[listNum] = 100f;
+        language[0] = Locale(sharedPref.getString(getString(R.string.prefLanguage0), "en");
+        language[1] = Locale(sharedPref.getString(getString(R.string.prefLanguage1), "cn");
+        soundVolume[0] = sharedPref.getFloat(getString(R.string.prefSoundVolume0), 80);
+        soundVolume[1] = sharedPref.getFloat(getString(R.string.prefSoundVolume1), 80);
     }
     
     private void initVariable(int listNum) {
@@ -98,14 +98,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        /** debug: to be implemented
-        pitch[listNum] = 3;
-        speechRate[listNum] = 3;
-        language[0] = Locale.CHINESE;
-        language[1] = Locale.ENGLISH;
-        soundVolume[listNum] = 100f;
-        // debug  **/
     }
 
     public void initTTS(TextToSpeech getTTS, int getPitch, int getSpeechRate) {
@@ -119,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickPlay(View view) {
-        listString[0] = lang1EditText.getText().toString();
-        listString[1] = lang2EditText.getText().toString();
+        listString[0] = lang1EditText.getText().toString(); // lang1 = list[0]!!!
+        listString[1] = lang2EditText.getText().toString(); // lang2 = list[1]!!!
         pickWord(0);
     }
 
@@ -131,9 +123,9 @@ public class MainActivity extends AppCompatActivity {
             wordString[listNum] = listString[listNum].substring(wordStart[listNum], wordEnd[listNum]);
         } else {
             wordString[listNum] = listString[listNum].substring(wordStart[listNum]);
-            if (listNum == 1) {
+            //if (listNum == 1) {
                 isEnd = true;
-            }
+            //}
         }
         Toast.makeText(this, wordString[listNum], Toast.LENGTH_SHORT).show();
         speakString(tts[listNum], language[listNum], soundVolume[listNum], wordString[listNum], utterance[listNum]);

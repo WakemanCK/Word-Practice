@@ -25,4 +25,7 @@
     <string name="saveDialogTextView">Please enter a file name</string>
     <string name="cancelButton">Cancel</string>
     <string name="noPermissionErr">Error: no storage \naccess permission. \nList is NOT saved!</string>
+    <string name="savePDFText">Word lists are saved to %s.</string>
+    <string name="fileLoadedText">Word lists are loaded.</string>
+    <string name="fileLoadErr">Not a correct word lists file!</string>
 </resources>

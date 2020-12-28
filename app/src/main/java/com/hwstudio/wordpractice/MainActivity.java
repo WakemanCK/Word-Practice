@@ -15,9 +15,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.text.Editable;
@@ -30,14 +33,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
@@ -50,6 +59,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private static final int OPEN_SETTINGS = 10;
+    private static final int LOAD_FILE = 11;
     // Settings
     private int[] pitch = new int[2];
     private int[] speechRate = new int[2];
@@ -60,13 +70,13 @@ public class MainActivity extends AppCompatActivity {
     // Variables
     private TextToSpeech[] tts = new TextToSpeech[2];
     private UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
-    private String[] listString = new String[2];
+    private static String[] listString = new String[2];
     private String[] wordString = new String[2];
     private int[] wordStart = new int[2];
     private int[] wordEnd = new int[2];
     private boolean isEnd, isRepeating;
-    public static EditText lang0EditText;
-    public static EditText lang1EditText;
+    public EditText lang0EditText;
+    public EditText lang1EditText;
     private Button lang0Button, lang1Button;
     private Handler delayHandler;
 //    SaveDialogFragment saveDialogFragment;
@@ -206,6 +216,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveList() {
+        listString[0] = lang0EditText.getText().toString();
+        listString[1] = lang1EditText.getText().toString();
         DialogFragment saveDialogFragment = new SaveDialogFragment();
         saveDialogFragment.show(getSupportFragmentManager(), "save");
     }
@@ -224,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                             if (s.equals("")) {
                                 s = "WordPracticeList";
                             }
-                            saveFile(s);
+                            saveFile(s, getActivity());
                         }
                     })
                     .setNegativeButton(getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
@@ -235,10 +247,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void saveFile(String fileName) {
+    public static void saveFile(String fileName, Context context) {
         String saveString = // Format:   !LANGUAGE_0! Locale name here !0!
-                "!LANGUAGE_0!" + language[0].toString() + "!0!\n" + lang0EditText.getText().toString() +
-                        "\n\n!LANGUAGE_1!" + language[1].toString() + "!1!\n" + lang1EditText.getText().toString();
+                "!LANGUAGE_0!" + language[0].toString() + "!0!\n" + listString[0] +
+                        "\n\n!LANGUAGE_1!" + language[1].toString() + "!1!\n" + listString[1];
         int i = 0;
         if (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
                 .getPath() + "/" + fileName + ".txt").exists()) {
@@ -258,6 +270,84 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Toast.makeText(context, String.format(context.getString(R.string.savePDFText), fileName), Toast.LENGTH_LONG).show();
+    }
+
+    public void clickLoad(View view) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/plain");
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI,
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
+        startActivityForResult(intent, LOAD_FILE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //Uri fileUri;
+        if (requestCode == LOAD_FILE && resultCode == RESULT_OK) {
+            if (data != null) {
+                Uri fileUri = data.getData();
+                StringBuilder loadedString = new StringBuilder();
+                try (InputStream inputStream = getContentResolver().openInputStream(fileUri);
+                     BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        loadedString.append(line).append("\n");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //    return stringBuilder.toString();
+
+//                String loadedString ="";
+//                Uri fileUri = data.getData();
+//                //StringBuilder loadedString = new StringBuilder();
+//                try {
+//                   ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(fileUri, "r");
+//                File inputFile = new File(String.valueOf(parcelFileDescriptor));
+//
+//                    DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(inputFile)));
+//                   loadedString = DataInputStream.readUTF(in);
+//                    //while (true) {
+//                      //  loadedString.append(in.readUTF());
+//                    //}
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+                //setTitle(loadedString);//debug
+                if (analyzeFileSuccess(loadedString.toString())) {
+                    Toast.makeText(this, R.string.fileLoadedText, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    private boolean analyzeFileSuccess(String loadedString) {
+        int[] index = new int[4];
+        index[0] = loadedString.indexOf("!LANGUAGE_0!");
+        index[1] = loadedString.indexOf("!0!");
+        index[2] = loadedString.indexOf("!LANGUAGE_1!");
+        index[3] = loadedString.indexOf("!1!");
+        for (int i = 0; i < 4; i++) {
+            if (index[i] == -1) {
+                return false;
+            }
+        }
+        String tempLang0 = loadedString.substring(index[0] + 12, index[1]);
+        language[0] = new Locale(tempLang0);
+        lang0Button.setText(tempLang0);
+        String tempLang1 = loadedString.substring(index[2] + 12, index[3]);
+        language[1] = new Locale(tempLang1);
+        lang1Button.setText(tempLang1);
+        String tempList0 = loadedString.substring(index[1] + 4, index[2]-2);
+        lang0EditText.setText(tempList0);
+        String tempList1 = loadedString.substring(index[3] + 4, loadedString.length()-1);
+        lang1EditText.setText(tempList1);
+        return true;
     }
 
     public void clickPlay(View view) {
@@ -302,9 +392,6 @@ public class MainActivity extends AppCompatActivity {
         //     muteAlarm = getMenu.findItem(R.id.muteAlarm);
         //      comboTimer = getMenu.findItem(R.id.comboTimer);
         //     comboTimer.setVisible(false);
-        //     medAlarm = getMenu.findItem(R.id.medicationAlarm);
-        //     timeItem = getMenu.findItem(R.id.time);
-        //    typeItem = getMenu.findItem(R.id.type);
         return true;
     }
 

@@ -2,8 +2,11 @@ package com.hwstudio.wordpractice;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -13,9 +16,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.text.Editable;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,30 +30,46 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int OPEN_SETTINGS = 10;
     // Settings
-    int[] pitch = new int[2];
-    int[] speechRate = new int[2];
-    Locale[] language = new Locale[2];
-    float[] soundVolume = new float[2];
-    int wordDelay, lineDelay, repeatNum, repeatCount;
-
+    private int[] pitch = new int[2];
+    private int[] speechRate = new int[2];
+    public static Locale[] language = new Locale[2];
+    private float[] soundVolume = new float[2];
+    private int wordDelay, lineDelay, repeatNum, repeatCount;
 
     // Variables
-    TextToSpeech[] tts = new TextToSpeech[2];
-    UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
-    String[] listString = new String[2];
-    String[] wordString = new String[2];
-    int[] wordStart = new int[2];
-    int[] wordEnd = new int[2];
-    boolean isEnd, isRepeating;
-    EditText lang0EditText, lang1EditText;
-    Button lang0Button, lang1Button;
-    Handler delayHandler;
+    private TextToSpeech[] tts = new TextToSpeech[2];
+    private UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
+    private String[] listString = new String[2];
+    private String[] wordString = new String[2];
+    private int[] wordStart = new int[2];
+    private int[] wordEnd = new int[2];
+    private boolean isEnd, isRepeating;
+    public static EditText lang0EditText;
+    public static EditText lang1EditText;
+    private Button lang0Button, lang1Button;
+    private Handler delayHandler;
+//    SaveDialogFragment saveDialogFragment;
 
 
     @Override
@@ -60,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             initVariable(i);
             initTTS(tts[i], pitch[i], speechRate[i]);
         }
+//        saveDialogFragment = new SaveDialogFragment();
         utterance[0] = new UtteranceProgressListener() {
             @Override
             public void onStart(String s) {
@@ -72,11 +95,11 @@ public class MainActivity extends AppCompatActivity {
                 delayHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                               if (isRepeating) {
-                    speakString(tts[1], language[1], soundVolume[1], wordString[1], utterance[1]);
-                } else {
-                    pickWord(1);
-                }
+                        if (isRepeating) {
+                            speakString(tts[1], language[1], soundVolume[1], wordString[1], utterance[1]);
+                        } else {
+                            pickWord(1);
+                        }
                     }
                 }, wordDelay * 500);
             }
@@ -98,19 +121,19 @@ public class MainActivity extends AppCompatActivity {
                 delayHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                if (repeatCount > 1) {
-                    repeatCount--;
-                    isRepeating = true;
-                    speakString(tts[0], language[0], soundVolume[0], wordString[0], utterance[0]);
-                } else {
-                    if (!isEnd) {
-                        isRepeating = false;
-                        repeatCount = repeatNum;
-                        pickWord(0);
+                        if (repeatCount > 1) {
+                            repeatCount--;
+                            isRepeating = true;
+                            speakString(tts[0], language[0], soundVolume[0], wordString[0], utterance[0]);
+                        } else {
+                            if (!isEnd) {
+                                isRepeating = false;
+                                repeatCount = repeatNum;
+                                pickWord(0);
+                            }
+                        }
                     }
-                }
-                    }
-                }, lineDelay *500);
+                }, lineDelay * 500);
             }
 
             @Override
@@ -159,11 +182,89 @@ public class MainActivity extends AppCompatActivity {
         getTTS.setSpeechRate(speechRateFloat[getSpeechRate]);
     }
 
+    public void clickSave(View view) {
+        // Check has permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            saveList();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    30);  // Request Code 30 = get storage permission
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 30) {
+            if (grantResults.length > 0 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                saveList();
+            } else {
+                Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.noPermissionErr), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void saveList() {
+        DialogFragment saveDialogFragment = new SaveDialogFragment();
+        saveDialogFragment.show(getSupportFragmentManager(), "save");
+    }
+
+    public static class SaveDialogFragment extends DialogFragment {
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+            final EditText edittext = new EditText(getActivity());
+            alertBuilder.setMessage(getString(R.string.saveDialogTextView))
+                    .setView(edittext)
+                    .setPositiveButton(getString(R.string.saveButton), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            String s = edittext.getText().toString();
+                            if (s.equals("")) {
+                                s = "WordPracticeList";
+                            }
+                            saveFile(s);
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    });
+            return alertBuilder.create();
+        }
+    }
+
+    public static void saveFile(String fileName) {
+        String saveString = // Format:   !LANGUAGE_0! Locale name here !0!
+                "!LANGUAGE_0!" + language[0].toString() + "!0!\n" + lang0EditText.getText().toString() +
+                        "\n\n!LANGUAGE_1!" + language[1].toString() + "!1!\n" + lang1EditText.getText().toString();
+        int i = 0;
+        if (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                .getPath() + "/" + fileName + ".txt").exists()) {
+            do {
+                i++;
+            } while (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                    .getPath() + "/" + fileName + i + ".txt").exists());
+            fileName = fileName + i;
+        }
+        File outputFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                .getPath() + "/" + fileName + ".txt");
+        try {
+            DataOutputStream out = new DataOutputStream(new BufferedOutputStream(
+                    new FileOutputStream(outputFile)));
+            out.writeUTF(saveString);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void clickPlay(View view) {
         listString[0] = lang0EditText.getText().toString();
         listString[1] = lang1EditText.getText().toString();
         wordStart[0] = 0;
-        wordStart[1]=0;
+        wordStart[1] = 0;
         isEnd = false;
         isRepeating = false;
         repeatCount = repeatNum;
@@ -274,13 +375,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (tts[0]!=null) {
+        if (tts[0] != null) {
             tts[0].shutdown();
         }
-        if (tts[1]!=null) {
+        if (tts[1] != null) {
             tts[1].shutdown();
         }
-        if (delayHandler!=null) {
+        if (delayHandler != null) {
             delayHandler.removeCallbacksAndMessages(null);
         }
         super.onDestroy();

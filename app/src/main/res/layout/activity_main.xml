@@ -7,6 +7,36 @@
     android:background="?attr/background"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/lang0Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/swapButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/swapButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_swap_horiz_24"
+        app:layout_constraintBottom_toBottomOf="@+id/lang0Button"
+        app:layout_constraintEnd_toStartOf="@+id/lang1Button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/lang0Button"
+        app:layout_constraintTop_toTopOf="@+id/lang0Button" />
+
+    <Button
+        android:id="@+id/lang1Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/swapButton"
+        app:layout_constraintTop_toTopOf="@+id/lang0Button" />
+
     <ScrollView
         android:id="@+id/mainScrollView"
         android:layout_width="0dp"
@@ -20,8 +50,9 @@
             android:id="@+id/mainConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="?attr/editTextBackground">
+            android:background="?attr/editTextBackground"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="8dp">
 
             <EditText
                 android:id="@+id/lang0EditText"
@@ -50,47 +81,42 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/lang0EditText"
                 app:layout_constraintTop_toTopOf="@+id/lang0EditText" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <Button
-        android:id="@+id/lang0Button"
+        android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/swapButton"
+        android:layout_marginBottom="16dp"
+        android:onClick="clickSave"
+        android:text="@string/saveButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/loadButton"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/lang1Button"
+        android:id="@+id/loadButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:onClick="clickLoad"
+        android:text="@string/loadButton"
+        app:layout_constraintEnd_toStartOf="@+id/playButton"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/swapButton"
-        app:layout_constraintTop_toTopOf="@+id/lang0Button" />
+        app:layout_constraintStart_toEndOf="@+id/saveButton"
+        app:layout_constraintTop_toTopOf="@+id/saveButton" />
 
     <Button
         android:id="@+id/playButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:onClick="clickPlay"
         android:text="@string/playButton"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/swapButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_baseline_swap_horiz_24"
-        app:layout_constraintBottom_toBottomOf="@+id/lang0Button"
-        app:layout_constraintEnd_toStartOf="@+id/lang1Button"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/lang0Button"
-        app:layout_constraintTop_toTopOf="@+id/lang0Button" />
+        app:layout_constraintStart_toEndOf="@+id/loadButton"
+        app:layout_constraintTop_toTopOf="@+id/saveButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

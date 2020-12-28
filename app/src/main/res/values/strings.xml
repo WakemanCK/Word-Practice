@@ -19,4 +19,10 @@
     <string name="shareAppMenuText">Share this app</string>
     <string name="aboutMenuText">About</string>
     <string name="okText">OK</string>
+    <string name="saveButton">Save</string>
+    <string name="loadButton">Load</string>
+    <string name="fileName">File name</string>
+    <string name="saveDialogTextView">Please enter a file name</string>
+    <string name="cancelButton">Cancel</string>
+    <string name="noPermissionErr">Error: no storage \naccess permission. \nList is NOT saved!</string>
 </resources>

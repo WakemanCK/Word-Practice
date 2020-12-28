@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     int[] speechRate = new int[2];
     Locale[] language = new Locale[2];
     float[] soundVolume = new float[2];
-    int wordDelay, lineDelay, repeatNum;
+    int wordDelay, lineDelay, repeatNum, repeatCount;
 
 
     // Variables
@@ -44,9 +44,10 @@ public class MainActivity extends AppCompatActivity {
     String[] wordString = new String[2];
     int[] wordStart = new int[2];
     int[] wordEnd = new int[2];
-    boolean isEnd = false;
+    boolean isEnd, isRepeating;
     EditText lang0EditText, lang1EditText;
     Button lang0Button, lang1Button;
+    Handler delayHandler;
 
 
     @Override
@@ -67,7 +68,17 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDone(String s) {
-                pickWord(1);
+//                delayHandler = new Handler();
+                delayHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                               if (isRepeating) {
+                    speakString(tts[1], language[1], soundVolume[1], wordString[1], utterance[1]);
+                } else {
+                    pickWord(1);
+                }
+                    }
+                }, wordDelay * 500);
             }
 
             @Override
@@ -83,9 +94,23 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDone(String s) {
-                if (!isEnd) {
-                    pickWord(0);
+//                delayHandler = new Handler();
+                delayHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                if (repeatCount > 1) {
+                    repeatCount--;
+                    isRepeating = true;
+                    speakString(tts[0], language[0], soundVolume[0], wordString[0], utterance[0]);
+                } else {
+                    if (!isEnd) {
+                        isRepeating = false;
+                        repeatCount = repeatNum;
+                        pickWord(0);
+                    }
                 }
+                    }
+                }, lineDelay *500);
             }
 
             @Override
@@ -97,15 +122,8 @@ public class MainActivity extends AppCompatActivity {
         lang1EditText = findViewById(R.id.lang1EditText);
         lang0Button = findViewById(R.id.lang0Button);
         lang1Button = findViewById(R.id.lang1Button);
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-                lang0Button.setText(language[0].getDisplayLanguage());
-////                //Toast.makeText(MainActivity.this, "lang0 " + language[0].toString(), Toast.LENGTH_SHORT).show();
-                lang1Button.setText(language[1].getDisplayLanguage());
-//            }
-//        }, 1000);
+        lang0Button.setText(language[0].getDisplayLanguage());
+        lang1Button.setText(language[1].getDisplayLanguage());
     }
 
     private void loadSettings() {
@@ -119,8 +137,6 @@ public class MainActivity extends AppCompatActivity {
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
         soundVolume[0] = sharedPref.getFloat(getString(R.string.prefSoundVolume0), 80);
         soundVolume[1] = sharedPref.getFloat(getString(R.string.prefSoundVolume1), 80);
-        //String s0 = sharedPref.getString(getString(R.string.prefLanguage0), "zh_CN");
-        //language[0] = Locale.forLanguageTag(s0);
         language[0] = new Locale(sharedPref.getString(getString(R.string.prefLanguage0), "zh_CN"));
         language[1] = new Locale(sharedPref.getString(getString(R.string.prefLanguage1), "en_US"));
     }
@@ -133,12 +149,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        delayHandler = new Handler();
     }
 
     public void initTTS(TextToSpeech getTTS, int getPitch, int getSpeechRate) {
-//        textToSpeech = getTTS;
-//        language = getLanguage;
-//        soundVolume = getSoundVolume;
         float[] pitchFloat = {0.4f, 0.6f, 0.8f, 1f, 1.5f, 2f, 2.5f};
         getTTS.setPitch(pitchFloat[getPitch]);
         float[] speechRateFloat = {0.1f, 0.4f, 0.75f, 1f, 1.5f, 2f, 2.5f};
@@ -148,6 +162,11 @@ public class MainActivity extends AppCompatActivity {
     public void clickPlay(View view) {
         listString[0] = lang0EditText.getText().toString();
         listString[1] = lang1EditText.getText().toString();
+        wordStart[0] = 0;
+        wordStart[1]=0;
+        isEnd = false;
+        isRepeating = false;
+        repeatCount = repeatNum;
         pickWord(0);
     }
 
@@ -156,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
         wordEnd[listNum] = listString[listNum].indexOf(10, wordStart[listNum]);
         if (wordEnd[listNum] > -1) {
             wordString[listNum] = listString[listNum].substring(wordStart[listNum], wordEnd[listNum]);
+            wordStart[listNum] = wordEnd[listNum] + 1;
         } else {
             wordString[listNum] = listString[listNum].substring(wordStart[listNum]);
             isEnd = true;
@@ -254,8 +274,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        tts[0].shutdown();
-        tts[1].shutdown();
+        if (tts[0]!=null) {
+            tts[0].shutdown();
+        }
+        if (tts[1]!=null) {
+            tts[1].shutdown();
+        }
+        if (delayHandler!=null) {
+            delayHandler.removeCallbacksAndMessages(null);
+        }
         super.onDestroy();
     }
 }

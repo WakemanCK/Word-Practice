@@ -3,27 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/openSettings"
-        android:title="@string/settingsMenuText"
-        app:showAsAction="never" />
+        android:id="@+id/loadLists"
+        android:title="@string/loadLists"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/saveLists"
+        android:title="@string/saveLists"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/loadExamples"
-        android:title="@string/loadExamplesText"
+        android:title="@string/loadExamples"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/openSettings"
+        android:title="@string/settingsMenu"
         app:showAsAction="never" />
     <item
         android:id="@+id/openHelpTips"
-        android:title="@string/helpMenuText"
+        android:title="@string/helpMenu"
         app:showAsAction="never" />
     <item
         android:id="@+id/rateApp"
-        android:title="@string/rateAppMenuText"
+        android:title="@string/rateAppMenu"
         app:showAsAction="never" />
     <item
         android:id="@+id/shareApp"
-        android:title="@string/shareAppMenuText"
+        android:title="@string/shareAppMenu"
         app:showAsAction="never" />
     <item
         android:id="@+id/openAbout"
-        android:title="@string/aboutMenuText"
+        android:title="@string/aboutMenu"
         app:showAsAction="never" />
 </menu>

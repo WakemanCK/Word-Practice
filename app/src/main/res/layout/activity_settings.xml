@@ -6,4 +6,167 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
+    <TextView
+        android:id="@+id/lang0TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/lang0TextView"
+        app:layout_constraintEnd_toStartOf="@+id/lang1TextView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lang1TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lang1TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/lang0TextView"
+        app:layout_constraintTop_toTopOf="@+id/lang0TextView" />
+
+    <TextView
+        android:id="@+id/speechRateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/speechRateTextView"
+        app:layout_constraintEnd_toStartOf="@+id/speechRate0SeekBar"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lang0TextView" />
+
+    <SeekBar
+        android:id="@+id/speechRate0SeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:max="10"
+        app:layout_constraintEnd_toStartOf="@+id/speechRate1SeekBar"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/speechRateTextView"
+        app:layout_constraintTop_toTopOf="@+id/speechRateTextView" />
+
+    <SeekBar
+        android:id="@+id/speechRate1SeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:max="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/speechRate0SeekBar"
+        app:layout_constraintTop_toTopOf="@+id/speechRate0SeekBar" />
+
+    <TextView
+        android:id="@+id/volumeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/volumeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/speechRateTextView"
+        tools:layout_editor_absoluteX="33dp" />
+
+    <SeekBar
+        android:id="@+id/volume0SeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="10"
+        app:layout_constraintTop_toTopOf="@+id/volumeTextView"
+        tools:layout_editor_absoluteX="144dp" />
+
+    <SeekBar
+        android:id="@+id/volume1SeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="10"
+        app:layout_constraintTop_toTopOf="@+id/volumeTextView"
+        tools:layout_editor_absoluteX="270dp" />
+
+    <TextView
+        android:id="@+id/pitchTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/pitchTextView"
+        app:layout_constraintTop_toBottomOf="@+id/volumeTextView"
+        tools:layout_editor_absoluteX="33dp" />
+
+    <SeekBar
+        android:id="@+id/pitch0SeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="10"
+        app:layout_constraintTop_toTopOf="@+id/pitchTextView"
+        tools:layout_editor_absoluteX="144dp" />
+
+    <SeekBar
+        android:id="@+id/pitchSeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="10"
+        app:layout_constraintTop_toTopOf="@+id/pitchTextView"
+        tools:layout_editor_absoluteX="278dp" />
+
+    <TextView
+        android:id="@+id/wordDelayTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/wordDelayTextView"
+        app:layout_constraintTop_toBottomOf="@+id/pitchTextView"
+        tools:layout_editor_absoluteX="30dp" />
+
+    <SeekBar
+        android:id="@+id/wordDelaySeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="10"
+        app:layout_constraintTop_toTopOf="@+id/wordDelayTextView"
+        tools:layout_editor_absoluteX="243dp" />
+
+    <TextView
+        android:id="@+id/lineDelayTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/lineDelayTextView"
+        app:layout_constraintTop_toBottomOf="@+id/wordDelayTextView"
+        tools:layout_editor_absoluteX="32dp" />
+
+    <SeekBar
+        android:id="@+id/lineDelaySeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="10"
+        app:layout_constraintTop_toTopOf="@+id/lineDelayTextView"
+        tools:layout_editor_absoluteX="255dp" />
+
+    <TextView
+        android:id="@+id/repeatNumTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/repeatNumTextView"
+        app:layout_constraintTop_toBottomOf="@+id/lineDelayTextView"
+        tools:layout_editor_absoluteX="30dp" />
+
+    <SeekBar
+        android:id="@+id/repeatNumSeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:max="10"
+        app:layout_constraintTop_toTopOf="@+id/repeatNumTextView"
+        tools:layout_editor_absoluteX="253dp" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

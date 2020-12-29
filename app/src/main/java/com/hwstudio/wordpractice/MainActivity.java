@@ -15,44 +15,37 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.text.Editable;
-import android.view.LayoutInflater;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -61,24 +54,24 @@ public class MainActivity extends AppCompatActivity {
     private static final int OPEN_SETTINGS = 10;
     private static final int LOAD_FILE = 11;
     // Settings
-    private int[] pitch = new int[2];
-    private int[] speechRate = new int[2];
     public static Locale[] language = new Locale[2];
+    private int[] speechRate = new int[2];
     private float[] soundVolume = new float[2];
+    private int[] pitch = new int[2];
     private int wordDelay, lineDelay, repeatNum, repeatCount;
 
     // Variables
-    private TextToSpeech[] tts = new TextToSpeech[2];
-    private UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
+    private final TextToSpeech[] tts = new TextToSpeech[2];
+    private final UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private static String[] listString = new String[2];
     private String[] wordString = new String[2];
     private int[] wordStart = new int[2];
     private int[] wordEnd = new int[2];
     private boolean isEnd, isRepeating;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
-    private EditText[] listEditText;
-    private Button[] langButton;
-    private Button playButton, pauseButton, rewindButton;
+    private final EditText[] listEditText = new EditText[2];
+    private final Button[] langButton = new Button[2];
+    private ImageButton playButton, pauseButton, rewindButton;
     private ScrollView mainScrollView;
     private Handler delayHandler;
 //    SaveDialogFragment saveDialogFragment;
@@ -108,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (isRepeating) {
-                            speakString(tts[1], language[1], soundVolume[1], wordString[1], utterance[1]);
+                            speakString(1);
                         } else {
                             pickWord(1);
                         }
@@ -137,10 +130,10 @@ public class MainActivity extends AppCompatActivity {
                         if (repeatCount > 1) {
                             repeatCount--;
                             isRepeating = true;
-                            speakString(tts[0], language[0], soundVolume[0], wordString[0], utterance[0]);
+                            speakString(0);
                         } else {
                             if (isEnd) {
-                            clickRewind(null)
+                            clickStop(null);
                             }else{
                                 isRepeating = false;
                                 repeatCount = repeatNum;
@@ -159,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
         };
         listEditText[0] = findViewById(R.id.lang0EditText);
         listEditText[1] = findViewById(R.id.lang1EditText);
+//        listEditText[0].setEllipsize(TextUtils.TruncateAt.MIDDLE);
+//        listEditText[0].setEllipsize(TextUtils.TruncateAt.START);
         langButton[0] = findViewById(R.id.lang0Button);
         langButton[1] = findViewById(R.id.lang1Button);
         langButton[0].setText(language[0].getDisplayLanguage());
@@ -166,7 +161,9 @@ public class MainActivity extends AppCompatActivity {
         mainScrollView = findViewById(R.id.mainScrollView);
         playButton = findViewById(R.id.playButton);
         pauseButton = findViewById(R.id.pauseButton);
-        rewindButton = findViewById(R.id.rewindButton);
+        rewindButton = findViewById(R.id.stopButton);
+        pauseButton.setEnabled(false);
+        rewindButton.setEnabled(false);
     }
 
     private void loadSettings() {
@@ -346,11 +343,13 @@ public class MainActivity extends AppCompatActivity {
         playButton.setEnabled(false);
         pauseButton.setEnabled(true);
         rewindButton.setEnabled(true);
+        listEditText[0].setEnabled(false);
+        listEditText[1].setEnabled(false);
         if (playingState == 2){
             playingState = 1;
             utterance[1].onDone("");
         }else{
-            playingState = 1
+            playingState = 1;
         listString[0] = listEditText[0].getText().toString();
         listString[1] = listEditText[1].getText().toString();
         wordEnd[0] = -1;
@@ -383,15 +382,15 @@ public class MainActivity extends AppCompatActivity {
                 , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
         // Highlight word
         Spannable wordSpan = new SpannableString(listString[listNum]);
-        wordSpan.setSpan(new BackgroundColorSpan(Color.GREEN), wordStart[listNum]
+        wordSpan.setSpan(new ForegroundColorSpan(Color.RED), wordStart[listNum]
                          ,wordEnd[listNum], Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         listEditText[listNum].setText(wordSpan);
         if (listNum==0){
-            listEditText[1].removeSpan();
+            listEditText[1].setText(listString[1]);
         }else{
-            listEditText[0].removeSpan();
+            listEditText[0].setText(listString[0]);
         }
-        mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight*wordStart[listNum]/listEditText[listNum].length());
+        mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight()*wordStart[listNum]/listEditText[listNum].length());
     }
 
     public void clickPause(View view){
@@ -399,8 +398,19 @@ public class MainActivity extends AppCompatActivity {
         playButton.setEnabled(true);
         pauseButton.setEnabled(false);
         rewindButton.setEnabled(true);
+        listEditText[0].setEnabled(false);
+        listEditText[1].setEnabled(false);
     }
-    
+
+    public void clickStop(View view){
+        playingState = 0;
+        playButton.setEnabled(true);
+        pauseButton.setEnabled(false);
+        rewindButton.setEnabled(false);
+        listEditText[0].setEnabled(true);
+        listEditText[1].setEnabled(true);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu getMenu) {
         MenuInflater inflater = getMenuInflater();
@@ -472,7 +482,7 @@ public class MainActivity extends AppCompatActivity {
             }
             String s = String.format(Locale.ENGLISH, "%s v%s\nWakeman Chau\nhauwingstudio@hotmail.com\n© 2021\nAll rights reserved", getString(R.string.app_name), packageInfo.versionName);
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(R.string.aboutMenuText)
+            builder.setTitle(R.string.aboutMenu)
                     .setMessage(s)
                     .setPositiveButton(R.string.okText, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {

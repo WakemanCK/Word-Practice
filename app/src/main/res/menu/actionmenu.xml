@@ -4,10 +4,12 @@
 
     <item
         android:id="@+id/loadLists"
+        android:icon="@drawable/ic_round_folder_open_24"
         android:title="@string/loadLists"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/saveLists"
+        android:icon="@drawable/ic_round_save_24"
         android:title="@string/saveLists"
         app:showAsAction="ifRoom" />
     <item

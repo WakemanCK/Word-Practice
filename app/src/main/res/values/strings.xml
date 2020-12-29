@@ -12,8 +12,8 @@
     <string name="prefSoundVolume1">prefSoundVolume1</string>
     <string name="prefLanguage0">prefLanguage0</string>
     <string name="prefLanguage1">prefLanguage1</string>
-    <string name="loadExamples">Load lists</string>
-    <string name="loadExamples">Save lists</string>
+    <string name="loadLists">Load lists</string>
+    <string name="saveLists">Save lists</string>
     <string name="loadExamples">Load examples</string>
     <string name="settingsMenu">Settings</string>
     <string name="helpMenu">Help</string>
@@ -30,4 +30,12 @@
     <string name="saveListText">Word lists are saved to %s.</string>
     <string name="fileLoadedText">Word lists are loaded.</string>
     <string name="fileLoadErr">Not a correct word lists file!</string>
+    <string name="lang0TextView">Language 1</string>
+    <string name="lang1TextView">Language 2</string>
+    <string name="speechRateTextView">Speech rate</string>
+    <string name="volumeTextView">Volume</string>
+    <string name="pitchTextView">Pitch</string>
+    <string name="wordDelayTextView">Delay between words: </string>
+    <string name="lineDelayTextView">Delay between lines: </string>
+    <string name="repeatNumTextView">Repeat how many times: </string>
 </resources>

@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
         getTTS.setSpeechRate(speechRateFloat[getSpeechRate]);
     }
 
-    public void clickSave(View view) {
+    private void clickSave() {
         // Check has permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -270,10 +270,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Toast.makeText(context, String.format(context.getString(R.string.savePDFText), fileName), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, String.format(context.getString(R.string.saveListText), fileName), Toast.LENGTH_LONG).show();
     }
 
-    public void clickLoad(View view) {
+    private void clickLoad() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("text/plain");
@@ -299,24 +299,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //    return stringBuilder.toString();
-
-//                String loadedString ="";
-//                Uri fileUri = data.getData();
-//                //StringBuilder loadedString = new StringBuilder();
-//                try {
-//                   ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(fileUri, "r");
-//                File inputFile = new File(String.valueOf(parcelFileDescriptor));
-//
-//                    DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(inputFile)));
-//                   loadedString = DataInputStream.readUTF(in);
-//                    //while (true) {
-//                      //  loadedString.append(in.readUTF());
-//                    //}
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-                //setTitle(loadedString);//debug
                 if (analyzeFileSuccess(loadedString.toString())) {
                     Toast.makeText(this, R.string.fileLoadedText, Toast.LENGTH_SHORT).show();
                 } else {
@@ -362,7 +344,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pickWord(int listNum) {
-        //boolean isEnd = false;
         wordEnd[listNum] = listString[listNum].indexOf(10, wordStart[listNum]);
         if (wordEnd[listNum] > -1) {
             wordString[listNum] = listString[listNum].substring(wordStart[listNum], wordEnd[listNum]);
@@ -371,7 +352,6 @@ public class MainActivity extends AppCompatActivity {
             wordString[listNum] = listString[listNum].substring(wordStart[listNum]);
             isEnd = true;
         }
-        //Toast.makeText(this, wordString[listNum], Toast.LENGTH_SHORT).show();
         speakString(tts[listNum], language[listNum], soundVolume[listNum], wordString[listNum], utterance[listNum]);
     }
 
@@ -402,6 +382,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.openSettings:
                 intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, OPEN_SETTINGS);
+                break;
+            case R.id.loadLists:
+                clickLoad();
+                break;
+            case R.id.saveLists:
+                clickSave();
                 break;
             case R.id.loadExamples:
                 loadExamples();

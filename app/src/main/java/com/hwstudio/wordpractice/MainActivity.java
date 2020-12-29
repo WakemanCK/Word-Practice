@@ -75,8 +75,10 @@ public class MainActivity extends AppCompatActivity {
     private int[] wordStart = new int[2];
     private int[] wordEnd = new int[2];
     private boolean isEnd, isRepeating;
+    private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
     private EditText[] listEditText;
     private Button[] langButton;
+    private Button playButton, pauseButton, rewindButton;
     private ScrollView mainScrollView;
     private Handler delayHandler;
 //    SaveDialogFragment saveDialogFragment;
@@ -128,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDone(String s) {
 //                delayHandler = new Handler();
+                if (playingState == 1){
                 delayHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -136,7 +139,9 @@ public class MainActivity extends AppCompatActivity {
                             isRepeating = true;
                             speakString(tts[0], language[0], soundVolume[0], wordString[0], utterance[0]);
                         } else {
-                            if (!isEnd) {
+                            if (isEnd) {
+                            clickRewind(null)
+                            }else{
                                 isRepeating = false;
                                 repeatCount = repeatNum;
                                 pickWord(0);
@@ -144,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }, lineDelay * 500);
+              }
             }
 
             @Override
@@ -158,6 +164,9 @@ public class MainActivity extends AppCompatActivity {
         langButton[0].setText(language[0].getDisplayLanguage());
         langButton[1].setText(language[1].getDisplayLanguage());
         mainScrollView = findViewById(R.id.mainScrollView);
+        playButton = findViewById(R.id.playButton);
+        pauseButton = findViewById(R.id.pauseButton);
+        rewindButton = findViewById(R.id.rewindButton);
     }
 
     private void loadSettings() {
@@ -334,6 +343,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickPlay(View view) {
+        playButton.setEnabled(false);
+        pauseButton.setEnabled(true);
+        rewindButton.setEnabled(true);
+        if (playingState == 2){
+            playingState = 1;
+            utterance[1].onDone("");
+        }else{
+            playingState = 1
         listString[0] = listEditText[0].getText().toString();
         listString[1] = listEditText[1].getText().toString();
         wordEnd[0] = -1;
@@ -342,6 +359,7 @@ public class MainActivity extends AppCompatActivity {
         isRepeating = false;
         repeatCount = repeatNum;
         pickWord(0);
+        }
     }
 
     private void pickWord(int listNum) {
@@ -376,6 +394,13 @@ public class MainActivity extends AppCompatActivity {
         mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight*wordStart[listNum]/listEditText[listNum].length());
     }
 
+    public void clickPause(View view){
+        playingState = 2;
+        playButton.setEnabled(true);
+        pauseButton.setEnabled(false);
+        rewindButton.setEnabled(true);
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu getMenu) {
         MenuInflater inflater = getMenuInflater();

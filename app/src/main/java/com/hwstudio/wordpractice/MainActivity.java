@@ -75,9 +75,9 @@ public class MainActivity extends AppCompatActivity {
     private int[] wordStart = new int[2];
     private int[] wordEnd = new int[2];
     private boolean isEnd, isRepeating;
-    public EditText lang0EditText;
-    public EditText lang1EditText;
-    private Button lang0Button, lang1Button;
+    private EditText[] listEditText;
+    private Button[] langButton;
+    private ScrollView mainScrollView;
     private Handler delayHandler;
 //    SaveDialogFragment saveDialogFragment;
 
@@ -151,12 +151,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        lang0EditText = findViewById(R.id.lang0EditText);
-        lang1EditText = findViewById(R.id.lang1EditText);
-        lang0Button = findViewById(R.id.lang0Button);
-        lang1Button = findViewById(R.id.lang1Button);
-        lang0Button.setText(language[0].getDisplayLanguage());
-        lang1Button.setText(language[1].getDisplayLanguage());
+        listEditText[0] = findViewById(R.id.lang0EditText);
+        listEditText[1] = findViewById(R.id.lang1EditText);
+        langButton[0] = findViewById(R.id.lang0Button);
+        langButton[1] = findViewById(R.id.lang1Button);
+        langButton[0].setText(language[0].getDisplayLanguage());
+        langButton[1].setText(language[1].getDisplayLanguage());
+        mainScrollView = findViewById(R.id.mainScrollView);
     }
 
     private void loadSettings() {
@@ -216,8 +217,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveList() {
-        listString[0] = lang0EditText.getText().toString();
-        listString[1] = lang1EditText.getText().toString();
+        listString[0] = listEditText[0].getText().toString();
+        listString[1] = listEditText[1].getText().toString();
         DialogFragment saveDialogFragment = new SaveDialogFragment();
         saveDialogFragment.show(getSupportFragmentManager(), "save");
     }
@@ -227,12 +228,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
-            final EditText edittext = new EditText(getActivity());
+            final EditText saveEditText = new EditText(getActivity());
             alertBuilder.setMessage(getString(R.string.saveDialogTextView))
-                    .setView(edittext)
+                    .setView(saveEditText)
                     .setPositiveButton(getString(R.string.saveButton), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            String s = edittext.getText().toString();
+                            String s = saveEditText.getText().toString();
                             if (s.equals("")) {
                                 s = "WordPracticeList";
                             }
@@ -321,22 +322,22 @@ public class MainActivity extends AppCompatActivity {
         }
         String tempLang0 = loadedString.substring(index[0] + 12, index[1]);
         language[0] = new Locale(tempLang0);
-        lang0Button.setText(tempLang0);
+        langButton[0].setText(tempLang0);
         String tempLang1 = loadedString.substring(index[2] + 12, index[3]);
         language[1] = new Locale(tempLang1);
-        lang1Button.setText(tempLang1);
+        langButton[1].setText(tempLang1);
         String tempList0 = loadedString.substring(index[1] + 4, index[2]-2);
-        lang0EditText.setText(tempList0);
+        listEditText[0].setText(tempList0);
         String tempList1 = loadedString.substring(index[3] + 4, loadedString.length()-1);
-        lang1EditText.setText(tempList1);
+        listEditText[1].setText(tempList1);
         return true;
     }
 
     public void clickPlay(View view) {
-        listString[0] = lang0EditText.getText().toString();
-        listString[1] = lang1EditText.getText().toString();
-        wordStart[0] = 0;
-        wordStart[1] = 0;
+        listString[0] = listEditText[0].getText().toString();
+        listString[1] = listEditText[1].getText().toString();
+        wordEnd[0] = -1;
+        wordEnd[1] = -1;
         isEnd = false;
         isRepeating = false;
         repeatCount = repeatNum;
@@ -344,25 +345,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pickWord(int listNum) {
+        wordStart[listNum] = wordEnd[listNum] + 1;
         wordEnd[listNum] = listString[listNum].indexOf(10, wordStart[listNum]);
-        if (wordEnd[listNum] > -1) {
-            wordString[listNum] = listString[listNum].substring(wordStart[listNum], wordEnd[listNum]);
-            wordStart[listNum] = wordEnd[listNum] + 1;
-        } else {
-            wordString[listNum] = listString[listNum].substring(wordStart[listNum]);
+        if (wordEnd[listNum] == -1) {
+            wordEnd[listNum] = listString[listNum].length();
             isEnd = true;
         }
-        speakString(tts[listNum], language[listNum], soundVolume[listNum], wordString[listNum], utterance[listNum]);
+        wordString[listNum] = listString[listNum].substring(wordStart[listNum], wordEnd[listNum]);
+        speakString(listNum);
     }
 
 
-    public void speakString(TextToSpeech getTTS, Locale language, float soundVolume, String getString, UtteranceProgressListener utterance) {
-        getTTS.setOnUtteranceProgressListener(utterance);
-        getTTS.setLanguage(language);
+    public void speakString(int listNum) {
+        tts[listNum].setOnUtteranceProgressListener(utterance[listNum]);
+        tts[listNum].setLanguage(language[listNum]);
         Bundle params = new Bundle();
-        params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, soundVolume / 100f);
-        getTTS.speak(getString, TextToSpeech.QUEUE_ADD, params
+        params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, soundVolume[listNum] / 100f);
+        tts[listNum].speak(wordString[listNum], TextToSpeech.QUEUE_ADD, params
                 , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
+        // Highlight word
+        Spannable wordSpan = new SpannableString(listString[listNum]);
+        wordSpan.setSpan(new BackgroundColorSpan(Color.GREEN), wordStart[listNum]
+                         ,wordEnd[listNum], Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        listEditText[listNum].setText(wordSpan);
+        if (listNum==0){
+            listEditText[1].removeSpan();
+        }else{
+            listEditText[0].removeSpan();
+        }
+        mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight*wordStart[listNum]/listEditText[listNum].length());
     }
 
     @Override
@@ -413,10 +424,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadExamples() {
         //debug
-        lang0EditText.setText("1\n蘋果\n橙\n香蕉");
-        lang1EditText.setText("1\napple\norange\nbanana");
-        lang0Button.setText(language[0].getDisplayLanguage());
-        lang1Button.setText(language[1].getDisplayLanguage());
+        listEditText[0].setText("1\n蘋果\n橙\n香蕉");
+        listEditText[1].setText("1\napple\norange\nbanana");
+        langButton[0].setText(language[0].getDisplayLanguage());
+        langButton[1].setText(language[1].getDisplayLanguage());
     }
 
     private void showAbout() {

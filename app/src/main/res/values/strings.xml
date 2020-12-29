@@ -12,12 +12,14 @@
     <string name="prefSoundVolume1">prefSoundVolume1</string>
     <string name="prefLanguage0">prefLanguage0</string>
     <string name="prefLanguage1">prefLanguage1</string>
-    <string name="settingsMenuText">Settings</string>
-    <string name="loadExamplesText">Load examples</string>
-    <string name="helpMenuText">Help</string>
-    <string name="rateAppMenuText">Rate this app</string>
-    <string name="shareAppMenuText">Share this app</string>
-    <string name="aboutMenuText">About</string>
+    <string name="loadExamples">Load lists</string>
+    <string name="loadExamples">Save lists</string>
+    <string name="loadExamples">Load examples</string>
+    <string name="settingsMenu">Settings</string>
+    <string name="helpMenu">Help</string>
+    <string name="rateAppMenu">Rate this app</string>
+    <string name="shareAppMenu">Share this app</string>
+    <string name="aboutMenu">About</string>
     <string name="okText">OK</string>
     <string name="saveButton">Save</string>
     <string name="loadButton">Load</string>
@@ -25,7 +27,7 @@
     <string name="saveDialogTextView">Please enter a file name</string>
     <string name="cancelButton">Cancel</string>
     <string name="noPermissionErr">Error: no storage \naccess permission. \nList is NOT saved!</string>
-    <string name="savePDFText">Word lists are saved to %s.</string>
+    <string name="saveListText">Word lists are saved to %s.</string>
     <string name="fileLoadedText">Word lists are loaded.</string>
     <string name="fileLoadErr">Not a correct word lists file!</string>
 </resources>

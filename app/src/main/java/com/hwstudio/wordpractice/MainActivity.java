@@ -23,9 +23,12 @@ import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
@@ -53,32 +56,34 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int OPEN_SETTINGS = 10;
     private static final int LOAD_FILE = 11;
+
     // Settings
     public static Locale[] language = new Locale[2];
-    private int[] speechRate = new int[2];
-    private float[] soundVolume = new float[2];
-    private int[] pitch = new int[2];
-    private int wordDelay, lineDelay, repeatNum, repeatCount;
+    public static int wordDelay, lineDelay, repeatNum;
+    public static boolean hasListBackground;
+    public static int[] speechRate = new int[2];
+    public static float[] soundVolume = new float[2];
+    public static int[] pitch = new int[2];
+    public static int[] textSize = new int[2];
 
     // Variables
     private final TextToSpeech[] tts = new TextToSpeech[2];
     private final UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private static String[] listString = new String[2];
     private String[] wordString = new String[2];
-    private SpannableString[] spanString = new String[2];
+    private SpannableString[] spanString = new SpannableString[2];
     private ForegroundColorSpan[] wordSpan = new ForegroundColorSpan[2];
-    private int beforeCount, afterCount;
+    private boolean[] isSpanning = new boolean[2];
     private int[] wordStart = new int[2];
     private int[] wordEnd = new int[2];
     private boolean isEnd, isRepeating;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
+    private int repeatCount;
     private final EditText[] listEditText = new EditText[2];
     private final Button[] langButton = new Button[2];
     private ImageButton playButton, pauseButton, rewindButton;
     private ScrollView mainScrollView;
     private Handler delayHandler;
-//    SaveDialogFragment saveDialogFragment;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,16 +95,13 @@ public class MainActivity extends AppCompatActivity {
             initVariable(i);
             initTTS(tts[i], pitch[i], speechRate[i]);
         }
-//        saveDialogFragment = new SaveDialogFragment();
         utterance[0] = new UtteranceProgressListener() {
             @Override
             public void onStart(String s) {
-
             }
 
             @Override
             public void onDone(String s) {
-//                delayHandler = new Handler();
                 delayHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -114,79 +116,79 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(String s) {
-
             }
         };
         utterance[1] = new UtteranceProgressListener() {
             @Override
             public void onStart(String s) {
-
             }
 
             @Override
             public void onDone(String s) {
-//                delayHandler = new Handler();
-                if (playingState == 1){
-                delayHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (repeatCount > 1) {
-                            repeatCount--;
-                            isRepeating = true;
-                            speakString(0);
-                        } else {
-                            if (isEnd) {
-                            clickStop(null);
-                            }else{
-                                isRepeating = false;
-                                repeatCount = repeatNum;
-                                pickWord(0);
+                if (playingState == 1) {
+                    delayHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (repeatCount > 1) {
+                                repeatCount--;
+                                isRepeating = true;
+                                speakString(0);
+                            } else {
+                                if (isEnd) {
+                                    clickStop(null);
+                                } else {
+                                    isRepeating = false;
+                                    repeatCount = repeatNum;
+                                    pickWord(0);
+                                }
                             }
                         }
-                    }
-                }, lineDelay * 500);
-              }
+                    }, lineDelay * 500);
+                }
             }
 
             @Override
             public void onError(String s) {
-
             }
         };
         listEditText[0] = findViewById(R.id.lang0EditText);
         listEditText[1] = findViewById(R.id.lang1EditText);
+        listEditText[0].setTextSize(textSize[0]);
+        listEditText[1].setTextSize(textSize[1]);
         listEditText[0].addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int count, int i2) {
-                beforeCount = count;
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int count) {
-                afterCount = count;
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (beforeCount == 10 || afterCount == 10){
+                if (!isSpanning[0]) {
                     addBackgroundSpan(0);
+                }
             }
         });
         listEditText[1].addTextChangedListener(new TextWatcher() {
-                 @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int count, int i2) {
-                beforeCount = count;
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int count) {
-                afterCount = count;
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (beforeCount == 10 || afterCount == 10){
+                if (!isSpanning[1]) {
                     addBackgroundSpan(1);
+                }
             }
         });
         langButton[0] = findViewById(R.id.lang0Button);
@@ -201,29 +203,48 @@ public class MainActivity extends AppCompatActivity {
         rewindButton.setEnabled(false);
     }
 
-    private void addBackgroundSpan(int listNum){
-        wordString[listNum] = listEditText[listNum].getText();
-        spanString[listNum] = new SpannableString(wordString[listNum]);
-        int i = 0, startIndex = 0, endIndex;
-        endIndex = wordString[listNum].ofIndex(10);
-        while (endIndex > -1){
-            switch i{
-                case 0:
-            spanString[listNum].setSpan(new BackgroundColorSpan(Color.span
-            
+    private void addBackgroundSpan(int listNum) {
+        isSpanning[listNum] = true;
+        listString[listNum] = listEditText[listNum].getText().toString();
+        spanString[listNum] = new SpannableString(listString[listNum]);
+        if (hasListBackground) {
+            BackgroundColorSpan[] colorSpan = new BackgroundColorSpan[5];
+            colorSpan[0] = new BackgroundColorSpan(getResources().getColor(R.color.gray0));
+            colorSpan[1] = new BackgroundColorSpan(getResources().getColor(R.color.gray1));
+            colorSpan[2] = new BackgroundColorSpan(getResources().getColor(R.color.gray2));
+            colorSpan[3] = new BackgroundColorSpan(getResources().getColor(R.color.gray3));
+            colorSpan[4] = new BackgroundColorSpan(getResources().getColor(R.color.gray4));
+            int i = 0, startIndex = 0, endIndex;
+            endIndex = listString[listNum].indexOf(10);
+            while (endIndex > -1) {
+                spanString[listNum].setSpan(colorSpan[i], startIndex, endIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                i++;
+                if (i == 5) {
+                    i = 0;
+                }
+                startIndex = endIndex + 1;
+                endIndex = listString[listNum].indexOf(10, startIndex);
+            }
+            spanString[listNum].setSpan(colorSpan[i], startIndex, listString[listNum].length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            listEditText[listNum].setText(spanString[listNum]);
+        }
+        isSpanning[listNum] = false;
     }
-                                               
+
     private void loadSettings() {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         wordDelay = sharedPref.getInt(getString(R.string.prefWordDelay), 0);
         lineDelay = sharedPref.getInt(getString(R.string.prefLineDelay), 1);
         repeatNum = sharedPref.getInt(getString(R.string.prefRepeatNum), 2);
-        pitch[0] = sharedPref.getInt(getString(R.string.prefPitch0), 3);
-        pitch[1] = sharedPref.getInt(getString(R.string.prefPitch1), 3);
+        hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), true);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
         soundVolume[0] = sharedPref.getFloat(getString(R.string.prefSoundVolume0), 80);
         soundVolume[1] = sharedPref.getFloat(getString(R.string.prefSoundVolume1), 80);
+        pitch[0] = sharedPref.getInt(getString(R.string.prefPitch0), 3);
+        pitch[1] = sharedPref.getInt(getString(R.string.prefPitch1), 3);
+        textSize[0] = sharedPref.getInt(getString(R.string.prefTextSize0), 36);
+        textSize[1] = sharedPref.getInt(getString(R.string.prefTextSize1), 36);
         language[0] = new Locale(sharedPref.getString(getString(R.string.prefLanguage0), "zh_CN"));
         language[1] = new Locale(sharedPref.getString(getString(R.string.prefLanguage1), "en_US"));
     }
@@ -258,7 +279,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (requestCode == 30) {
             if (grantResults.length > 0 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -379,9 +401,9 @@ public class MainActivity extends AppCompatActivity {
         String tempLang1 = loadedString.substring(index[2] + 12, index[3]);
         language[1] = new Locale(tempLang1);
         langButton[1].setText(tempLang1);
-        String tempList0 = loadedString.substring(index[1] + 4, index[2]-2);
+        String tempList0 = loadedString.substring(index[1] + 4, index[2] - 2);
         listEditText[0].setText(tempList0);
-        String tempList1 = loadedString.substring(index[3] + 4, loadedString.length()-1);
+        String tempList1 = loadedString.substring(index[3] + 4, loadedString.length() - 1);
         listEditText[1].setText(tempList1);
         return true;
     }
@@ -392,19 +414,21 @@ public class MainActivity extends AppCompatActivity {
         rewindButton.setEnabled(true);
         listEditText[0].setEnabled(false);
         listEditText[1].setEnabled(false);
-        if (playingState == 2){
+        if (playingState == 2) {
             playingState = 1;
             utterance[1].onDone("");
-        }else{
+        } else {
             playingState = 1;
-        listString[0] = listEditText[0].getText().toString();
-        listString[1] = listEditText[1].getText().toString();
-        wordEnd[0] = -1;
-        wordEnd[1] = -1;
-        isEnd = false;
-        isRepeating = false;
-        repeatCount = repeatNum;
-        pickWord(0);
+            for (int i = 0; i < 2; i++) {
+                listString[i] = listEditText[i].getText().toString();
+                //spanString[i] = new SpannableString(listString[i]);
+                wordSpan[i] = new ForegroundColorSpan(Color.RED);
+                wordEnd[i] = -1;
+            }
+            isEnd = false;
+            isRepeating = false;
+            repeatCount = repeatNum;
+            pickWord(0);
         }
     }
 
@@ -428,21 +452,22 @@ public class MainActivity extends AppCompatActivity {
         tts[listNum].speak(wordString[listNum], TextToSpeech.QUEUE_ADD, params
                 , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
         // Highlight word
-        //wordSpan[listNum] = new SpannableString(listString[listNum]);
-        spanString[listNum].setSpan(wordSpan[listNum](Color.RED), wordStart[listNum]
-                         ,wordEnd[listNum], Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        isSpanning[listNum]=true;
+        spanString[listNum].setSpan(wordSpan[listNum], wordStart[listNum]
+                , wordEnd[listNum], Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         listEditText[listNum].setText(spanString[listNum]);
-        if (listNum==0){
+        isSpanning[listNum]=false;
+        if (listNum == 0) {
             spanString[1].removeSpan(wordSpan[1]);
             listEditText[1].setText(spanString[1]);
-        }else{
+        } else {
             spanString[0].removeSpan(wordSpan[0]);
             listEditText[0].setText(spanString[0]);
         }
-        mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight()*wordStart[listNum]/listEditText[listNum].length());
+        mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight() * wordStart[listNum] / listEditText[listNum].length());
     }
 
-    public void clickPause(View view){
+    public void clickPause(View view) {
         playingState = 2;
         playButton.setEnabled(true);
         pauseButton.setEnabled(false);
@@ -451,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
         listEditText[1].setEnabled(false);
     }
 
-    public void clickStop(View view){
+    public void clickStop(View view) {
         playingState = 0;
         playButton.setEnabled(true);
         pauseButton.setEnabled(false);

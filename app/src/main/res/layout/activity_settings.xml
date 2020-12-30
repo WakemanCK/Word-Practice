@@ -6,14 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
-    
+
     <TextView
         android:id="@+id/wordDelayTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
         android:text="@string/wordDelayTextView"
-        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <SeekBar
@@ -22,16 +23,16 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:max="9"
-        app:layout_constraintTop_toTopOf="@+id/wordDelayTextView"
-                app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/wordDelayTextView" />
 
     <TextView
         android:id="@+id/lineDelayTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/lineDelayTextView"
-        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
         app:layout_constraintTop_toBottomOf="@+id/wordDelayTextView" />
 
     <SeekBar
@@ -40,16 +41,16 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:max="9"
-        app:layout_constraintTop_toTopOf="@+id/lineDelayTextView"
-         app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/lineDelayTextView" />
 
     <TextView
         android:id="@+id/repeatNumTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/repeatNumTextView"
-        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
         app:layout_constraintTop_toBottomOf="@+id/lineDelayTextView" />
 
     <SeekBar
@@ -58,42 +59,41 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:max="9"
-        app:layout_constraintTop_toTopOf="@+id/repeatNumTextView"
-         app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/repeatNumTextView" />
 
     <TextView
         android:id="@+id/listBackgroundTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/listBackgroundTextView"
-        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
         app:layout_constraintTop_toBottomOf="@+id/repeatNumTextView" />
-    
-      <CheckBox
+
+    <CheckBox
         android:id="@+id/listBackgroundCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@+id/listBackgroundTextView"
-                        app:layout_constraintEnd_toEndOf="parent"/>
-    
-       <View
+        app:layout_constraintBottom_toBottomOf="@+id/listBackgroundTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/listBackgroundTextView" />
+
+    <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textSize0EditText" />
-    
+        app:layout_constraintTop_toBottomOf="@+id/listBackgroundTextView" />
+
     <TextView
         android:id="@+id/lang0TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginTop="24dp"
         android:text="@string/lang0TextView"
         app:layout_constraintEnd_toStartOf="@+id/lang1TextView"
         app:layout_constraintHorizontal_bias="0.5"
@@ -104,8 +104,6 @@
         android:id="@+id/lang1TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
         android:text="@string/lang1TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -116,11 +114,9 @@
         android:id="@+id/speechRateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/speechRateTextView"
-        app:layout_constraintEnd_toStartOf="@+id/lang0TextView"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
         app:layout_constraintTop_toBottomOf="@+id/lang0TextView" />
 
     <SeekBar
@@ -147,7 +143,7 @@
         android:id="@+id/volumeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/volumeTextView"
         app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
         app:layout_constraintTop_toBottomOf="@+id/speechRateTextView" />
@@ -178,9 +174,9 @@
         android:id="@+id/pitchTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/pitchTextView"
-        app:layout_constraintStart_toStartOf="@+id/volumeTextView"
+        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
         app:layout_constraintTop_toBottomOf="@+id/volumeTextView" />
 
     <SeekBar
@@ -205,12 +201,12 @@
         app:layout_constraintTop_toTopOf="@+id/pitchTextView"
         tools:layout_editor_absoluteX="278dp" />
 
-    
+
     <TextView
         android:id="@+id/textSizeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/textSizeTextView"
         app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
         app:layout_constraintTop_toBottomOf="@+id/pitchTextView" />
@@ -235,6 +231,24 @@
         app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
         app:layout_constraintStart_toStartOf="@+id/lang1TextView" />
 
- 
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/resetButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="@string/resetButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

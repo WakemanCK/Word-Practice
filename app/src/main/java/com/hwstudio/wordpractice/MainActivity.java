@@ -65,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     private final UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private static String[] listString = new String[2];
     private String[] wordString = new String[2];
+    private SpannableString[] spanString = new String[2];
+    private ForegroundColorSpan[] wordSpan = new ForegroundColorSpan[2];
+    private int beforeCount, afterCount;
     private int[] wordStart = new int[2];
     private int[] wordEnd = new int[2];
     private boolean isEnd, isRepeating;
@@ -152,8 +155,40 @@ public class MainActivity extends AppCompatActivity {
         };
         listEditText[0] = findViewById(R.id.lang0EditText);
         listEditText[1] = findViewById(R.id.lang1EditText);
-//        listEditText[0].setEllipsize(TextUtils.TruncateAt.MIDDLE);
-//        listEditText[0].setEllipsize(TextUtils.TruncateAt.START);
+        listEditText[0].addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int count, int i2) {
+                beforeCount = count;
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int count) {
+                afterCount = count;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (beforeCount == 10 || afterCount == 10){
+                    addBackgroundSpan(0);
+            }
+        });
+        listEditText[1].addTextChangedListener(new TextWatcher() {
+                 @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int count, int i2) {
+                beforeCount = count;
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int count) {
+                afterCount = count;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (beforeCount == 10 || afterCount == 10){
+                    addBackgroundSpan(1);
+            }
+        });
         langButton[0] = findViewById(R.id.lang0Button);
         langButton[1] = findViewById(R.id.lang1Button);
         langButton[0].setText(language[0].getDisplayLanguage());
@@ -166,6 +201,18 @@ public class MainActivity extends AppCompatActivity {
         rewindButton.setEnabled(false);
     }
 
+    private void addBackgroundSpan(int listNum){
+        wordString[listNum] = listEditText[listNum].getText();
+        spanString[listNum] = new SpannableString(wordString[listNum]);
+        int i = 0, startIndex = 0, endIndex;
+        endIndex = wordString[listNum].ofIndex(10);
+        while (endIndex > -1){
+            switch i{
+                case 0:
+            spanString[listNum].setSpan(new BackgroundColorSpan(Color.span
+            
+    }
+                                               
     private void loadSettings() {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         wordDelay = sharedPref.getInt(getString(R.string.prefWordDelay), 0);
@@ -381,14 +428,16 @@ public class MainActivity extends AppCompatActivity {
         tts[listNum].speak(wordString[listNum], TextToSpeech.QUEUE_ADD, params
                 , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
         // Highlight word
-        Spannable wordSpan = new SpannableString(listString[listNum]);
-        wordSpan.setSpan(new ForegroundColorSpan(Color.RED), wordStart[listNum]
+        //wordSpan[listNum] = new SpannableString(listString[listNum]);
+        spanString[listNum].setSpan(wordSpan[listNum](Color.RED), wordStart[listNum]
                          ,wordEnd[listNum], Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-        listEditText[listNum].setText(wordSpan);
+        listEditText[listNum].setText(spanString[listNum]);
         if (listNum==0){
-            listEditText[1].setText(listString[1]);
+            spanString[1].removeSpan(wordSpan[1]);
+            listEditText[1].setText(spanString[1]);
         }else{
-            listEditText[0].setText(listString[0]);
+            spanString[0].removeSpan(wordSpan[0]);
+            listEditText[0].setText(spanString[0]);
         }
         mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight()*wordStart[listNum]/listEditText[listNum].length());
     }

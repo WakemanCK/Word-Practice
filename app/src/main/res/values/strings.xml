@@ -38,4 +38,5 @@
     <string name="wordDelayTextView">Delay between words: </string>
     <string name="lineDelayTextView">Delay between lines: </string>
     <string name="repeatNumTextView">Repeat how many times: </string>
+    <string name="textSizeTextView">Text size</string>
 </resources>

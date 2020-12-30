@@ -58,34 +58,51 @@
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp">
 
-            <EditText
-                android:id="@+id/lang0EditText"
+            <HorizontalScrollView
+                android:id="@+id/lang0ScrollView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="4dp"
                 android:background="?attr/editTextBackground"
-                android:fontFamily="serif-monospace"
-                android:textSize="36sp"
-                app:layout_constraintEnd_toStartOf="@+id/lang1EditText"
+                app:layout_constraintEnd_toStartOf="@+id/lang1ScrollView"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
-                android:id="@+id/lang1EditText"
+                <EditText
+                    android:id="@+id/lang0EditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="serif-monospace"
+                    android:textSize="36sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </HorizontalScrollView>
+
+            <HorizontalScrollView
+                android:id="@+id/lang1ScrollView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="4dp"
                 android:background="?attr/editTextBackground"
-                android:fontFamily="serif-monospace"
-                android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/lang0EditText"
-                app:layout_constraintTop_toTopOf="@+id/lang0EditText" />
+                app:layout_constraintStart_toEndOf="@+id/lang0ScrollView"
+                app:layout_constraintTop_toTopOf="parent">
 
+                <EditText
+                    android:id="@+id/lang1EditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="serif-monospace"
+                    android:textSize="36sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </HorizontalScrollView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

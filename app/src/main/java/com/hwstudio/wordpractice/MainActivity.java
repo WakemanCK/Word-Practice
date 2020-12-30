@@ -255,9 +255,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void saveFile(String fileName, Context context) {
-        String saveString = // Format:   !LANGUAGE_0! Locale name here !0!
-                "!LANGUAGE_0!" + language[0].toString() + "!0!\n" + listString[0] +
-                        "\n\n!LANGUAGE_1!" + language[1].toString() + "!1!\n" + listString[1];
+        String saveString = // Format:   !LANGUAGE_1! Locale name here !1!
+                "!LANGUAGE_1!" + language[0].toString() + "!1!\n" + listString[0] +
+                        "\n\n!LANGUAGE_2!" + language[1].toString() + "!2!\n" + listString[1];
         int i = 0;
         if (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
                 .getPath() + "/" + fileName + ".txt").exists()) {
@@ -317,10 +317,10 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean analyzeFileSuccess(String loadedString) {
         int[] index = new int[4];
-        index[0] = loadedString.indexOf("!LANGUAGE_0!");
-        index[1] = loadedString.indexOf("!0!");
-        index[2] = loadedString.indexOf("!LANGUAGE_1!");
-        index[3] = loadedString.indexOf("!1!");
+        index[0] = loadedString.indexOf("!LANGUAGE_1!");
+        index[1] = loadedString.indexOf("!1!");
+        index[2] = loadedString.indexOf("!LANGUAGE_2!");
+        index[3] = loadedString.indexOf("!2!");
         for (int i = 0; i < 4; i++) {
             if (index[i] == -1) {
                 return false;

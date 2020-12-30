@@ -10,17 +10,21 @@
         android:id="@+id/lang0TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
         android:text="@string/lang0TextView"
         app:layout_constraintEnd_toStartOf="@+id/lang1TextView"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/speechRateTextView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/lang1TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:text="@string/lang1TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -33,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/speechRateTextView"
-        app:layout_constraintEnd_toStartOf="@+id/speechRate0SeekBar"
+        app:layout_constraintEnd_toStartOf="@+id/lang0TextView"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lang0TextView" />
@@ -43,10 +47,9 @@
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:max="10"
-        app:layout_constraintEnd_toStartOf="@+id/speechRate1SeekBar"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/speechRateTextView"
+        android:max="6"
+        app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
+        app:layout_constraintStart_toStartOf="@+id/lang0TextView"
         app:layout_constraintTop_toTopOf="@+id/speechRateTextView" />
 
     <SeekBar
@@ -54,11 +57,10 @@
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:max="10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/speechRate0SeekBar"
-        app:layout_constraintTop_toTopOf="@+id/speechRate0SeekBar" />
+        android:max="6"
+        app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
+        app:layout_constraintStart_toStartOf="@+id/lang1TextView"
+        app:layout_constraintTop_toTopOf="@+id/speechRateTextView" />
 
     <TextView
         android:id="@+id/volumeTextView"
@@ -66,24 +68,28 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/volumeTextView"
-        app:layout_constraintTop_toBottomOf="@+id/speechRateTextView"
-        tools:layout_editor_absoluteX="33dp" />
+        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+        app:layout_constraintTop_toBottomOf="@+id/speechRateTextView" />
 
     <SeekBar
         android:id="@+id/volume0SeekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:max="10"
+        android:max="6"
+        app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
+        app:layout_constraintStart_toStartOf="@+id/lang0TextView"
         app:layout_constraintTop_toTopOf="@+id/volumeTextView"
         tools:layout_editor_absoluteX="144dp" />
 
     <SeekBar
         android:id="@+id/volume1SeekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:max="10"
+        android:max="6"
+        app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
+        app:layout_constraintStart_toStartOf="@+id/lang1TextView"
         app:layout_constraintTop_toTopOf="@+id/volumeTextView"
         tools:layout_editor_absoluteX="270dp" />
 
@@ -93,24 +99,28 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/pitchTextView"
-        app:layout_constraintTop_toBottomOf="@+id/volumeTextView"
-        tools:layout_editor_absoluteX="33dp" />
+        app:layout_constraintStart_toStartOf="@+id/volumeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/volumeTextView" />
 
     <SeekBar
         android:id="@+id/pitch0SeekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:max="10"
+        android:max="6"
+        app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
+        app:layout_constraintStart_toStartOf="@+id/lang0TextView"
         app:layout_constraintTop_toTopOf="@+id/pitchTextView"
         tools:layout_editor_absoluteX="144dp" />
 
     <SeekBar
-        android:id="@+id/pitchSeekBar"
+        android:id="@+id/pitch1SeekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:max="10"
+        android:max="6"
+        app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
+        app:layout_constraintStart_toStartOf="@+id/lang1TextView"
         app:layout_constraintTop_toTopOf="@+id/pitchTextView"
         tools:layout_editor_absoluteX="278dp" />
 
@@ -120,8 +130,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/wordDelayTextView"
-        app:layout_constraintTop_toBottomOf="@+id/pitchTextView"
-        tools:layout_editor_absoluteX="30dp" />
+        app:layout_constraintStart_toStartOf="@+id/pitchTextView"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <SeekBar
         android:id="@+id/wordDelaySeekBar"
@@ -138,8 +148,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/lineDelayTextView"
-        app:layout_constraintTop_toBottomOf="@+id/wordDelayTextView"
-        tools:layout_editor_absoluteX="32dp" />
+        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
+        app:layout_constraintTop_toBottomOf="@+id/wordDelayTextView" />
 
     <SeekBar
         android:id="@+id/lineDelaySeekBar"
@@ -156,8 +166,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/repeatNumTextView"
-        app:layout_constraintTop_toBottomOf="@+id/lineDelayTextView"
-        tools:layout_editor_absoluteX="30dp" />
+        app:layout_constraintStart_toStartOf="@+id/lineDelayTextView"
+        app:layout_constraintTop_toBottomOf="@+id/lineDelayTextView" />
 
     <SeekBar
         android:id="@+id/repeatNumSeekBar"
@@ -168,5 +178,43 @@
         app:layout_constraintTop_toTopOf="@+id/repeatNumTextView"
         tools:layout_editor_absoluteX="253dp" />
 
+    <TextView
+        android:id="@+id/textSizeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/textSizeTextView"
+        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+        app:layout_constraintTop_toBottomOf="@+id/pitchTextView" />
+
+    <EditText
+        android:id="@+id/textSize0EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="2"
+        android:inputType="number"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textSizeTextView"
+        app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
+        app:layout_constraintStart_toStartOf="@+id/lang0TextView" />
+
+    <EditText
+        android:id="@+id/textSize1EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="2"
+        android:inputType="number"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textSizeTextView"
+        app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
+        app:layout_constraintStart_toStartOf="@+id/lang1TextView" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSize0EditText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

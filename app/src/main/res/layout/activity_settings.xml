@@ -6,6 +6,87 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
+    
+    <TextView
+        android:id="@+id/wordDelayTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/wordDelayTextView"
+        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/wordDelaySeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:max="9"
+        app:layout_constraintTop_toTopOf="@+id/wordDelayTextView"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/lineDelayTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/lineDelayTextView"
+        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+        app:layout_constraintTop_toBottomOf="@+id/wordDelayTextView" />
+
+    <SeekBar
+        android:id="@+id/lineDelaySeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:max="9"
+        app:layout_constraintTop_toTopOf="@+id/lineDelayTextView"
+         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/repeatNumTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/repeatNumTextView"
+        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+        app:layout_constraintTop_toBottomOf="@+id/lineDelayTextView" />
+
+    <SeekBar
+        android:id="@+id/repeatNumSeekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:max="9"
+        app:layout_constraintTop_toTopOf="@+id/repeatNumTextView"
+         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/listBackgroundTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/listBackgroundTextView"
+        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+        app:layout_constraintTop_toBottomOf="@+id/repeatNumTextView" />
+    
+      <CheckBox
+        android:id="@+id/listBackgroundCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/listBackgroundTextView"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+    
+       <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSize0EditText" />
+    
     <TextView
         android:id="@+id/lang0TextView"
         android:layout_width="wrap_content"
@@ -17,7 +98,7 @@
         app:layout_constraintEnd_toStartOf="@+id/lang1TextView"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/speechRateTextView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <TextView
         android:id="@+id/lang1TextView"
@@ -45,7 +126,7 @@
     <SeekBar
         android:id="@+id/speechRate0SeekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="100dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:max="6"
         app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
@@ -55,7 +136,7 @@
     <SeekBar
         android:id="@+id/speechRate1SeekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="100dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:max="6"
         app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
@@ -74,7 +155,7 @@
     <SeekBar
         android:id="@+id/volume0SeekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="100dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:max="6"
         app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
@@ -85,7 +166,7 @@
     <SeekBar
         android:id="@+id/volume1SeekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="100dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:max="6"
         app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
@@ -105,7 +186,7 @@
     <SeekBar
         android:id="@+id/pitch0SeekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="100dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:max="6"
         app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
@@ -116,7 +197,7 @@
     <SeekBar
         android:id="@+id/pitch1SeekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="100dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:max="6"
         app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
@@ -124,60 +205,7 @@
         app:layout_constraintTop_toTopOf="@+id/pitchTextView"
         tools:layout_editor_absoluteX="278dp" />
 
-    <TextView
-        android:id="@+id/wordDelayTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/wordDelayTextView"
-        app:layout_constraintStart_toStartOf="@+id/pitchTextView"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
-
-    <SeekBar
-        android:id="@+id/wordDelaySeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:max="10"
-        app:layout_constraintTop_toTopOf="@+id/wordDelayTextView"
-        tools:layout_editor_absoluteX="243dp" />
-
-    <TextView
-        android:id="@+id/lineDelayTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/lineDelayTextView"
-        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
-        app:layout_constraintTop_toBottomOf="@+id/wordDelayTextView" />
-
-    <SeekBar
-        android:id="@+id/lineDelaySeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:max="10"
-        app:layout_constraintTop_toTopOf="@+id/lineDelayTextView"
-        tools:layout_editor_absoluteX="255dp" />
-
-    <TextView
-        android:id="@+id/repeatNumTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/repeatNumTextView"
-        app:layout_constraintStart_toStartOf="@+id/lineDelayTextView"
-        app:layout_constraintTop_toBottomOf="@+id/lineDelayTextView" />
-
-    <SeekBar
-        android:id="@+id/repeatNumSeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:max="10"
-        app:layout_constraintTop_toTopOf="@+id/repeatNumTextView"
-        tools:layout_editor_absoluteX="253dp" />
-
+    
     <TextView
         android:id="@+id/textSizeTextView"
         android:layout_width="wrap_content"
@@ -207,14 +235,6 @@
         app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
         app:layout_constraintStart_toStartOf="@+id/lang1TextView" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="16dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textSize0EditText" />
+ 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

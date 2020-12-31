@@ -1,9 +1,11 @@
 package com.hwstudio.wordpractice;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.fragment.app.DialogFragment;
 
 import android.Manifest;
@@ -26,6 +28,7 @@ import android.speech.tts.UtteranceProgressListener;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int OPEN_SETTINGS = 10;
     private static final int LOAD_FILE = 11;
+    private static final int REQUEST_WRITE_PERMISSION = 30;
 
     // Settings
     public static Locale[] language = new Locale[2];
@@ -72,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
     private static String[] listString = new String[2];
     private String[] wordString = new String[2];
     private SpannableString[] spanString = new SpannableString[2];
-    private ForegroundColorSpan[] wordSpan = new ForegroundColorSpan[2];
-    private boolean[] isSpanning = new boolean[2];
+    private ForegroundColorSpan wordSpan;// = new ForegroundColorSpan[2];
+//    private boolean[] isSpanning = new boolean[2];
     private int[] wordStart = new int[2];
     private int[] wordEnd = new int[2];
     private boolean isEnd, isRepeating;
@@ -95,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             initVariable(i);
             initTTS(i);
         }
+        initView();
         utterance[0] = new UtteranceProgressListener() {
             @Override
             public void onStart(String s) {
@@ -151,84 +156,6 @@ public class MainActivity extends AppCompatActivity {
             public void onError(String s) {
             }
         };
-        listEditText[0] = findViewById(R.id.lang0EditText);
-        listEditText[1] = findViewById(R.id.lang1EditText);
-        listEditText[0].setTextSize(textSize[0]);
-        listEditText[1].setTextSize(textSize[1]);
-        listEditText[0].addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!isSpanning[0]) {
-                    addBackgroundSpan(0);
-                }
-            }
-        });
-        listEditText[1].addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!isSpanning[1]) {
-                    addBackgroundSpan(1);
-                }
-            }
-        });
-        langButton[0] = findViewById(R.id.lang0Button);
-        langButton[1] = findViewById(R.id.lang1Button);
-        langButton[0].setText(language[0].getDisplayLanguage());
-        langButton[1].setText(language[1].getDisplayLanguage());
-        mainScrollView = findViewById(R.id.mainScrollView);
-        playButton = findViewById(R.id.playButton);
-        pauseButton = findViewById(R.id.pauseButton);
-        rewindButton = findViewById(R.id.stopButton);
-        pauseButton.setEnabled(false);
-        rewindButton.setEnabled(false);
-    }
-
-    private void addBackgroundSpan(int listNum) {
-        isSpanning[listNum] = true;
-        listString[listNum] = listEditText[listNum].getText().toString();
-        spanString[listNum] = new SpannableString(listString[listNum]);
-        if (hasListBackground) {
-            BackgroundColorSpan[] colorSpan = new BackgroundColorSpan[5];
-            colorSpan[0] = new BackgroundColorSpan(getResources().getColor(R.color.gray0));
-            colorSpan[1] = new BackgroundColorSpan(getResources().getColor(R.color.gray1));
-            colorSpan[2] = new BackgroundColorSpan(getResources().getColor(R.color.gray2));
-            colorSpan[3] = new BackgroundColorSpan(getResources().getColor(R.color.gray3));
-            colorSpan[4] = new BackgroundColorSpan(getResources().getColor(R.color.gray4));
-            int i = 0, startIndex = 0, endIndex;
-            endIndex = listString[listNum].indexOf(10);
-            while (endIndex > -1) {
-                spanString[listNum].setSpan(colorSpan[i], startIndex, endIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                i++;
-                if (i == 5) {
-                    i = 0;
-                }
-                startIndex = endIndex + 1;
-                endIndex = listString[listNum].indexOf(10, startIndex);
-            }
-            spanString[listNum].setSpan(colorSpan[i], startIndex, listString[listNum].length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            listEditText[listNum].setText(spanString[listNum]);
-        }
-        isSpanning[listNum] = false;
     }
 
     private void loadSettings() {
@@ -258,6 +185,288 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         delayHandler = new Handler();
+        wordSpan = new ForegroundColorSpan(Color.RED);
+//        wordSpan[1] = new ForegroundColorSpan(Color.RED);
+    }
+
+    private void initTTS(int listNum) {
+        setLanguage(listNum);
+        setSpeechRate(listNum);
+        setPitch(listNum);
+    }
+
+    private void initView() {
+        listEditText[0] = findViewById(R.id.lang0EditText);
+        listEditText[1] = findViewById(R.id.lang1EditText);
+        listEditText[0].setTextSize(textSize[0]);
+        listEditText[1].setTextSize(textSize[1]);
+        listEditText[0].addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+//                if (!isSpanning[0]) {
+//                    addBackgroundSpan(0);
+//                }
+            }
+        });
+        listEditText[1].addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+//                if (!isSpanning[1]) {
+//                    addBackgroundSpan(1);
+//                }
+            }
+        });
+        langButton[0] = findViewById(R.id.lang0Button);
+        langButton[1] = findViewById(R.id.lang1Button);
+        langButton[0].setText(language[0].getDisplayLanguage());
+        langButton[1].setText(language[1].getDisplayLanguage());
+        mainScrollView = findViewById(R.id.mainScrollView);
+        playButton = findViewById(R.id.playButton);
+        pauseButton = findViewById(R.id.pauseButton);
+        rewindButton = findViewById(R.id.stopButton);
+        pauseButton.setEnabled(false);
+        rewindButton.setEnabled(false);
+    }
+
+    private void addBackgroundSpan(int listNum){
+
+    }
+/*
+    private void addBackgroundSpan(int listNum) {
+//        isSpanning[listNum] = true;
+        listString[listNum] = listEditText[listNum].getText().toString();
+        SpannableStringBuilder spanBuilder = new SpannableStringBuilder(listString[listNum]);
+        if (hasListBackground) {
+            BackgroundColorSpan[] colorSpan = new BackgroundColorSpan[5];
+            colorSpan[0] = new BackgroundColorSpan(getResources().getColor(R.color.gray0));
+            colorSpan[1] = new BackgroundColorSpan(getResources().getColor(R.color.gray1));
+            colorSpan[2] = new BackgroundColorSpan(getResources().getColor(R.color.gray2));
+            colorSpan[3] = new BackgroundColorSpan(getResources().getColor(R.color.gray3));
+            colorSpan[4] = new BackgroundColorSpan(getResources().getColor(R.color.gray4));
+            int i = 0, startIndex = 0, endIndex;
+            endIndex = listString[listNum].indexOf(10);
+            while (endIndex > -1) {
+                spanBuilder.setSpan(colorSpan[i], startIndex, endIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                i++;
+                if (i == 5) {
+                    i = 0;
+                }
+                startIndex = endIndex + 1;
+                endIndex = listString[listNum].indexOf(10, startIndex);
+            }
+            spanBuilder.setSpan(colorSpan[i], startIndex, listString[listNum].length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            listEditText[listNum].setText(spanBuilder);
+        }
+//        isSpanning[listNum] = false;
+    }*/
+
+    public void clickPlay(View view) {
+        playButton.setEnabled(false);
+        pauseButton.setEnabled(true);
+        rewindButton.setEnabled(true);
+        listEditText[0].setEnabled(false);
+        listEditText[1].setEnabled(false);
+        if (playingState == 2) {
+            playingState = 1;
+            utterance[1].onDone("");
+        } else {
+            playingState = 1;
+            for (int i = 0; i < 2; i++) {
+                listString[i] = listEditText[i].getText().toString();
+                //spanString[i] = new SpannableString(listString[i]);
+//                wordSpan[i] = new ForegroundColorSpan(Color.RED);
+                wordEnd[i] = -1;
+            }
+            isEnd = false;
+            isRepeating = false;
+            repeatCount = repeatNum;
+            addBackgroundSpan(0);
+            addBackgroundSpan(1);
+            spanString[0] = new SpannableString(listString[0]);
+            spanString[1] = new SpannableString(listString[1]);
+            pickWord(0);
+        }
+    }
+
+    private void pickWord(int listNum) {
+        wordStart[listNum] = wordEnd[listNum] + 1;
+        wordEnd[listNum] = listString[listNum].indexOf(10, wordStart[listNum]);
+        if (wordEnd[listNum] == -1) {
+            wordEnd[listNum] = listString[listNum].length();
+            isEnd = true;
+        }
+        wordString[listNum] = listString[listNum].substring(wordStart[listNum], wordEnd[listNum]);
+        speakString(listNum);
+    }
+
+    private void setLanguage(int listNum) {
+        tts[listNum].setLanguage(language[listNum]);
+    }
+
+    public static void setSpeechRate(int listNum) {
+        float[] speechRateFloat = {0.1f, 0.4f, 0.75f, 1f, 1.5f, 2f, 2.5f};
+        tts[listNum].setSpeechRate(speechRateFloat[speechRate[listNum]]);
+    }
+
+    public static void setPitch(int listNum) {
+        float[] pitchFloat = {0.4f, 0.6f, 0.8f, 1f, 1.5f, 2f, 2.5f};
+        tts[listNum].setPitch(pitchFloat[pitch[listNum]]);
+    }
+
+    private void speakString(int listNum) {
+        tts[listNum].setOnUtteranceProgressListener(utterance[listNum]);
+        Bundle params = new Bundle();
+        params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, soundVolume[listNum] / 100f);
+        tts[listNum].speak(wordString[listNum], TextToSpeech.QUEUE_ADD, params
+                , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
+        // Highlight word
+//        isSpanning[listNum] = true;
+        spanString[listNum].setSpan(wordSpan, wordStart[listNum]
+                , wordEnd[listNum], Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        listEditText[listNum].setText(spanString[listNum]);
+//        isSpanning[listNum] = false;
+        if (listNum == 0) {
+            spanString[1].removeSpan(wordSpan);
+            listEditText[1].setText(spanString[1]);
+        } else {
+            spanString[0].removeSpan(wordSpan);
+            listEditText[0].setText(spanString[0]);
+        }
+        mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight() * wordStart[listNum] / listEditText[listNum].length());
+    }
+
+    public void clickPause(View view) {
+        playingState = 2;
+        playButton.setEnabled(true);
+        pauseButton.setEnabled(false);
+        rewindButton.setEnabled(true);
+        listEditText[0].setEnabled(false);
+        listEditText[1].setEnabled(false);
+    }
+
+    public void clickStop(View view) {
+        playingState = 0;
+        playButton.setEnabled(true);
+        pauseButton.setEnabled(false);
+        rewindButton.setEnabled(false);
+        listEditText[0].setEnabled(true);
+        listEditText[1].setEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu getMenu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actionmenu, getMenu);
+        //     muteAlarm = getMenu.findItem(R.id.muteAlarm);
+        //      comboTimer = getMenu.findItem(R.id.comboTimer);
+        //     comboTimer.setVisible(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.openSettings:
+                intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, OPEN_SETTINGS);
+                break;
+            case R.id.loadLists:
+                clickLoad();
+                break;
+            case R.id.saveLists:
+                clickSave();
+                break;
+            case R.id.loadExamples:
+                loadExamples();
+                break;
+            /** case R.id.openHelpTips:
+             intent = new Intent(this, HelpActivity.class);
+             startActivity(intent);
+             break;
+             case R.id.rateApp:
+             MobileService msRate = new MobileService();
+             msRate.rateApp(this);
+             break;
+             case R.id.shareApp:
+             MobileService msShare = new MobileService();
+             msShare.shareApp(this);
+             break;  **/
+            case R.id.openAbout:
+                showAbout();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOAD_FILE && resultCode == RESULT_OK) {
+            if (data != null) {
+                Uri fileUri = data.getData();
+                StringBuilder loadedString = new StringBuilder();
+                try (InputStream inputStream = getContentResolver().openInputStream(fileUri);
+                     BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        loadedString.append(line).append("\n");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (analyzeFileSuccess(loadedString.toString())) {
+                    Toast.makeText(this, R.string.fileLoadedText, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        if (requestCode == OPEN_SETTINGS) {
+            saveSettings();
+        }
+    }
+
+    private void saveSettings() {
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(getString(R.string.prefWordDelay), wordDelay);
+        editor.putInt(getString(R.string.prefLineDelay), lineDelay);
+        editor.putInt(getString(R.string.prefRepeatNum), repeatNum);
+        editor.putBoolean(getString(R.string.prefHasListBackground), hasListBackground);
+        editor.putInt(getString(R.string.prefSpeechRate0), speechRate[0]);
+        editor.putInt(getString(R.string.prefSpeechRate1), speechRate[1]);
+        editor.putFloat(getString(R.string.prefSoundVolume0), soundVolume[0]);
+        editor.putFloat(getString(R.string.prefSoundVolume1), soundVolume[1]);
+        editor.putInt(getString(R.string.prefPitch0), pitch[0]);
+        editor.putInt(getString(R.string.prefPitch1), pitch[1]);
+        editor.putInt(getString(R.string.prefTextSize0), textSize[0]);
+        editor.putInt(getString(R.string.prefTextSize1), textSize[1]);
+        editor.apply();
+        listEditText[0].setTextSize(textSize[0]);
+        listEditText[1].setTextSize(textSize[1]);
+        addBackgroundSpan(0);
+        addBackgroundSpan(1);
     }
 
     private void clickSave() {
@@ -267,14 +476,14 @@ public class MainActivity extends AppCompatActivity {
             saveList();
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    30);  // Request Code 30 = get storage permission
+                    REQUEST_WRITE_PERMISSION);  // Request Code 30 = get storage permission
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == 30) {
+        if (requestCode == REQUEST_WRITE_PERMISSION) {
             if (grantResults.length > 0 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 saveList();
@@ -351,32 +560,6 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, LOAD_FILE);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //Uri fileUri;
-        if (requestCode == LOAD_FILE && resultCode == RESULT_OK) {
-            if (data != null) {
-                Uri fileUri = data.getData();
-                StringBuilder loadedString = new StringBuilder();
-                try (InputStream inputStream = getContentResolver().openInputStream(fileUri);
-                     BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        loadedString.append(line).append("\n");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (analyzeFileSuccess(loadedString.toString())) {
-                    Toast.makeText(this, R.string.fileLoadedText, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    }
-
     private boolean analyzeFileSuccess(String loadedString) {
         int[] index = new int[4];
         index[0] = loadedString.indexOf("!LANGUAGE_1!");
@@ -390,162 +573,33 @@ public class MainActivity extends AppCompatActivity {
         }
         String tempLang0 = loadedString.substring(index[0] + 12, index[1]);
         language[0] = new Locale(tempLang0);
+        setLanguage(0);
         langButton[0].setText(tempLang0);
         String tempLang1 = loadedString.substring(index[2] + 12, index[3]);
         language[1] = new Locale(tempLang1);
+        setLanguage(1);
         langButton[1].setText(tempLang1);
         String tempList0 = loadedString.substring(index[1] + 4, index[2] - 2);
         listEditText[0].setText(tempList0);
+        addBackgroundSpan(0);
         String tempList1 = loadedString.substring(index[3] + 4, loadedString.length() - 1);
         listEditText[1].setText(tempList1);
+        addBackgroundSpan(1);
         return true;
-    }
-
-    public void clickPlay(View view) {
-        playButton.setEnabled(false);
-        pauseButton.setEnabled(true);
-        rewindButton.setEnabled(true);
-        listEditText[0].setEnabled(false);
-        listEditText[1].setEnabled(false);
-        if (playingState == 2) {
-            playingState = 1;
-            utterance[1].onDone("");
-        } else {
-            playingState = 1;
-            for (int i = 0; i < 2; i++) {
-                listString[i] = listEditText[i].getText().toString();
-                //spanString[i] = new SpannableString(listString[i]);
-                wordSpan[i] = new ForegroundColorSpan(Color.RED);
-                wordEnd[i] = -1;
-            }
-            isEnd = false;
-            isRepeating = false;
-            repeatCount = repeatNum;
-            pickWord(0);
-        }
-    }
-
-    private void pickWord(int listNum) {
-        wordStart[listNum] = wordEnd[listNum] + 1;
-        wordEnd[listNum] = listString[listNum].indexOf(10, wordStart[listNum]);
-        if (wordEnd[listNum] == -1) {
-            wordEnd[listNum] = listString[listNum].length();
-            isEnd = true;
-        }
-        wordString[listNum] = listString[listNum].substring(wordStart[listNum], wordEnd[listNum]);
-        speakString(listNum);
-    }
-
-    private void initTTS(int listNum) {
-        setLanguage(listNum);
-        setSpeechRate(listNum);
-        setPitch(listNum);
-    }
-
-    private void setLanguage(int listNum) {
-        tts[listNum].setLanguage(language[listNum]);
-    }
-
-    public static void setSpeechRate(int listNum) {
-        float[] speechRateFloat = {0.1f, 0.4f, 0.75f, 1f, 1.5f, 2f, 2.5f};
-        tts[listNum].setSpeechRate(speechRateFloat[speechRate[listNum]]);
-    }
-
-    public static void setPitch(int listNum) {
-        float[] pitchFloat = {0.4f, 0.6f, 0.8f, 1f, 1.5f, 2f, 2.5f};
-        tts[listNum].setPitch(pitchFloat[pitch[listNum]]);
-    }
-
-    private void speakString(int listNum) {
-        tts[listNum].setOnUtteranceProgressListener(utterance[listNum]);
-        Bundle params = new Bundle();
-        params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, soundVolume[listNum] / 100f);
-        tts[listNum].speak(wordString[listNum], TextToSpeech.QUEUE_ADD, params
-                , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
-        // Highlight word
-        isSpanning[listNum] = true;
-        spanString[listNum].setSpan(wordSpan[listNum], wordStart[listNum]
-                , wordEnd[listNum], Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-        listEditText[listNum].setText(spanString[listNum]);
-        isSpanning[listNum] = false;
-        if (listNum == 0) {
-            spanString[1].removeSpan(wordSpan[1]);
-            listEditText[1].setText(spanString[1]);
-        } else {
-            spanString[0].removeSpan(wordSpan[0]);
-            listEditText[0].setText(spanString[0]);
-        }
-        mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight() * wordStart[listNum] / listEditText[listNum].length());
-    }
-
-    public void clickPause(View view) {
-        playingState = 2;
-        playButton.setEnabled(true);
-        pauseButton.setEnabled(false);
-        rewindButton.setEnabled(true);
-        listEditText[0].setEnabled(false);
-        listEditText[1].setEnabled(false);
-    }
-
-    public void clickStop(View view) {
-        playingState = 0;
-        playButton.setEnabled(true);
-        pauseButton.setEnabled(false);
-        rewindButton.setEnabled(false);
-        listEditText[0].setEnabled(true);
-        listEditText[1].setEnabled(true);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu getMenu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.actionmenu, getMenu);
-        //     muteAlarm = getMenu.findItem(R.id.muteAlarm);
-        //      comboTimer = getMenu.findItem(R.id.comboTimer);
-        //     comboTimer.setVisible(false);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case R.id.openSettings:
-                intent = new Intent(this, SettingsActivity.class);
-                startActivityForResult(intent, OPEN_SETTINGS);
-                break;
-            case R.id.loadLists:
-                clickLoad();
-                break;
-            case R.id.saveLists:
-                clickSave();
-                break;
-            case R.id.loadExamples:
-                loadExamples();
-                break;
-            /** case R.id.openHelpTips:
-             intent = new Intent(this, HelpActivity.class);
-             startActivity(intent);
-             break;
-             case R.id.rateApp:
-             MobileService msRate = new MobileService();
-             msRate.rateApp(this);
-             break;
-             case R.id.shareApp:
-             MobileService msShare = new MobileService();
-             msShare.shareApp(this);
-             break;  **/
-            case R.id.openAbout:
-                showAbout();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void loadExamples() {
         //debug
-        listEditText[0].setText("1\n蘋果\n橙\n香蕉");
-        listEditText[1].setText("1\napple\norange\nbanana");
+        listEditText[0].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
+        listEditText[1].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
+        //listEditText[0].setText("1\n蘋果\n橙\n香蕉");
+        addBackgroundSpan(0);
+        //listEditText[1].setText("1\napple\norange\nbanana");
+        addBackgroundSpan(1);
+        language[0] = Locale.JAPANESE;
+        language[1] = new Locale("zh_hk");
+        setLanguage(0);
+        setLanguage(1);
         langButton[0].setText(language[0].getDisplayLanguage());
         langButton[1].setText(language[1].getDisplayLanguage());
     }

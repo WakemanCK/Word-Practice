@@ -44,4 +44,5 @@
     <string name="prefTextSize0">prefTextSize0</string>
     <string name="prefTextSize1">prefTextSize1</string>
     <string name="resetButton">Reset all settings to default</string>
+    <string name="prefSharedPref">prefSharedPref</string>
 </resources>

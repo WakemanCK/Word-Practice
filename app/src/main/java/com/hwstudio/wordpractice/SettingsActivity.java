@@ -25,6 +25,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         initView();
         setView();
+        setListener();
     }
 
     private void initView() {
@@ -32,175 +33,15 @@ public class SettingsActivity extends AppCompatActivity {
         lineDelayTextView = findViewById(R.id.lineDelayTextView);
         repeatNumTextView = findViewById(R.id.repeatNumTextView);
         wordDelaySeekBar = findViewById(R.id.wordDelaySeekBar);
-        wordDelaySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.wordDelay = i;
-                String s = getString(R.string.wordDelayTextView) + MainActivity.wordDelay * 0.5f + "s";
-                wordDelayTextView.setText(s);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         lineDelaySeekBar = findViewById(R.id.lineDelaySeekBar);
-        lineDelaySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.lineDelay = i;
-                String s = getString(R.string.lineDelayTextView) + MainActivity.lineDelay * 0.5f + "s";
-                lineDelayTextView.setText(s);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         repeatNumSeekBar = findViewById(R.id.repeatNumSeekBar);
-        repeatNumSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.repeatNum = i + 1;
-                String s = getString(R.string.repeatNumTextView) + MainActivity.repeatNum;
-                repeatNumTextView.setText(s);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         listBackgroundCheckBox = findViewById(R.id.listBackgroundCheckBox);
-        listBackgroundCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                MainActivity.hasListBackground = b;
-            }
-        });
         speechRate0SeekBar = findViewById(R.id.speechRate0SeekBar);
-        speechRate0SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.speechRate[0] = i;
-                MainActivity.setSpeechRate(0);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         speechRate1SeekBar = findViewById(R.id.speechRate1SeekBar);
-        speechRate1SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.speechRate[1] = i;
-                MainActivity.setSpeechRate(1);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         volume0SeekBar = findViewById(R.id.volume0SeekBar);
-        volume0SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.soundVolume[0] = i;
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         volume1SeekBar = findViewById(R.id.volume1SeekBar);
-        volume1SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.soundVolume[1] = i;
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         pitch0SeekBar = findViewById(R.id.pitch0SeekBar);
-        pitch0SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.pitch[0] = i;
-                MainActivity.setPitch(0);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         pitch1SeekBar = findViewById(R.id.pitch1SeekBar);
-        pitch1SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.pitch[1] = i;
-                MainActivity.setPitch(1);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         textSize0EditText = findViewById(R.id.textSize0EditText);
         textSize1EditText = findViewById(R.id.textSize1EditText);
     }
@@ -224,6 +65,169 @@ public class SettingsActivity extends AppCompatActivity {
         pitch1SeekBar.setProgress(MainActivity.pitch[1]);
         textSize0EditText.setText(String.valueOf(MainActivity.textSize[0]));
         textSize1EditText.setText(String.valueOf(MainActivity.textSize[1]));
+    }
+
+    private void setListener() {
+        wordDelaySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                MainActivity.wordDelay = i;
+                String s = getString(R.string.wordDelayTextView) + MainActivity.wordDelay * 0.5f + "s";
+                wordDelayTextView.setText(s);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        lineDelaySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                MainActivity.lineDelay = i;
+                String s = getString(R.string.lineDelayTextView) + MainActivity.lineDelay * 0.5f + "s";
+                lineDelayTextView.setText(s);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        repeatNumSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                MainActivity.repeatNum = i + 1;
+                String s = getString(R.string.repeatNumTextView) + MainActivity.repeatNum;
+                repeatNumTextView.setText(s);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        listBackgroundCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                MainActivity.hasListBackground = b;
+            }
+        });
+        speechRate0SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                MainActivity.speechRate[0] = i;
+                MainActivity.setSpeechRate(0);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        speechRate1SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                MainActivity.speechRate[1] = i;
+                MainActivity.setSpeechRate(1);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        volume0SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                MainActivity.soundVolume[0] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        volume1SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                MainActivity.soundVolume[1] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        pitch0SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                MainActivity.pitch[0] = i;
+                MainActivity.setPitch(0);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        pitch1SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                MainActivity.pitch[1] = i;
+                MainActivity.setPitch(1);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     @Override

@@ -35,9 +35,9 @@
     <string name="speechRateTextView">Speech rate</string>
     <string name="volumeTextView">Volume</string>
     <string name="pitchTextView">Pitch</string>
-    <string name="wordDelayTextView">Delay between words: </string>
-    <string name="lineDelayTextView">Delay between lines: </string>
-    <string name="repeatNumTextView">Repeat how many times: </string>
+    <string name="wordDelayTextView">"Delay between words: "</string>
+    <string name="lineDelayTextView">"Delay between lines: "</string>
+    <string name="repeatNumTextView">"Repeat how many times: "</string>
     <string name="textSizeTextView">Text size (12–48)</string>
     <string name="listBackgroundTextView">Word lists background color</string>
     <string name="prefHasListBackground">prefHasListBackground</string>

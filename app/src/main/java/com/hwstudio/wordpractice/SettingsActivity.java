@@ -9,13 +9,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private SeekBar wordDelaySeekBar, lineDelaySeekBar, repeatNumSeekBar, speechRate0SeekBar, speechRate1SeekBar, volume0SeekBar, volume1SeekBar, pitch0SeekBar, pitch1SeekBar;
     private CheckBox listBackgroundCheckBox;
     private EditText textSize0EditText, textSize1EditText;
-//    private boolean[] isAdjusting = new boolean[2];
+    private TextView wordDelayTextView, lineDelayTextView, repeatNumTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +28,16 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        wordDelayTextView = findViewById(R.id.wordDelayTextView);
+        lineDelayTextView = findViewById(R.id.lineDelayTextView);
+        repeatNumTextView = findViewById(R.id.repeatNumTextView);
         wordDelaySeekBar = findViewById(R.id.wordDelaySeekBar);
         wordDelaySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 MainActivity.wordDelay = i;
+                String s = getString(R.string.wordDelayTextView) + MainActivity.wordDelay * 0.5f + "s";
+                wordDelayTextView.setText(s);
             }
 
             @Override
@@ -48,7 +54,9 @@ public class SettingsActivity extends AppCompatActivity {
         lineDelaySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.lineDelay=i;
+                MainActivity.lineDelay = i;
+                String s = getString(R.string.lineDelayTextView) + MainActivity.lineDelay * 0.5f + "s";
+                lineDelayTextView.setText(s);
             }
 
             @Override
@@ -65,7 +73,9 @@ public class SettingsActivity extends AppCompatActivity {
         repeatNumSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.repeatNum = i;
+                MainActivity.repeatNum = i + 1;
+                String s = getString(R.string.repeatNumTextView) + MainActivity.repeatNum;
+                repeatNumTextView.setText(s);
             }
 
             @Override
@@ -90,6 +100,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 MainActivity.speechRate[0] = i;
+                MainActivity.setSpeechRate(0);
             }
 
             @Override
@@ -106,7 +117,8 @@ public class SettingsActivity extends AppCompatActivity {
         speechRate1SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.speechRate[1]= i;
+                MainActivity.speechRate[1] = i;
+                MainActivity.setSpeechRate(1);
             }
 
             @Override
@@ -123,7 +135,7 @@ public class SettingsActivity extends AppCompatActivity {
         volume0SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.soundVolume[0]=i;
+                MainActivity.soundVolume[0] = i;
             }
 
             @Override
@@ -140,7 +152,7 @@ public class SettingsActivity extends AppCompatActivity {
         volume1SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.soundVolume[1]=i;
+                MainActivity.soundVolume[1] = i;
             }
 
             @Override
@@ -157,7 +169,8 @@ public class SettingsActivity extends AppCompatActivity {
         pitch0SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.pitch[0]=i;
+                MainActivity.pitch[0] = i;
+                MainActivity.setPitch(0);
             }
 
             @Override
@@ -174,7 +187,8 @@ public class SettingsActivity extends AppCompatActivity {
         pitch1SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                MainActivity.pitch[1]=i;
+                MainActivity.pitch[1] = i;
+                MainActivity.setPitch(1);
             }
 
             @Override
@@ -188,70 +202,19 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
         textSize0EditText = findViewById(R.id.textSize0EditText);
-//        textSize0EditText.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                if (!isAdjusting[0]){
-//                    checkTextSize(0, editable.toString());
-//                }
-//            }
-//        });
         textSize1EditText = findViewById(R.id.textSize1EditText);
-//        textSize1EditText.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                if (!isAdjusting[1]){
-//                    checkTextSize(1, editable.toString());
-//                }
-//            }
-//        });
     }
-//
-//    private void checkTextSize(int listNum, String editable){
-//        isAdjusting[listNum] = true;
-//        if (editable.equals("") || Integer.parseInt(editable) <12){
-//            editable = "12";
-//            updateEditText(listNum, editable);
-//        } else if(Integer.parseInt(editable)>48) {
-//            editable="48";
-//            updateEditText(listNum, editable);
-//        }
-//        MainActivity.textSize[listNum] = Integer.parseInt(editable);
-//        isAdjusting[listNum] = false;
-//    }
-//
-//    private void updateEditText(int listNum, String editable) {
-//        if (listNum ==0){
-//            textSize0EditText.setText(editable);
-//        }else {
-//            textSize1EditText.setText(editable);
-//        }
-//    }
 
     private void setView() {
+        String s = getString(R.string.wordDelayTextView) + MainActivity.wordDelay * 0.5f + "s";
+        wordDelayTextView.setText(s);
+        s = getString(R.string.lineDelayTextView) + MainActivity.lineDelay * 0.5f + "s";
+        lineDelayTextView.setText(s);
+        s = getString(R.string.repeatNumTextView) + MainActivity.repeatNum;
+        repeatNumTextView.setText(s);
         wordDelaySeekBar.setProgress(MainActivity.wordDelay);
         lineDelaySeekBar.setProgress(MainActivity.lineDelay);
-        repeatNumSeekBar.setProgress(MainActivity.repeatNum);
+        repeatNumSeekBar.setProgress(MainActivity.repeatNum - 1);
         listBackgroundCheckBox.setChecked(MainActivity.hasListBackground);
         speechRate0SeekBar.setProgress(MainActivity.speechRate[0]);
         speechRate1SeekBar.setProgress(MainActivity.speechRate[1]);
@@ -261,5 +224,17 @@ public class SettingsActivity extends AppCompatActivity {
         pitch1SeekBar.setProgress(MainActivity.pitch[1]);
         textSize0EditText.setText(String.valueOf(MainActivity.textSize[0]));
         textSize1EditText.setText(String.valueOf(MainActivity.textSize[1]));
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (textSize0EditText.getText().toString().equals("") || Integer.parseInt(textSize0EditText.getText().toString()) < 12) {
+            textSize0EditText.setText("12");
+        } else if (Integer.parseInt(textSize0EditText.getText().toString()) > 48) {
+            textSize0EditText.setText("48");
+        }
+        MainActivity.textSize[0] = Integer.parseInt(textSize0EditText.getText().toString());
+        MainActivity.textSize[1] = Integer.parseInt(textSize1EditText.getText().toString());
+        super.onDestroy();
     }
 }

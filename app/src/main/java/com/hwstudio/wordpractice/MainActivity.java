@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     public static int[] textSize = new int[2];
 
     // Variables
-    private final TextToSpeech[] tts = new TextToSpeech[2];
+    private static final TextToSpeech[] tts = new TextToSpeech[2];
     private final UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private static String[] listString = new String[2];
     private String[] wordString = new String[2];
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         loadSettings();
         for (int i = 0; i < 2; i++) {
             initVariable(i);
-            initTTS(tts[i], pitch[i], speechRate[i]);
+            initTTS(i);
         }
         utterance[0] = new UtteranceProgressListener() {
             @Override
@@ -258,13 +258,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         delayHandler = new Handler();
-    }
-
-    public void initTTS(TextToSpeech getTTS, int getPitch, int getSpeechRate) {
-        float[] pitchFloat = {0.4f, 0.6f, 0.8f, 1f, 1.5f, 2f, 2.5f};
-        getTTS.setPitch(pitchFloat[getPitch]);
-        float[] speechRateFloat = {0.1f, 0.4f, 0.75f, 1f, 1.5f, 2f, 2.5f};
-        getTTS.setSpeechRate(speechRateFloat[getSpeechRate]);
     }
 
     private void clickSave() {
@@ -443,20 +436,38 @@ public class MainActivity extends AppCompatActivity {
         speakString(listNum);
     }
 
+    private void initTTS(int listNum) {
+        setLanguage(listNum);
+        setSpeechRate(listNum);
+        setPitch(listNum);
+    }
 
-    public void speakString(int listNum) {
-        tts[listNum].setOnUtteranceProgressListener(utterance[listNum]);
+    private void setLanguage(int listNum) {
         tts[listNum].setLanguage(language[listNum]);
+    }
+
+    public static void setSpeechRate(int listNum) {
+        float[] speechRateFloat = {0.1f, 0.4f, 0.75f, 1f, 1.5f, 2f, 2.5f};
+        tts[listNum].setSpeechRate(speechRateFloat[speechRate[listNum]]);
+    }
+
+    public static void setPitch(int listNum) {
+        float[] pitchFloat = {0.4f, 0.6f, 0.8f, 1f, 1.5f, 2f, 2.5f};
+        tts[listNum].setPitch(pitchFloat[pitch[listNum]]);
+    }
+
+    private void speakString(int listNum) {
+        tts[listNum].setOnUtteranceProgressListener(utterance[listNum]);
         Bundle params = new Bundle();
         params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, soundVolume[listNum] / 100f);
         tts[listNum].speak(wordString[listNum], TextToSpeech.QUEUE_ADD, params
                 , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
         // Highlight word
-        isSpanning[listNum]=true;
+        isSpanning[listNum] = true;
         spanString[listNum].setSpan(wordSpan[listNum], wordStart[listNum]
                 , wordEnd[listNum], Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         listEditText[listNum].setText(spanString[listNum]);
-        isSpanning[listNum]=false;
+        isSpanning[listNum] = false;
         if (listNum == 0) {
             spanString[1].removeSpan(wordSpan[1]);
             listEditText[1].setText(spanString[1]);

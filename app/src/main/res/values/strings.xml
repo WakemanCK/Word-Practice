@@ -38,11 +38,13 @@
     <string name="wordDelayTextView">"Delay between words: "</string>
     <string name="lineDelayTextView">"Delay between lines: "</string>
     <string name="repeatNumTextView">"Repeat how many times: "</string>
-    <string name="textSizeTextView">Text size (12–48)</string>
+    <string name="textSizeTextView">Text size (18–48)</string>
     <string name="listBackgroundTextView">Word lists background color</string>
     <string name="prefHasListBackground">prefHasListBackground</string>
     <string name="prefTextSize0">prefTextSize0</string>
     <string name="prefTextSize1">prefTextSize1</string>
     <string name="resetButton">Reset all settings to default</string>
     <string name="prefSharedPref">prefSharedPref</string>
+    <string name="emptyListErr">Please enter some words to the lists!</string>
+    <string name="unequalLengthErr">Warning: the lists are not equal in length!</string>
 </resources>

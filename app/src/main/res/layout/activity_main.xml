@@ -54,16 +54,37 @@
             android:id="@+id/mainConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/editTextColor"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="8dp">
+            android:background="?attr/editTextColor">
+
+            <TextView
+                android:id="@+id/background0TextView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:background="?attr/editTextBackground"
+                android:fontFamily="serif-monospace"
+                app:layout_constraintStart_toStartOf="@+id/lang0ScrollView"
+                app:layout_constraintBottom_toBottomOf="@+id/lang0ScrollView"
+                app:layout_constraintEnd_toEndOf="@+id/lang0ScrollView"
+                app:layout_constraintTop_toTopOf="@+id/lang0ScrollView" />
+
+            <TextView
+                android:id="@+id/background1TextView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:background="?attr/editTextBackground"
+                android:fontFamily="serif-monospace"
+                app:layout_constraintBottom_toBottomOf="@+id/lang1ScrollView"
+                app:layout_constraintEnd_toEndOf="@+id/lang1ScrollView"
+                app:layout_constraintStart_toStartOf="@+id/lang1ScrollView"
+                app:layout_constraintTop_toTopOf="@+id/lang1ScrollView" />
 
             <HorizontalScrollView
                 android:id="@+id/lang0ScrollView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:background="?attr/editTextBackground"
                 app:layout_constraintEnd_toStartOf="@+id/lang1ScrollView"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -80,20 +101,12 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </HorizontalScrollView>
-            
-            <android:id="@+id/background0TextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@+id/lang0ScrollView"
-                app:layout_constraintEnd_toEndOf="@+id/lang0ScrollView"
-                app:layout_constraintTop_toTopOf="@+id/lang0ScrollView">
 
             <HorizontalScrollView
                 android:id="@+id/lang1ScrollView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:background="?attr/editTextBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/lang0ScrollView"
@@ -110,13 +123,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </HorizontalScrollView>
-                
-                 <android:id="@+id/background1TextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@+id/lang1ScrollView"
-                app:layout_constraintEnd_toEndOf="@+id/lang1ScrollView"
-                app:layout_constraintTop_toTopOf="@+id/lang1ScrollView">
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

@@ -34,6 +34,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,6 +43,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     private String[] wordString = new String[2];
     private SpannableString[] spanString = new SpannableString[2];
     private ForegroundColorSpan wordSpan;// = new ForegroundColorSpan[2];
-//    private boolean[] isSpanning = new boolean[2];
+    //    private boolean[] isSpanning = new boolean[2];
     private int[] wordStart = new int[2];
     private int[] wordEnd = new int[2];
     private boolean isEnd, isRepeating;
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadSettings() {
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
         wordDelay = sharedPref.getInt(getString(R.string.prefWordDelay), 0);
         lineDelay = sharedPref.getInt(getString(R.string.prefLineDelay), 1);
         repeatNum = sharedPref.getInt(getString(R.string.prefRepeatNum), 2);
@@ -201,8 +203,8 @@ public class MainActivity extends AppCompatActivity {
         listEditText[1] = findViewById(R.id.lang1EditText);
         listEditText[0].setTextSize(textSize[0]);
         listEditText[1].setTextSize(textSize[1]);
-             backgroundTextView[0]=findViewById(R.id.background0TextView);
-backgroundTextView[1]=findViewById(R.id.background1TextView);
+        backgroundTextView[0] = findViewById(R.id.background0TextView);
+        backgroundTextView[1] = findViewById(R.id.background1TextView);
         langButton[0] = findViewById(R.id.lang0Button);
         langButton[1] = findViewById(R.id.lang1Button);
         langButton[0].setText(language[0].getDisplayLanguage());
@@ -213,41 +215,81 @@ backgroundTextView[1]=findViewById(R.id.background1TextView);
         rewindButton = findViewById(R.id.stopButton);
         pauseButton.setEnabled(false);
         rewindButton.setEnabled(false);
+        listEditText[0].addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                listString[0] = editable.toString();
+            }
+        });
+        listEditText[1].addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                listString[1] = editable.toString();
+            }
+        });
+        addBackgroundSpan();
     }
 
-    private void addBackgroundSpan(int listNum){
-        if (hasListBackground) {
-        int lineCount, longestLine, startIndex =0, endIndex;
-        String tempList = listEditText[listNum].getText().toString();
-        endIndex = tempList.indexOf(10);
-            while (endIndex > -1) {
-                if (longestLine < (endIndex - startIndex){
-                    longestLine = endIndex-startIndex)
-                }
-                lineCount++;
-                startIndex = endIndex + 1;
-                endIndex = tempList.indexOf(10, startIndex);
-            }
-         StringBuilder spaceString = new StringBuilder("          ");
-                    for (int i = 0; i < longestLine - 10; i++){
+    private void addBackgroundSpan() {
+        int[] lineCount = new int[2];
+        for (int listNum = 0; listNum < 2; listNum++) {
+            if (listString[listNum] != null) {
+                String tempList = listString[listNum].replaceAll("\n", "");
+                lineCount[listNum] = listString[listNum].length() - tempList.length() + 1;
+                if (hasListBackground) {
+                    StringBuilder spaceString = new StringBuilder("                    ");
+                    for (int i = 0; i < 48 - textSize[listNum]; i++) {
                         spaceString.append(" ");
                     }
                     spaceString.append("\n");
-         SpannableStringBuilder spanBuilder = new SpannableStringBuilder();
-                    BackgroundColorSpan[] colorSpan = new BackgroundColorSpan[5];
-            colorSpan[0] = new BackgroundColorSpan(getResources().getColor(R.color.gray0));
-            colorSpan[1] = new BackgroundColorSpan(getResources().getColor(R.color.gray1));
-            colorSpan[2] = new BackgroundColorSpan(getResources().getColor(R.color.gray2));
-            colorSpan[3] = new BackgroundColorSpan(getResources().getColor(R.color.gray3));
-            colorSpan[4] = new BackgroundColorSpan(getResources().getColor(R.color.gray4));
-            int        k=0;
-            for (int j = 0; j < lineCount; j++){
-           spanBuilder.append(spaceString, colorSpan[k], Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                    k++;
-                if (k > 4){
-                    k = 0;
-                              }
-                backgroundTextView[listNum].setText(spanBuilder.toString());
+                    SpannableStringBuilder spanBuilder = new SpannableStringBuilder();
+                    int[] color = new int[5];
+                    color[0] = R.color.gray0;
+                    color[1] = R.color.gray1;
+                    color[2] = R.color.gray2;
+                    color[3] = R.color.gray3;
+                    color[4] = R.color.gray4;
+                    int k = 0;
+                    for (int j = 0; j < lineCount[listNum]; j++) {
+                        spanBuilder.append(spaceString, new BackgroundColorSpan(getResources().getColor(color[k])), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        k++;
+                        if (k > 4) {
+                            k = 0;
+                        }
+                    }
+                    backgroundTextView[listNum].setTextSize(textSize[listNum]);
+                    backgroundTextView[listNum].setText(spanBuilder);
+//                    backgroundTextView[listNum].setVisibility(View.VISIBLE);
+//                    findViewById(R.id.lang0ScrollView).getBackground().setAlpha(0);
+                } else {
+                    backgroundTextView[listNum].setText("");
+//                    backgroundTextView[listNum].setVisibility(View.INVISIBLE);
+//                    findViewById(R.id.lang0ScrollView).getBackground().setAlpha(255);
+                }
+            }
+        }
+        if (lineCount[0] != lineCount[1]) {
+            Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
         }
     }
 /*
@@ -280,6 +322,10 @@ backgroundTextView[1]=findViewById(R.id.background1TextView);
     }*/
 
     public void clickPlay(View view) {
+        if (listEditText[0].getText().length() == 0 || listEditText[1].getText().length() == 0) {
+            Toast.makeText(this, R.string.emptyListErr, Toast.LENGTH_SHORT).show();
+            return;
+        }
         playButton.setEnabled(false);
         pauseButton.setEnabled(true);
         rewindButton.setEnabled(true);
@@ -299,8 +345,7 @@ backgroundTextView[1]=findViewById(R.id.background1TextView);
             isEnd = false;
             isRepeating = false;
             repeatCount = repeatNum;
-            addBackgroundSpan(0);
-            addBackgroundSpan(1);
+            addBackgroundSpan();
             spanString[0] = new SpannableString(listString[0]);
             spanString[1] = new SpannableString(listString[1]);
             pickWord(0);
@@ -434,42 +479,41 @@ backgroundTextView[1]=findViewById(R.id.background1TextView);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (analyzeFileSuccess(loadedString.toString())) {
-                    Toast.makeText(this, R.string.fileLoadedText, Toast.LENGTH_SHORT).show();
-                } else {
+                if (!analyzeFileSuccess(loadedString.toString())) {
                     Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
                 }
             }
         }
         if (requestCode == OPEN_SETTINGS) {
-            saveSettings();
+//            Toast.makeText(this, "debug saving", Toast.LENGTH_SHORT).show();
+            //  saveSettings();
+            listEditText[0].setTextSize(textSize[0]);
+            listEditText[1].setTextSize(textSize[1]);
+            addBackgroundSpan();
         }
     }
 
-    private void saveSettings() {
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(getString(R.string.prefWordDelay), wordDelay);
-        editor.putInt(getString(R.string.prefLineDelay), lineDelay);
-        editor.putInt(getString(R.string.prefRepeatNum), repeatNum);
-        editor.putBoolean(getString(R.string.prefHasListBackground), hasListBackground);
-        editor.putInt(getString(R.string.prefSpeechRate0), speechRate[0]);
-        editor.putInt(getString(R.string.prefSpeechRate1), speechRate[1]);
-        editor.putFloat(getString(R.string.prefSoundVolume0), soundVolume[0]);
-        editor.putFloat(getString(R.string.prefSoundVolume1), soundVolume[1]);
-        editor.putInt(getString(R.string.prefPitch0), pitch[0]);
-        editor.putInt(getString(R.string.prefPitch1), pitch[1]);
-        editor.putInt(getString(R.string.prefTextSize0), textSize[0]);
-        editor.putInt(getString(R.string.prefTextSize1), textSize[1]);
-        editor.apply();
-        // Update text size and background span
-        listEditText[0].setTextSize(textSize[0]);
-        listEditText[1].setTextSize(textSize[1]);
-        listEditText[0].setText(listString[0]);
-        listEditText[1].setText(listString[1]);
-        addBackgroundSpan(0);
-        addBackgroundSpan(1);
-    }
+//    private void saveSettings() {
+//        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putInt(getString(R.string.prefWordDelay), wordDelay);
+//        editor.putInt(getString(R.string.prefLineDelay), lineDelay);
+//        editor.putInt(getString(R.string.prefRepeatNum), repeatNum);
+//        editor.putBoolean(getString(R.string.prefHasListBackground), hasListBackground);
+//        editor.putInt(getString(R.string.prefSpeechRate0), speechRate[0]);
+//        editor.putInt(getString(R.string.prefSpeechRate1), speechRate[1]);
+//        editor.putFloat(getString(R.string.prefSoundVolume0), soundVolume[0]);
+//        editor.putFloat(getString(R.string.prefSoundVolume1), soundVolume[1]);
+//        editor.putInt(getString(R.string.prefPitch0), pitch[0]);
+//        editor.putInt(getString(R.string.prefPitch1), pitch[1]);
+//        editor.putInt(getString(R.string.prefTextSize0), textSize[0]);
+//        editor.putInt(getString(R.string.prefTextSize1), textSize[1]);
+//        editor.apply();
+//        // Update text size and background span
+//        listEditText[0].setTextSize(textSize[0]);
+//        listEditText[1].setTextSize(textSize[1]);
+//        addBackgroundSpan();
+//    }
 
     private void clickSave() {
         // Check has permission
@@ -583,10 +627,9 @@ backgroundTextView[1]=findViewById(R.id.background1TextView);
         langButton[1].setText(tempLang1);
         String tempList0 = loadedString.substring(index[1] + 4, index[2] - 2);
         listEditText[0].setText(tempList0);
-        addBackgroundSpan(0);
         String tempList1 = loadedString.substring(index[3] + 4, loadedString.length() - 1);
         listEditText[1].setText(tempList1);
-        addBackgroundSpan(1);
+        addBackgroundSpan();
         return true;
     }
 
@@ -595,9 +638,9 @@ backgroundTextView[1]=findViewById(R.id.background1TextView);
         listEditText[0].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
         listEditText[1].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
         //listEditText[0].setText("1\n蘋果\n橙\n香蕉");
-        addBackgroundSpan(0);
+//        addBackgroundSpan(0);
         //listEditText[1].setText("1\napple\norange\nbanana");
-        addBackgroundSpan(1);
+        addBackgroundSpan();
         language[0] = Locale.JAPANESE;
         language[1] = new Locale("zh_hk");
         setLanguage(0);

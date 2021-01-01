@@ -2,6 +2,7 @@ package com.hwstudio.wordpractice;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -231,14 +232,42 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        if (textSize0EditText.getText().toString().equals("") || Integer.parseInt(textSize0EditText.getText().toString()) < 12) {
-            textSize0EditText.setText("12");
+    protected void onPause() {
+        if (textSize0EditText.getText().toString().equals("") || Integer.parseInt(textSize0EditText.getText().toString()) < 18) {
+            textSize0EditText.setText("18");
         } else if (Integer.parseInt(textSize0EditText.getText().toString()) > 48) {
             textSize0EditText.setText("48");
         }
+        if (textSize1EditText.getText().toString().equals("") || Integer.parseInt(textSize1EditText.getText().toString()) < 18) {
+            textSize1EditText.setText("18");
+        } else if (Integer.parseInt(textSize1EditText.getText().toString()) > 48) {
+            textSize1EditText.setText("48");
+        }
         MainActivity.textSize[0] = Integer.parseInt(textSize0EditText.getText().toString());
         MainActivity.textSize[1] = Integer.parseInt(textSize1EditText.getText().toString());
-        super.onDestroy();
+        saveSettings();
+        super.onPause();
+    }
+
+    private void saveSettings() {
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(getString(R.string.prefWordDelay), MainActivity.wordDelay);
+        editor.putInt(getString(R.string.prefLineDelay), MainActivity.lineDelay);
+        editor.putInt(getString(R.string.prefRepeatNum), MainActivity.repeatNum);
+        editor.putBoolean(getString(R.string.prefHasListBackground), MainActivity.hasListBackground);
+        editor.putInt(getString(R.string.prefSpeechRate0), MainActivity.speechRate[0]);
+        editor.putInt(getString(R.string.prefSpeechRate1), MainActivity.speechRate[1]);
+        editor.putFloat(getString(R.string.prefSoundVolume0), MainActivity.soundVolume[0]);
+        editor.putFloat(getString(R.string.prefSoundVolume1), MainActivity.soundVolume[1]);
+        editor.putInt(getString(R.string.prefPitch0), MainActivity.pitch[0]);
+        editor.putInt(getString(R.string.prefPitch1), MainActivity.pitch[1]);
+        editor.putInt(getString(R.string.prefTextSize0), MainActivity.textSize[0]);
+        editor.putInt(getString(R.string.prefTextSize1), MainActivity.textSize[1]);
+        editor.apply();
+//        // Update text size and background span
+//        listEditText[0].setTextSize(textSize[0]);
+//        listEditText[1].setTextSize(textSize[1]);
+//        addBackgroundSpan();
     }
 }

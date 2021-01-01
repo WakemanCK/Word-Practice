@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private final Button[] langButton = new Button[2];
     private ImageButton playButton, pauseButton, rewindButton;
     private ScrollView mainScrollView;
+    private TextView[] backgroundTextView = new TextView[2];
     private Handler delayHandler;
 
     @Override
@@ -200,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
         listEditText[1] = findViewById(R.id.lang1EditText);
         listEditText[0].setTextSize(textSize[0]);
         listEditText[1].setTextSize(textSize[1]);
-        listEditText[0].addTextChangedListener(new TextWatcher() {
+     /*   listEditText[0].addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -217,8 +218,8 @@ public class MainActivity extends AppCompatActivity {
 //                    addBackgroundSpan(0);
 //                }
             }
-        });
-        listEditText[1].addTextChangedListener(new TextWatcher() {
+        });*/
+   /*     listEditText[1].addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -230,12 +231,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
+            public void afterTextChanged(Editable editable) {*/
 //                if (!isSpanning[1]) {
 //                    addBackgroundSpan(1);
 //                }
             }
         });
+        backgroundTextView[0]=findViewById(R.id.background0TextView);
+backgroundTextView[1]=findViewById(R.id.background1TextView);
         langButton[0] = findViewById(R.id.lang0Button);
         langButton[1] = findViewById(R.id.lang1Button);
         langButton[0].setText(language[0].getDisplayLanguage());
@@ -249,7 +252,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addBackgroundSpan(int listNum){
-
+        if (hasListBackground) {
+        int lineCount, longestLine, startIndex =0, endIndex;
+        String tempList = listEditText[listNum].getText().toString();
+        endIndex = tempList.indexOf(10);
+            while (endIndex > -1) {
+                if (longestLine < (endIndex - startIndex){
+                    longestLine = endIndex-startIndex)
+                }
+                lineCount++;
+                startIndex = endIndex + 1;
+                endIndex = tempList.indexOf(10, startIndex);
+            }
+         StringBuilder spaceString = new StringBuilder("          ");
+                    for (int i = 0; i < longestLine - 10; i++){
+                        spaceString.append(" ");
+                    }
+                    spaceString.append("\n");
+         SpannableStringBuilder spanBuilder = new SpannableStringBuilder();
+                    BackgroundColorSpan[] colorSpan = new BackgroundColorSpan[5];
+            colorSpan[0] = new BackgroundColorSpan(getResources().getColor(R.color.gray0));
+            colorSpan[1] = new BackgroundColorSpan(getResources().getColor(R.color.gray1));
+            colorSpan[2] = new BackgroundColorSpan(getResources().getColor(R.color.gray2));
+            colorSpan[3] = new BackgroundColorSpan(getResources().getColor(R.color.gray3));
+            colorSpan[4] = new BackgroundColorSpan(getResources().getColor(R.color.gray4));
+            int        k=0;
+            for (int j = 0; j < lineCount; j++){
+           spanBuilder.append(spaceString, colorSpan[k], Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                    k++;
+                if (k > 4){
+                    k = 0;
+                              }
+                backgroundTextView[listNum].setText(spanBuilder.toString());
+        }
     }
 /*
     private void addBackgroundSpan(int listNum) {

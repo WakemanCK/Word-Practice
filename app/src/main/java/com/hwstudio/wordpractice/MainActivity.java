@@ -201,43 +201,7 @@ public class MainActivity extends AppCompatActivity {
         listEditText[1] = findViewById(R.id.lang1EditText);
         listEditText[0].setTextSize(textSize[0]);
         listEditText[1].setTextSize(textSize[1]);
-     /*   listEditText[0].addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-//                if (!isSpanning[0]) {
-//                    addBackgroundSpan(0);
-//                }
-            }
-        });*/
-   /*     listEditText[1].addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {*/
-//                if (!isSpanning[1]) {
-//                    addBackgroundSpan(1);
-//                }
-            }
-        });
-        backgroundTextView[0]=findViewById(R.id.background0TextView);
+             backgroundTextView[0]=findViewById(R.id.background0TextView);
 backgroundTextView[1]=findViewById(R.id.background1TextView);
         langButton[0] = findViewById(R.id.lang0Button);
         langButton[1] = findViewById(R.id.lang1Button);
@@ -498,8 +462,11 @@ backgroundTextView[1]=findViewById(R.id.background1TextView);
         editor.putInt(getString(R.string.prefTextSize0), textSize[0]);
         editor.putInt(getString(R.string.prefTextSize1), textSize[1]);
         editor.apply();
+        // Update text size and background span
         listEditText[0].setTextSize(textSize[0]);
         listEditText[1].setTextSize(textSize[1]);
+        listEditText[0].setText(listString[0]);
+        listEditText[1].setText(listString[1]);
         addBackgroundSpan(0);
         addBackgroundSpan(1);
     }

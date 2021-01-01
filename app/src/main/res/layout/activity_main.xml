@@ -80,6 +80,13 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </HorizontalScrollView>
+            
+            <android:id="@+id/background0TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@+id/lang0ScrollView"
+                app:layout_constraintEnd_toEndOf="@+id/lang0ScrollView"
+                app:layout_constraintTop_toTopOf="@+id/lang0ScrollView">
 
             <HorizontalScrollView
                 android:id="@+id/lang1ScrollView"
@@ -103,6 +110,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </HorizontalScrollView>
+                
+                 <android:id="@+id/background1TextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@+id/lang1ScrollView"
+                app:layout_constraintEnd_toEndOf="@+id/lang1ScrollView"
+                app:layout_constraintTop_toTopOf="@+id/lang1ScrollView">
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

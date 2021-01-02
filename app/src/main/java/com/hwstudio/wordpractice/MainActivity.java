@@ -318,9 +318,7 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            }
 //        }
-//        if (lineCount[0] != lineCount[1]) {
-//            Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
-//        }
+
 //    }
 
     public void clickPlay(View view) {

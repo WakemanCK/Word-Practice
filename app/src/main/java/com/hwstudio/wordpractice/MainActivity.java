@@ -306,8 +306,6 @@ public class MainActivity extends AppCompatActivity {
             playingState = 1;
             for (int i = 0; i < 2; i++) {
                 listString[i] = listEditText[i].getText().toString();
-                //spanString[i] = new SpannableString(listString[i]);
-//                wordSpan[i] = new ForegroundColorSpan(Color.RED);
                 wordEnd[i] = -1;
             }
             isEnd = false;

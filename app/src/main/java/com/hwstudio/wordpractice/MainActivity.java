@@ -1,12 +1,12 @@
 package com.hwstudio.wordpractice;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -30,17 +30,16 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private final UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private static String[] listString = new String[2];
     private String[] wordString = new String[2];
-    private SpannableString[] spanString = new SpannableString[2];
+//    private SpannableString[] spanString = new SpannableString[2];
     private ForegroundColorSpan wordSpan;// = new ForegroundColorSpan[2];
     //    private boolean[] isSpanning = new boolean[2];
     private int[] wordStart = new int[2];
@@ -89,7 +88,10 @@ public class MainActivity extends AppCompatActivity {
     private final Button[] langButton = new Button[2];
     private ImageButton playButton, pauseButton, rewindButton;
     private ScrollView mainScrollView;
-    private TextView[] backgroundTextView = new TextView[2];
+    private RecyclerView[] listRecyclerView = new RecyclerView[2];
+    private ListAdapter[] listAdapter = new ListAdapter[2];
+    private RecyclerView.LayoutManager[] layoutManager = new RecyclerView.LayoutManager[2];
+    //private TextView[] backgroundTextView = new TextView[2];
     private Handler delayHandler;
 
     @Override
@@ -199,12 +201,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        listEditText[0] = findViewById(R.id.lang0EditText);
-        listEditText[1] = findViewById(R.id.lang1EditText);
+        listEditText[0] = findViewById(R.id.list0EditText);
+        listEditText[1] = findViewById(R.id.list1EditText);
         listEditText[0].setTextSize(textSize[0]);
         listEditText[1].setTextSize(textSize[1]);
-        backgroundTextView[0] = findViewById(R.id.background0TextView);
-        backgroundTextView[1] = findViewById(R.id.background1TextView);
+//        backgroundTextView[0] = findViewById(R.id.background0TextView);
+//        backgroundTextView[1] = findViewById(R.id.background1TextView);
+        listRecyclerView[0]=findViewById(R.id.list0RecyclerView);
+        listRecyclerView[1]=findViewById(R.id.list1RecyclerView);
+        listRecyclerView[0].setHasFixedSize(true);
+        listRecyclerView[1].setHasFixedSize(true);
         langButton[0] = findViewById(R.id.lang0Button);
         langButton[1] = findViewById(R.id.lang1Button);
         langButton[0].setText(language[0].getDisplayLanguage());
@@ -247,47 +253,75 @@ public class MainActivity extends AppCompatActivity {
                 listString[1] = editable.toString();
             }
         });
-        addBackgroundSpan();
+//        addBackgroundSpan();
     }
 
-    private void addBackgroundSpan() {
+    public void clickFinish(View view){
         int[] lineCount = new int[2];
         for (int listNum = 0; listNum < 2; listNum++) {
             if (listString[listNum] != null) {
                 String tempList = listString[listNum].replaceAll("\n", "");
-                lineCount[listNum] = listString[listNum].length() - tempList.length() + 1;
-                if (hasListBackground) {
-                    StringBuilder spaceString = new StringBuilder("                    ");
-                    for (int i = 0; i < 48 - textSize[listNum]; i++) {
-                        spaceString.append(" ");
-                    }
-                    spaceString.append("\n");
-                    SpannableStringBuilder spanBuilder = new SpannableStringBuilder();
-                    int[] color = new int[5];
-                    color[0] = R.color.gray0;
-                    color[1] = R.color.gray1;
-                    color[2] = R.color.gray2;
-                    color[3] = R.color.gray3;
-                    color[4] = R.color.gray4;
-                    int k = 0;
-                    for (int j = 0; j < lineCount[listNum]; j++) {
-                        spanBuilder.append(spaceString, new BackgroundColorSpan(getResources().getColor(color[k])), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        k++;
-                        if (k > 4) {
-                            k = 0;
-                        }
-                    }
-                    backgroundTextView[listNum].setTextSize(textSize[listNum]);
-                    backgroundTextView[listNum].setText(spanBuilder);
-                } else {
-                    backgroundTextView[listNum].setText("");
+                lineCount[listNum] = listString[listNum].length() - tempList.length();
+                String[] tempString = new String[lineCount[listNum] + 1];
+                int wordStart = 0, wordEnd;
+                for (int i = 0; i < lineCount[listNum]; i++) {
+                    wordEnd = listString[listNum].indexOf(10, wordStart);
+                    tempString[i] = listString[listNum].substring(wordStart, wordEnd);
+                    wordStart = wordEnd + 1;
                 }
+                tempString[lineCount[listNum]] = listString[listNum].substring(wordStart);
+                layoutManager[listNum] = new LinearLayoutManager(this);
+                listRecyclerView[listNum].setLayoutManager(layoutManager[listNum]);
+                listAdapter[listNum] = new ListAdapter(tempString);
+                listRecyclerView[listNum].setAdapter(listAdapter[listNum]);
+                listRecyclerView[listNum].setVisibility(View.VISIBLE);
+                listEditText[listNum].setVisibility(View.INVISIBLE);
+                findViewById(R.id.list1EditText).setVisibility(View.INVISIBLE);
             }
         }
         if (lineCount[0] != lineCount[1]) {
             Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
         }
     }
+//
+//    private void addBackgroundSpan() {
+//        int[] lineCount = new int[2];
+//        for (int listNum = 0; listNum < 2; listNum++) {
+//            if (listString[listNum] != null) {
+//                String tempList = listString[listNum].replaceAll("\n", "");
+//                lineCount[listNum] = listString[listNum].length() - tempList.length() + 1;
+//                if (hasListBackground) {
+//                    StringBuilder spaceString = new StringBuilder("                    ");
+//                    for (int i = 0; i < 48 - textSize[listNum]; i++) {
+//                        spaceString.append(" ");
+//                    }
+//                    spaceString.append("\n");
+//                    SpannableStringBuilder spanBuilder = new SpannableStringBuilder();
+//                    int[] color = new int[5];
+//                    color[0] = R.color.gray0;
+//                    color[1] = R.color.gray1;
+//                    color[2] = R.color.gray2;
+//                    color[3] = R.color.gray3;
+//                    color[4] = R.color.gray4;
+//                    int k = 0;
+//                    for (int j = 0; j < lineCount[listNum]; j++) {
+//                        spanBuilder.append(spaceString, new BackgroundColorSpan(getResources().getColor(color[k])), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+//                        k++;
+//                        if (k > 4) {
+//                            k = 0;
+//                        }
+//                    }
+//                    backgroundTextView[listNum].setTextSize(textSize[listNum]);
+//                    backgroundTextView[listNum].setText(spanBuilder);
+//                } else {
+//                    backgroundTextView[listNum].setText("");
+//                }
+//            }
+//        }
+//        if (lineCount[0] != lineCount[1]) {
+//            Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     public void clickPlay(View view) {
         if (listEditText[0].getText().length() == 0 || listEditText[1].getText().length() == 0) {
@@ -311,9 +345,9 @@ public class MainActivity extends AppCompatActivity {
             isEnd = false;
             isRepeating = false;
             repeatCount = repeatNum;
-            addBackgroundSpan();
-            spanString[0] = new SpannableString(listString[0]);
-            spanString[1] = new SpannableString(listString[1]);
+//            addBackgroundSpan();
+//            spanString[0] = new SpannableString(listString[0]);
+//            spanString[1] = new SpannableString(listString[1]);
             pickWord(0);
         }
     }
@@ -350,19 +384,19 @@ public class MainActivity extends AppCompatActivity {
         tts[listNum].speak(wordString[listNum], TextToSpeech.QUEUE_ADD, params
                 , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
         // Highlight word
-//        isSpanning[listNum] = true;
-        spanString[listNum].setSpan(wordSpan, wordStart[listNum]
-                , wordEnd[listNum], Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-        listEditText[listNum].setText(spanString[listNum]);
-//        isSpanning[listNum] = false;
-        if (listNum == 0) {
-            spanString[1].removeSpan(wordSpan);
-            listEditText[1].setText(spanString[1]);
-        } else {
-            spanString[0].removeSpan(wordSpan);
-            listEditText[0].setText(spanString[0]);
-        }
-        mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight() * wordStart[listNum] / listEditText[listNum].length());
+////        isSpanning[listNum] = true;
+//        spanString[listNum].setSpan(wordSpan, wordStart[listNum]
+//                , wordEnd[listNum], Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+//        listEditText[listNum].setText(spanString[listNum]);
+////        isSpanning[listNum] = false;
+//        if (listNum == 0) {
+//            spanString[1].removeSpan(wordSpan);
+//            listEditText[1].setText(spanString[1]);
+//        } else {
+//            spanString[0].removeSpan(wordSpan);
+//            listEditText[0].setText(spanString[0]);
+//        }
+//        mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight() * wordStart[listNum] / listEditText[listNum].length());
     }
 
     public void clickPause(View view) {
@@ -455,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
             //  saveSettings();
             listEditText[0].setTextSize(textSize[0]);
             listEditText[1].setTextSize(textSize[1]);
-            addBackgroundSpan();
+//            addBackgroundSpan();
         }
     }
 
@@ -595,7 +629,7 @@ public class MainActivity extends AppCompatActivity {
         listEditText[0].setText(tempList0);
         String tempList1 = loadedString.substring(index[3] + 4, loadedString.length() - 1);
         listEditText[1].setText(tempList1);
-        addBackgroundSpan();
+//        addBackgroundSpan();
         return true;
     }
 
@@ -606,7 +640,7 @@ public class MainActivity extends AppCompatActivity {
         //listEditText[0].setText("1\n蘋果\n橙\n香蕉");
 //        addBackgroundSpan(0);
         //listEditText[1].setText("1\napple\norange\nbanana");
-        addBackgroundSpan();
+//        addBackgroundSpan();
         language[0] = Locale.JAPANESE;
         language[1] = new Locale("zh_hk");
         setLanguage(0);

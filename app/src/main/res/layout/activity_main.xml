@@ -56,42 +56,37 @@
             android:layout_height="wrap_content"
             android:background="?attr/editTextColor">
 
-            <TextView
-                android:id="@+id/background0TextView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
-                android:background="?attr/editTextBackground"
-                android:fontFamily="monospace"
-                app:layout_constraintStart_toStartOf="@+id/lang0ScrollView"
-                app:layout_constraintBottom_toBottomOf="@+id/lang0ScrollView"
-                app:layout_constraintEnd_toEndOf="@+id/lang0ScrollView"
-                app:layout_constraintTop_toTopOf="@+id/lang0ScrollView" />
-
-            <TextView
-                android:id="@+id/background1TextView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
-                android:background="?attr/editTextBackground"
-                android:fontFamily="monospace"
-                app:layout_constraintBottom_toBottomOf="@+id/lang1ScrollView"
-                app:layout_constraintEnd_toEndOf="@+id/lang1ScrollView"
-                app:layout_constraintStart_toStartOf="@+id/lang1ScrollView"
-                app:layout_constraintTop_toTopOf="@+id/lang1ScrollView" />
-
             <HorizontalScrollView
-                android:id="@+id/lang0ScrollView"
+                android:id="@+id/recycler0ScrollView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                app:layout_constraintEnd_toStartOf="@+id/lang1ScrollView"
+                app:layout_constraintEnd_toStartOf="@+id/editText1ScrollView"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/list0RecyclerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </HorizontalScrollView>
+
+            <HorizontalScrollView
+                android:id="@+id/editText0ScrollView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                app:layout_constraintEnd_toStartOf="@+id/editText1ScrollView"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <EditText
-                    android:id="@+id/lang0EditText"
+                    android:id="@+id/list0EditText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -103,17 +98,36 @@
             </HorizontalScrollView>
 
             <HorizontalScrollView
-                android:id="@+id/lang1ScrollView"
+                android:id="@+id/recycler1ScrollView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/lang0ScrollView"
+                app:layout_constraintStart_toEndOf="@+id/editText0ScrollView"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/list1RecyclerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </HorizontalScrollView>
+
+            <HorizontalScrollView
+                android:id="@+id/editText1ScrollView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/editText0ScrollView"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <EditText
-                    android:id="@+id/lang1EditText"
+                    android:id="@+id/list1EditText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -168,5 +182,29 @@
         app:layout_constraintStart_toEndOf="@+id/pauseButton"
         app:layout_constraintTop_toTopOf="@+id/playButton"
         app:srcCompat="@drawable/ic_round_stop_circle_24" />
+
+    <Button
+        android:id="@+id/finishButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:onClick="clickFinish"
+        android:text="@string/finishButton"
+        app:layout_constraintBottom_toTopOf="@+id/playButton"
+        app:layout_constraintEnd_toStartOf="@+id/editButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/playButton" />
+
+    <Button
+        android:id="@+id/editButton"
+        android:layout_width="0dp"
+        android:onClick="clickEdit"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/editButton"
+        app:layout_constraintBottom_toTopOf="@+id/playButton"
+        app:layout_constraintEnd_toEndOf="@+id/stopButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/finishButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

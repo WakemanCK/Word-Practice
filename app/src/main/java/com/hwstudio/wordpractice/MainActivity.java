@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     public static int wordDelay, lineDelay, repeatNum;
     public static boolean hasListBackground;
     public static int[] speechRate = new int[2];
-    public static float[] soundVolume = new float[2];
+    public static int[] soundVolume = new int[2];
     public static int[] pitch = new int[2];
     public static int[] textSize = new int[2];
 
@@ -166,11 +166,11 @@ public class MainActivity extends AppCompatActivity {
         wordDelay = sharedPref.getInt(getString(R.string.prefWordDelay), 0);
         lineDelay = sharedPref.getInt(getString(R.string.prefLineDelay), 1);
         repeatNum = sharedPref.getInt(getString(R.string.prefRepeatNum), 2);
-        hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), true);
+        hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), false);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
-        soundVolume[0] = sharedPref.getFloat(getString(R.string.prefSoundVolume0), 80);
-        soundVolume[1] = sharedPref.getFloat(getString(R.string.prefSoundVolume1), 80);
+        soundVolume[0] = sharedPref.getInt(getString(R.string.prefSoundVolume0), 6);
+        soundVolume[1] = sharedPref.getInt(getString(R.string.prefSoundVolume1), 6);
         pitch[0] = sharedPref.getInt(getString(R.string.prefPitch0), 3);
         pitch[1] = sharedPref.getInt(getString(R.string.prefPitch1), 3);
         textSize[0] = sharedPref.getInt(getString(R.string.prefTextSize0), 36);
@@ -279,12 +279,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     backgroundTextView[listNum].setTextSize(textSize[listNum]);
                     backgroundTextView[listNum].setText(spanBuilder);
-//                    backgroundTextView[listNum].setVisibility(View.VISIBLE);
-//                    findViewById(R.id.lang0ScrollView).getBackground().setAlpha(0);
                 } else {
                     backgroundTextView[listNum].setText("");
-//                    backgroundTextView[listNum].setVisibility(View.INVISIBLE);
-//                    findViewById(R.id.lang0ScrollView).getBackground().setAlpha(255);
                 }
             }
         }
@@ -292,34 +288,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
         }
     }
-/*
-    private void addBackgroundSpan(int listNum) {
-//        isSpanning[listNum] = true;
-        listString[listNum] = listEditText[listNum].getText().toString();
-        SpannableStringBuilder spanBuilder = new SpannableStringBuilder(listString[listNum]);
-        if (hasListBackground) {
-            BackgroundColorSpan[] colorSpan = new BackgroundColorSpan[5];
-            colorSpan[0] = new BackgroundColorSpan(getResources().getColor(R.color.gray0));
-            colorSpan[1] = new BackgroundColorSpan(getResources().getColor(R.color.gray1));
-            colorSpan[2] = new BackgroundColorSpan(getResources().getColor(R.color.gray2));
-            colorSpan[3] = new BackgroundColorSpan(getResources().getColor(R.color.gray3));
-            colorSpan[4] = new BackgroundColorSpan(getResources().getColor(R.color.gray4));
-            int i = 0, startIndex = 0, endIndex;
-            endIndex = listString[listNum].indexOf(10);
-            while (endIndex > -1) {
-                spanBuilder.setSpan(colorSpan[i], startIndex, endIndex, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                i++;
-                if (i == 5) {
-                    i = 0;
-                }
-                startIndex = endIndex + 1;
-                endIndex = listString[listNum].indexOf(10, startIndex);
-            }
-            spanBuilder.setSpan(colorSpan[i], startIndex, listString[listNum].length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            listEditText[listNum].setText(spanBuilder);
-        }
-//        isSpanning[listNum] = false;
-    }*/
 
     public void clickPlay(View view) {
         if (listEditText[0].getText().length() == 0 || listEditText[1].getText().length() == 0) {
@@ -380,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
     private void speakString(int listNum) {
         tts[listNum].setOnUtteranceProgressListener(utterance[listNum]);
         Bundle params = new Bundle();
-        params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, soundVolume[listNum] / 100f);
+        params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, (soundVolume[listNum] + 1) / 7f);
         tts[listNum].speak(wordString[listNum], TextToSpeech.QUEUE_ADD, params
                 , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
         // Highlight word

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -60,8 +61,8 @@ public class SettingsActivity extends AppCompatActivity {
         listBackgroundCheckBox.setChecked(MainActivity.hasListBackground);
         speechRate0SeekBar.setProgress(MainActivity.speechRate[0]);
         speechRate1SeekBar.setProgress(MainActivity.speechRate[1]);
-        volume0SeekBar.setProgress((int) MainActivity.soundVolume[0]);
-        volume1SeekBar.setProgress((int) MainActivity.soundVolume[1]);
+        volume0SeekBar.setProgress(MainActivity.soundVolume[0]);
+        volume1SeekBar.setProgress(MainActivity.soundVolume[1]);
         pitch0SeekBar.setProgress(MainActivity.pitch[0]);
         pitch1SeekBar.setProgress(MainActivity.pitch[1]);
         textSize0EditText.setText(String.valueOf(MainActivity.textSize[0]));
@@ -231,6 +232,21 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    public void clickReset(View view){
+        wordDelaySeekBar.setProgress(0);
+        lineDelaySeekBar.setProgress(1);
+        repeatNumSeekBar.setProgress(2);
+        listBackgroundCheckBox.setChecked(false);
+        speechRate0SeekBar.setProgress(3);
+        speechRate1SeekBar.setProgress(3);
+        volume0SeekBar.setProgress(6);
+        volume1SeekBar.setProgress(6);
+        pitch0SeekBar.setProgress(3);
+        pitch1SeekBar.setProgress(3);
+        textSize0EditText.setText("36");
+        textSize1EditText.setText("36");
+    }
+
     @Override
     protected void onPause() {
         if (textSize0EditText.getText().toString().equals("") || Integer.parseInt(textSize0EditText.getText().toString()) < 18) {
@@ -258,16 +274,12 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putBoolean(getString(R.string.prefHasListBackground), MainActivity.hasListBackground);
         editor.putInt(getString(R.string.prefSpeechRate0), MainActivity.speechRate[0]);
         editor.putInt(getString(R.string.prefSpeechRate1), MainActivity.speechRate[1]);
-        editor.putFloat(getString(R.string.prefSoundVolume0), MainActivity.soundVolume[0]);
-        editor.putFloat(getString(R.string.prefSoundVolume1), MainActivity.soundVolume[1]);
+        editor.putInt(getString(R.string.prefSoundVolume0), MainActivity.soundVolume[0]);
+        editor.putInt(getString(R.string.prefSoundVolume1), MainActivity.soundVolume[1]);
         editor.putInt(getString(R.string.prefPitch0), MainActivity.pitch[0]);
         editor.putInt(getString(R.string.prefPitch1), MainActivity.pitch[1]);
         editor.putInt(getString(R.string.prefTextSize0), MainActivity.textSize[0]);
         editor.putInt(getString(R.string.prefTextSize1), MainActivity.textSize[1]);
         editor.apply();
-//        // Update text size and background span
-//        listEditText[0].setTextSize(textSize[0]);
-//        listEditText[1].setTextSize(textSize[1]);
-//        addBackgroundSpan();
     }
 }

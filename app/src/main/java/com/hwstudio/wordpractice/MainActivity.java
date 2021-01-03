@@ -79,9 +79,10 @@ public class MainActivity extends AppCompatActivity {
 //    private SpannableString[] spanString = new SpannableString[2];
     private ForegroundColorSpan wordSpan;// = new ForegroundColorSpan[2];
     //    private boolean[] isSpanning = new boolean[2];
-    private int[] wordStart = new int[2];
-    private int[] wordEnd = new int[2];
-    private boolean isEnd, isRepeating;
+    //private int[] wordStart = new int[2];
+    //private int[] wordEnd = new int[2];
+    private int currentLine;
+    private boolean isRepeating;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
     private int repeatCount;
     private final EditText[] listEditText = new EditText[2];
@@ -144,13 +145,17 @@ public class MainActivity extends AppCompatActivity {
                                 isRepeating = true;
                                 speakString(0);
                             } else {
-                                if (isEnd) {
-                                    clickStop(null);
-                                } else {
+                            //    if (isEnd) {
+                              //      clickStop(null);
+                                //} else {
                                     isRepeating = false;
                                     repeatCount = repeatNum;
-                                    pickWord(0);
-                                }
+                                    currentLine++
+                                        if (currentLine >= ListAdapter[0].getItemCount() || currentLine >= ListAdapter[1].getItemCount(){
+                                            clickStop(null);
+                                        } else{
+                                              pickWord(0);
+                                        }
                             }
                         }
                     }, lineDelay * 500);
@@ -182,7 +187,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initVariable(int listNum) {
-        wordStart[listNum] = 0;
+        //wordStart[listNum] = 0;
+        //currentLine = 0;
         tts[listNum] = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
@@ -221,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         rewindButton = findViewById(R.id.stopButton);
         pauseButton.setEnabled(false);
         rewindButton.setEnabled(false);
-        listEditText[0].addTextChangedListener(new TextWatcher() {
+ /*       listEditText[0].addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -252,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 listString[1] = editable.toString();
             }
-        });
+        });*/
 //        addBackgroundSpan();
     }
 
@@ -340,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
                 listString[i] = listEditText[i].getText().toString();
                 wordEnd[i] = -1;
             }
-            isEnd = false;
+         //   isEnd = false;
             isRepeating = false;
             repeatCount = repeatNum;
 //            addBackgroundSpan();
@@ -351,13 +357,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pickWord(int listNum) {
-        wordStart[listNum] = wordEnd[listNum] + 1;
+       /* wordStart[listNum] = wordEnd[listNum] + 1;
         wordEnd[listNum] = listString[listNum].indexOf(10, wordStart[listNum]);
         if (wordEnd[listNum] == -1) {
             wordEnd[listNum] = listString[listNum].length();
             isEnd = true;
         }
-        wordString[listNum] = listString[listNum].substring(wordStart[listNum], wordEnd[listNum]);
+        wordString[listNum] = listString[listNum].substring(wordStart[listNum], wordEnd[listNum]);*/
+        wordString[listNum] = listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine).getText();
         speakString(listNum);
     }
 

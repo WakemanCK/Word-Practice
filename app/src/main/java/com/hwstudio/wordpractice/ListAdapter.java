@@ -28,6 +28,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         public TextView getTextView() {
             return textView;
         }
+        
+        public String getText(){
+            textView.setTextColor(Color.RED);
+            return textView.getText().toString();
+        }
     }
     
     public ListAdapter(String[] dataSet, int getTextSize, boolean getHasBackground) {

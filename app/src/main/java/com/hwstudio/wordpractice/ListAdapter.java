@@ -11,11 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     private String[] localDataSet;
+    private int textSize;
+    private boolean hasBackground;
+    private int[] color = new int[5];
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
 
@@ -30,15 +29,16 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             return textView;
         }
     }
-
-    /**
-     * Initialize the dataset of the Adapter.
-     *
-     * @param dataSet String[] containing the data to populate views to be used
-     * by RecyclerView.
-     */
-    public ListAdapter(String[] dataSet) {
+    
+    public ListAdapter(String[] dataSet, int getTextSize, boolean getHasBackground) {
         localDataSet = dataSet;
+        textSize = getTextSize;
+        hasBackground = getHasBackground;
+          color[0] = R.color.gray0;
+                    color[1] = R.color.gray1;
+                    color[2] = R.color.gray2;
+                    color[3] = R.color.gray3;
+                    color[4] = R.color.gray4;
     }
 
     // Create new views (invoked by the layout manager)
@@ -47,7 +47,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.text_row_item, viewGroup, false);
-
+                  
         return new ViewHolder(view);
     }
 
@@ -57,7 +57,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
+        viewHolder.getTextView().setTextSize(textSize);
         viewHolder.getTextView().setText(localDataSet[position]);
+        if (hasBackground){
+            viewHolder.getTextView().setBackgroundResource(color[position%5]);
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)

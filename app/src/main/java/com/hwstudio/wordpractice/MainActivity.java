@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private static String[] listString = new String[2];
     private String[] wordString = new String[2];
 //    private SpannableString[] spanString = new SpannableString[2];
-    private ForegroundColorSpan wordSpan;// = new ForegroundColorSpan[2];
+    //private ForegroundColorSpan wordSpan;// = new ForegroundColorSpan[2];
     //    private boolean[] isSpanning = new boolean[2];
     //private int[] wordStart = new int[2];
     //private int[] wordEnd = new int[2];
@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView[] listRecyclerView = new RecyclerView[2];
     private ListAdapter[] listAdapter = new ListAdapter[2];
     private RecyclerView.LayoutManager[] layoutManager = new RecyclerView.LayoutManager[2];
-    //private TextView[] backgroundTextView = new TextView[2];
     private Handler delayHandler;
 
     @Override
@@ -145,14 +144,12 @@ public class MainActivity extends AppCompatActivity {
                                 isRepeating = true;
                                 speakString(0);
                             } else {
-                            //    if (isEnd) {
-                              //      clickStop(null);
-                                //} else {
                                     isRepeating = false;
                                     repeatCount = repeatNum;
                                     currentLine++
                                         if (currentLine >= ListAdapter[0].getItemCount() || currentLine >= ListAdapter[1].getItemCount(){
                                             clickStop(null);
+                                            currentLine=0;
                                         } else{
                                               pickWord(0);
                                         }
@@ -187,8 +184,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initVariable(int listNum) {
-        //wordStart[listNum] = 0;
-        //currentLine = 0;
         tts[listNum] = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
@@ -262,7 +257,17 @@ public class MainActivity extends AppCompatActivity {
 //        addBackgroundSpan();
     }
 
+    private void setMultipleEnable(boolean canFinish, canEdit, canPlay, canPause, canRewind){
+        finishButton.setEnabled(canFinish);
+        editButton.setEnabled(canEdit);
+        playButton.setEnabled(canPlay);
+        pauseButton.setEnabled(canPause);
+        rewindButton.setEnabled(canRewind);
+    }
+                                             
     public void clickFinish(View view){
+        setMultipleEnable(false, true, true, false, false);
+        currentLine = 0;
         int[] lineCount = new int[2];
         for (int listNum = 0; listNum < 2; listNum++) {
             if (listString[listNum] != null) {
@@ -282,59 +287,27 @@ public class MainActivity extends AppCompatActivity {
                 listRecyclerView[listNum].setAdapter(listAdapter[listNum]);
                 listRecyclerView[listNum].setVisibility(View.VISIBLE);
                 listEditText[listNum].setVisibility(View.INVISIBLE);
-                findViewById(R.id.list1EditText).setVisibility(View.INVISIBLE);
             }
         }
         if (lineCount[0] != lineCount[1]) {
             Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
         }
     }
-//
-//    private void addBackgroundSpan() {
-//        int[] lineCount = new int[2];
-//        for (int listNum = 0; listNum < 2; listNum++) {
-//            if (listString[listNum] != null) {
-//                String tempList = listString[listNum].replaceAll("\n", "");
-//                lineCount[listNum] = listString[listNum].length() - tempList.length() + 1;
-//                if (hasListBackground) {
-//                    StringBuilder spaceString = new StringBuilder("                    ");
-//                    for (int i = 0; i < 48 - textSize[listNum]; i++) {
-//                        spaceString.append(" ");
-//                    }
-//                    spaceString.append("\n");
-//                    SpannableStringBuilder spanBuilder = new SpannableStringBuilder();
-//                    int[] color = new int[5];
-//                    color[0] = R.color.gray0;
-//                    color[1] = R.color.gray1;
-//                    color[2] = R.color.gray2;
-//                    color[3] = R.color.gray3;
-//                    color[4] = R.color.gray4;
-//                    int k = 0;
-//                    for (int j = 0; j < lineCount[listNum]; j++) {
-//                        spanBuilder.append(spaceString, new BackgroundColorSpan(getResources().getColor(color[k])), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-//                        k++;
-//                        if (k > 4) {
-//                            k = 0;
-//                        }
-//                    }
-//                    backgroundTextView[listNum].setTextSize(textSize[listNum]);
-//                    backgroundTextView[listNum].setText(spanBuilder);
-//                } else {
-//                    backgroundTextView[listNum].setText("");
-//                }
-//            }
-//        }
-
-//    }
+                                             
+     public void clickEdit(View view){
+         setMultipleEnable(true, false, false, false, false);
+         for (int i = 0; i <2; i++){
+             listRecyclerView[listNum].setVisibility(View.INVISIBLE);
+                listEditText[listNum].setVisibility(View.VISIBLE);
+            }
+     }
 
     public void clickPlay(View view) {
         if (listEditText[0].getText().length() == 0 || listEditText[1].getText().length() == 0) {
             Toast.makeText(this, R.string.emptyListErr, Toast.LENGTH_SHORT).show();
             return;
         }
-        playButton.setEnabled(false);
-        pauseButton.setEnabled(true);
-        rewindButton.setEnabled(true);
+        setMultipleEnable(false, true, false, true, true);
         listEditText[0].setEnabled(false);
         listEditText[1].setEnabled(false);
         if (playingState == 2) {
@@ -346,24 +319,13 @@ public class MainActivity extends AppCompatActivity {
                 listString[i] = listEditText[i].getText().toString();
                 wordEnd[i] = -1;
             }
-         //   isEnd = false;
             isRepeating = false;
             repeatCount = repeatNum;
-//            addBackgroundSpan();
-//            spanString[0] = new SpannableString(listString[0]);
-//            spanString[1] = new SpannableString(listString[1]);
             pickWord(0);
         }
     }
 
     private void pickWord(int listNum) {
-       /* wordStart[listNum] = wordEnd[listNum] + 1;
-        wordEnd[listNum] = listString[listNum].indexOf(10, wordStart[listNum]);
-        if (wordEnd[listNum] == -1) {
-            wordEnd[listNum] = listString[listNum].length();
-            isEnd = true;
-        }
-        wordString[listNum] = listString[listNum].substring(wordStart[listNum], wordEnd[listNum]);*/
         wordString[listNum] = listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine).getText();
         speakString(listNum);
     }
@@ -388,36 +350,18 @@ public class MainActivity extends AppCompatActivity {
         params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, (soundVolume[listNum] + 1) / 7f);
         tts[listNum].speak(wordString[listNum], TextToSpeech.QUEUE_ADD, params
                 , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
-        // Highlight word
-////        isSpanning[listNum] = true;
-//        spanString[listNum].setSpan(wordSpan, wordStart[listNum]
-//                , wordEnd[listNum], Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-//        listEditText[listNum].setText(spanString[listNum]);
-////        isSpanning[listNum] = false;
-//        if (listNum == 0) {
-//            spanString[1].removeSpan(wordSpan);
-//            listEditText[1].setText(spanString[1]);
-//        } else {
-//            spanString[0].removeSpan(wordSpan);
-//            listEditText[0].setText(spanString[0]);
-//        }
-//        mainScrollView.smoothScrollTo(0, listEditText[listNum].getHeight() * wordStart[listNum] / listEditText[listNum].length());
     }
 
     public void clickPause(View view) {
         playingState = 2;
-        playButton.setEnabled(true);
-        pauseButton.setEnabled(false);
-        rewindButton.setEnabled(true);
+        setMultipleEnable(false, true, true, false, true);
         listEditText[0].setEnabled(false);
         listEditText[1].setEnabled(false);
     }
 
     public void clickStop(View view) {
         playingState = 0;
-        playButton.setEnabled(true);
-        pauseButton.setEnabled(false);
-        rewindButton.setEnabled(false);
+        setMultipleEnable(false, true, true, false, false);
         listEditText[0].setEnabled(true);
         listEditText[1].setEnabled(true);
     }
@@ -490,11 +434,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (requestCode == OPEN_SETTINGS) {
-//            Toast.makeText(this, "debug saving", Toast.LENGTH_SHORT).show();
-            //  saveSettings();
             listEditText[0].setTextSize(textSize[0]);
             listEditText[1].setTextSize(textSize[1]);
-//            addBackgroundSpan();
         }
     }
 
@@ -503,21 +444,6 @@ public class MainActivity extends AppCompatActivity {
 //        SharedPreferences.Editor editor = sharedPref.edit();
 //        editor.putInt(getString(R.string.prefWordDelay), wordDelay);
 //        editor.putInt(getString(R.string.prefLineDelay), lineDelay);
-//        editor.putInt(getString(R.string.prefRepeatNum), repeatNum);
-//        editor.putBoolean(getString(R.string.prefHasListBackground), hasListBackground);
-//        editor.putInt(getString(R.string.prefSpeechRate0), speechRate[0]);
-//        editor.putInt(getString(R.string.prefSpeechRate1), speechRate[1]);
-//        editor.putFloat(getString(R.string.prefSoundVolume0), soundVolume[0]);
-//        editor.putFloat(getString(R.string.prefSoundVolume1), soundVolume[1]);
-//        editor.putInt(getString(R.string.prefPitch0), pitch[0]);
-//        editor.putInt(getString(R.string.prefPitch1), pitch[1]);
-//        editor.putInt(getString(R.string.prefTextSize0), textSize[0]);
-//        editor.putInt(getString(R.string.prefTextSize1), textSize[1]);
-//        editor.apply();
-//        // Update text size and background span
-//        listEditText[0].setTextSize(textSize[0]);
-//        listEditText[1].setTextSize(textSize[1]);
-//        addBackgroundSpan();
 //    }
 
     private void clickSave() {
@@ -527,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
             saveList();
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    REQUEST_WRITE_PERMISSION);  // Request Code 30 = get storage permission
+                    REQUEST_WRITE_PERMISSION);
         }
     }
 
@@ -634,6 +560,7 @@ public class MainActivity extends AppCompatActivity {
         listEditText[0].setText(tempList0);
         String tempList1 = loadedString.substring(index[3] + 4, loadedString.length() - 1);
         listEditText[1].setText(tempList1);
+        clickFinish(null);
 //        addBackgroundSpan();
         return true;
     }
@@ -652,6 +579,7 @@ public class MainActivity extends AppCompatActivity {
         setLanguage(1);
         langButton[0].setText(language[0].getDisplayLanguage());
         langButton[1].setText(language[1].getDisplayLanguage());
+        clickFinish(null);
     }
 
     private void showAbout() {

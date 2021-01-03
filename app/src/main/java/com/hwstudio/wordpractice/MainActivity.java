@@ -17,7 +17,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,14 +24,6 @@ import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextWatcher;
-import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,8 +32,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
@@ -76,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private final UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private static String[] listString = new String[2];
     private String[] wordString = new String[2];
-//    private SpannableString[] spanString = new SpannableString[2];
+    //    private SpannableString[] spanString = new SpannableString[2];
     //private ForegroundColorSpan wordSpan;// = new ForegroundColorSpan[2];
     //    private boolean[] isSpanning = new boolean[2];
     //private int[] wordStart = new int[2];
@@ -87,11 +76,17 @@ public class MainActivity extends AppCompatActivity {
     private int repeatCount;
     private final EditText[] listEditText = new EditText[2];
     private final Button[] langButton = new Button[2];
+    private Button finishButton, editButton;
     private ImageButton playButton, pauseButton, rewindButton;
-    private ScrollView mainScrollView;
+    private HorizontalScrollView[] editTextScrollView = new HorizontalScrollView[2];
+    private HorizontalScrollView[] recyclerScrollView = new HorizontalScrollView[2];
+//    private ScrollView mainScrollView;
     private RecyclerView[] listRecyclerView = new RecyclerView[2];
     private ListAdapter[] listAdapter = new ListAdapter[2];
     private RecyclerView.LayoutManager[] layoutManager = new RecyclerView.LayoutManager[2];
+    private RecyclerView[] bgRecyclerView = new RecyclerView[2];
+    private BackgroundAdapter[] bgAdapter = new BackgroundAdapter[2];
+    private RecyclerView.LayoutManager[] bgLayoutManager = new RecyclerView.LayoutManager[2];
     private Handler delayHandler;
 
     @Override
@@ -100,10 +95,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         loadSettings();
-        for (int i = 0; i < 2; i++) {
-            initVariable(i);
-            initTTS(i);
-        }
+        //for (int i = 0; i < 2; i++) {
+        delayHandler = new Handler();
+        initTTS(0);
+        initTTS(1);
         initView();
         utterance[0] = new UtteranceProgressListener() {
             @Override
@@ -144,15 +139,15 @@ public class MainActivity extends AppCompatActivity {
                                 isRepeating = true;
                                 speakString(0);
                             } else {
-                                    isRepeating = false;
-                                    repeatCount = repeatNum;
-                                    currentLine++
-                                        if (currentLine >= ListAdapter[0].getItemCount() || currentLine >= ListAdapter[1].getItemCount(){
-                                            clickStop(null);
-                                            currentLine=0;
-                                        } else{
-                                              pickWord(0);
-                                        }
+                                isRepeating = false;
+                                repeatCount = repeatNum;
+                                currentLine++;
+                                if (currentLine >= listAdapter[0].getItemCount() || currentLine >= listAdapter[1].getItemCount()) {
+                                    clickStop(null);
+                                    currentLine = 0;
+                                } else {
+                                    pickWord(0);
+                                }
                             }
                         }
                     }, lineDelay * 500);
@@ -183,19 +178,13 @@ public class MainActivity extends AppCompatActivity {
         language[1] = new Locale(sharedPref.getString(getString(R.string.prefLanguage1), "en_US"));
     }
 
-    private void initVariable(int listNum) {
+    private void initTTS(int listNum) {
         tts[listNum] = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
 
             }
         });
-        delayHandler = new Handler();
-        wordSpan = new ForegroundColorSpan(Color.RED);
-//        wordSpan[1] = new ForegroundColorSpan(Color.RED);
-    }
-
-    private void initTTS(int listNum) {
         setLanguage(listNum);
         setSpeechRate(listNum);
         setPitch(listNum);
@@ -208,15 +197,25 @@ public class MainActivity extends AppCompatActivity {
         listEditText[1].setTextSize(textSize[1]);
 //        backgroundTextView[0] = findViewById(R.id.background0TextView);
 //        backgroundTextView[1] = findViewById(R.id.background1TextView);
-        listRecyclerView[0]=findViewById(R.id.list0RecyclerView);
-        listRecyclerView[1]=findViewById(R.id.list1RecyclerView);
+        listRecyclerView[0] = findViewById(R.id.list0RecyclerView);
+        listRecyclerView[1] = findViewById(R.id.list1RecyclerView);
         listRecyclerView[0].setHasFixedSize(true);
         listRecyclerView[1].setHasFixedSize(true);
+        bgRecyclerView[0] = findViewById(R.id.bg0RecyclerView);
+        bgRecyclerView[1] = findViewById(R.id.bg1RecyclerView);
+        bgRecyclerView[0].setHasFixedSize(true);
+        bgRecyclerView[1].setHasFixedSize(true);
+        editTextScrollView[0]=findViewById(R.id.editText0ScrollView);
+        editTextScrollView[1]=findViewById(R.id.editText1ScrollView);
+        recyclerScrollView[0]=findViewById(R.id.recycler0ScrollView);
+        recyclerScrollView[1]=findViewById(R.id.recycler1ScrollView);
         langButton[0] = findViewById(R.id.lang0Button);
         langButton[1] = findViewById(R.id.lang1Button);
         langButton[0].setText(language[0].getDisplayLanguage());
         langButton[1].setText(language[1].getDisplayLanguage());
-        mainScrollView = findViewById(R.id.mainScrollView);
+//        mainScrollView = findViewById(R.id.mainScrollView);
+        finishButton=findViewById(R.id.finishButton);
+        editButton=findViewById(R.id.editButton);
         playButton = findViewById(R.id.playButton);
         pauseButton = findViewById(R.id.pauseButton);
         rewindButton = findViewById(R.id.stopButton);
@@ -257,20 +256,22 @@ public class MainActivity extends AppCompatActivity {
 //        addBackgroundSpan();
     }
 
-    private void setMultipleEnable(boolean canFinish, canEdit, canPlay, canPause, canRewind){
+    private void setMultipleEnable(boolean canFinish, boolean canEdit,boolean canPlay,boolean canPause,boolean canRewind) {
         finishButton.setEnabled(canFinish);
         editButton.setEnabled(canEdit);
         playButton.setEnabled(canPlay);
         pauseButton.setEnabled(canPause);
         rewindButton.setEnabled(canRewind);
     }
-                                             
-    public void clickFinish(View view){
+
+    public void clickFinish(View view) {
         setMultipleEnable(false, true, true, false, false);
         currentLine = 0;
+        playingState=0;
         int[] lineCount = new int[2];
         for (int listNum = 0; listNum < 2; listNum++) {
-            if (listString[listNum] != null) {
+          //  if (listString[listNum] != null) {
+            listString[listNum]= listEditText[listNum].getText().toString();
                 String tempList = listString[listNum].replaceAll("\n", "");
                 lineCount[listNum] = listString[listNum].length() - tempList.length();
                 String[] tempString = new String[lineCount[listNum] + 1];
@@ -283,24 +284,40 @@ public class MainActivity extends AppCompatActivity {
                 tempString[lineCount[listNum]] = listString[listNum].substring(wordStart);
                 layoutManager[listNum] = new LinearLayoutManager(this);
                 listRecyclerView[listNum].setLayoutManager(layoutManager[listNum]);
-                listAdapter[listNum] = new ListAdapter(tempString);
+                listAdapter[listNum] = new ListAdapter(tempString, textSize[listNum]);
                 listRecyclerView[listNum].setAdapter(listAdapter[listNum]);
-                listRecyclerView[listNum].setVisibility(View.VISIBLE);
-                listEditText[listNum].setVisibility(View.INVISIBLE);
-            }
+                if (hasListBackground){
+                    bgLayoutManager[listNum] = new LinearLayoutManager(this);
+                    bgRecyclerView[listNum].setLayoutManager(bgLayoutManager[listNum]);
+                    bgAdapter[listNum] = new BackgroundAdapter(tempString, textSize[listNum]);
+                    bgRecyclerView[listNum].setAdapter(bgAdapter[listNum]);
+                    bgRecyclerView[listNum].setVisibility(View.VISIBLE);
+                    recyclerScrollView[listNum].setBackground(null);
+                }else{
+                    recyclerScrollView[listNum].setBackgroundColor(R.attr.editTextBackground);
+                }
+                //listRecyclerView[listNum].setVisibility(View.VISIBLE);
+                //listEditText[listNum].setVisibility(View.INVISIBLE);
+            editTextScrollView[listNum].setVisibility(View.INVISIBLE);
+            recyclerScrollView[listNum].setVisibility(View.VISIBLE);
+           // }
         }
         if (lineCount[0] != lineCount[1]) {
             Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
         }
     }
-                                             
-     public void clickEdit(View view){
-         setMultipleEnable(true, false, false, false, false);
-         for (int i = 0; i <2; i++){
-             listRecyclerView[listNum].setVisibility(View.INVISIBLE);
-                listEditText[listNum].setVisibility(View.VISIBLE);
-            }
-     }
+
+    public void clickEdit(View view) {
+        setMultipleEnable(true, false, false, false, false);
+        playingState=0;
+        for (int listNum = 0; listNum < 2; listNum++) {
+            //listRecyclerView[listNum].setVisibility(View.INVISIBLE);
+            //listEditText[listNum].setVisibility(View.VISIBLE);
+            editTextScrollView[listNum].setVisibility(View.VISIBLE);
+            recyclerScrollView[listNum].setVisibility(View.INVISIBLE);
+            bgRecyclerView[listNum].setVisibility(View.INVISIBLE);
+        }
+    }
 
     public void clickPlay(View view) {
         if (listEditText[0].getText().length() == 0 || listEditText[1].getText().length() == 0) {
@@ -317,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
             playingState = 1;
             for (int i = 0; i < 2; i++) {
                 listString[i] = listEditText[i].getText().toString();
-                wordEnd[i] = -1;
+//                wordEnd[i] = -1;
             }
             isRepeating = false;
             repeatCount = repeatNum;
@@ -326,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pickWord(int listNum) {
-        wordString[listNum] = listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine).getText();
+//        wordString[listNum] = listRecyclerView[listNum].findViewHolderForLayoutPosition(currentLine);
         speakString(listNum);
     }
 

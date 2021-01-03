@@ -9,12 +9,12 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+public class BackgroundAdapter extends RecyclerView.Adapter<BackgroundAdapter.ViewHolder> {
 
     private String[] localDataSet;
-    private int textSize;
+//    private int textSize;
 //    private boolean hasBackground;
-//    private int[] color = new int[5];
+    private int[] color = new int[5];
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
@@ -30,43 +30,39 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             return textView;
         }
 
-        public String getText(){
-            textView.setTextColor(Color.RED);
-            return textView.getText().toString();
-        }
     }
 
-    public ListAdapter(String[] dataSet, int getTextSize){//}, boolean getHasBackground) {
+    public BackgroundAdapter(String[] dataSet, int getTextSize){//}, boolean getHasBackground) {
         localDataSet = dataSet;
-        textSize = getTextSize;
+//        textSize = getTextSize;
 //        hasBackground = getHasBackground;
-//          color[0] = R.color.gray0;
-//                    color[1] = R.color.gray1;
-//                    color[2] = R.color.gray2;
-//                    color[3] = R.color.gray3;
-//                    color[4] = R.color.gray4;
+          color[0] = R.color.gray0;
+                    color[1] = R.color.gray1;
+                    color[2] = R.color.gray2;
+                    color[3] = R.color.gray3;
+                    color[4] = R.color.gray4;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public ListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.text_row_item, viewGroup, false);
-
-        return new ListAdapter.ViewHolder(view);
+                  
+        return new ViewHolder(view);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ListAdapter.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getTextView().setTextSize(textSize);
+//        viewHolder.getTextView().setTextSize(textSize);
         viewHolder.getTextView().setText(localDataSet[position]);
 //        if (hasBackground){
-//            viewHolder.getTextView().setBackgroundResource(color[position%5]);
+            viewHolder.getTextView().setBackgroundResource(color[position%5]);
 //        }
     }
 
@@ -76,3 +72,4 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         return localDataSet.length;
     }
 }
+

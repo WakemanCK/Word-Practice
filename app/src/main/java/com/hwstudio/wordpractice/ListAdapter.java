@@ -33,13 +33,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             return textView.getText().toString();
         }
 
-        public void highlightString(){
+        public void highlightString() {
             originalColor = textView.getCurrentTextColor();
             textView.setTextColor(Color.RED);
         }
 
-        public void clearHighlight(){
-            textView.setTextColor(originalColor);
+        public void clearHighlight() {
+            textView.setTextColor(R.attr.colorPrimary);
         }
     }
 

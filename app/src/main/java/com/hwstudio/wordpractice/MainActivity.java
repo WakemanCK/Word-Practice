@@ -64,29 +64,28 @@ public class MainActivity extends AppCompatActivity {
 
     // Variables
     private int currentLine, repeatCount;
-    private boolean isRepeating;
+    private boolean isRepeating, isPlaying2ndLang;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
-    private static final TextToSpeech[] tts = new TextToSpeech[2];
+    private static TextToSpeech[] tts = new TextToSpeech[2];
     ListAdapter.ViewHolder[] viewHolder = new ListAdapter.ViewHolder[2];
-    private final UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
+    private UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private Handler delayHandler;
-    // Not saving to ViewModel below this
-    private static final String[] listString = new String[2];
-    private final String[] wordString = new String[2];
+    private static String[] listString = new String[2];
+    private String[] wordString = new String[2];
     MainViewModel model;
 
     // Views
-    private final EditText[] listEditText = new EditText[2];
-    private final Button[] langButton = new Button[2];
+    private EditText[] listEditText = new EditText[2];
+    private Button[] langButton = new Button[2];
     private Button finishButton, editButton;
     private ImageButton playButton, pauseButton, stopButton;
-    private final HorizontalScrollView[] recyclerScrollView = new HorizontalScrollView[2];
-    private final RecyclerView[] listRecyclerView = new RecyclerView[2];
-    private final ListAdapter[] listAdapter = new ListAdapter[2];
-    private final RecyclerView.LayoutManager[] layoutManager = new RecyclerView.LayoutManager[2];
-    private final RecyclerView[] bgRecyclerView = new RecyclerView[2];
-    private final BackgroundAdapter[] bgAdapter = new BackgroundAdapter[2];
-    private final RecyclerView.LayoutManager[] bgLayoutManager = new RecyclerView.LayoutManager[2];
+    private HorizontalScrollView[] recyclerScrollView = new HorizontalScrollView[2];
+    private RecyclerView[] listRecyclerView = new RecyclerView[2];
+    private ListAdapter[] listAdapter = new ListAdapter[2];
+    private RecyclerView.LayoutManager[] layoutManager = new RecyclerView.LayoutManager[2];
+    private RecyclerView[] bgRecyclerView = new RecyclerView[2];
+    private BackgroundAdapter[] bgAdapter = new BackgroundAdapter[2];
+    private RecyclerView.LayoutManager[] bgLayoutManager = new RecyclerView.LayoutManager[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,102 +93,50 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         loadSettings();
-        //for (int i = 0; i < 2; i++) {
-        //delayHandler = new Handler();
-        //    initTTS(0);
-        //  initTTS(1);
         initView();
-  /*      utterance[0] = new UtteranceProgressListener() {
-            @Override
-            public void onStart(String s) {
-            }
-
-            @Override
-            public void onDone(String s) {
-                viewHolder[0].clearHighlight();
-                delayHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isRepeating) {
-                            speakString(1);
-                        } else {
-                            pickWord(1);
-                        }
-                    }
-                }, wordDelay * 500);
-            }
-
-            @Override
-            public void onError(String s) {
-            }
-        };
-        utterance[1] = new UtteranceProgressListener() {
-            @Override
-            public void onStart(String s) {
-            }
-
-            @Override
-            public void onDone(String s) {
-                if (playingState == 1) {
-                    viewHolder[1].clearHighlight();
-                    delayHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (repeatCount > 1) {
-                                repeatCount--;
-                                isRepeating = true;
-                                speakString(0);
-                            } else {
-                                isRepeating = false;
-                                repeatCount = repeatNum;
-                                currentLine++;
-                                if (currentLine >= listAdapter[0].getItemCount() || currentLine >= listAdapter[1].getItemCount()) {
-                                    clickStop(null);
-                                } else {
-                                    pickWord(0);
-                                }
-                            }
-                        }
-                    }, lineDelay * 500);
-                }
-                if (playingState == 0) {
-                    viewHolder[1].clearHighlight();
-                }
-            }
-
-            @Override
-            public void onError(String s) {
-            }
-        };*/
         // Prepare UI
         model = new ViewModelProvider(this).get(MainViewModel.class);
         setMultipleEnable(model.isCanFinish(), model.isCanEdit(), model.isCanPlay(), model.isCanPause(), model.isCanStop());
         if (model.isHasRecycler()) {
             drawRecyclerView(model.getListString0(), model.getListString1());
         }
+        langButton[0].setText(language[0].getDisplayLanguage());
+        langButton[1].setText(language[1].getDisplayLanguage());
         // Prepare action
-        currentLine = model.getCurrentLine();
-        repeatCount = model.getRepeatCount();
-        playingState = model.getPlayingState();
-        isRepeating = model.isRepeating();
-        tts[0] = model.getTts0();
-        tts[1] = model.getTts1();
-        if (tts[0] == null) {
-            initTTS(0);
-        }
-        if (tts[1] == null) {
-            initTTS(1);
-        }
-        viewHolder[0] = model.getViewHolder0();
-        viewHolder[1] = model.getViewHolder1();
-        utterance[0] = model.getUtterance0();
-        utterance[1]= model.getUtterance1();
-        if (utterance[0]==null||utterance[1]==null){
+        if (model.isChangingState()) {
+            currentLine = model.getCurrentLine();
+            repeatCount = model.getRepeatCount();
+            playingState = model.getPlayingState();
+            isRepeating = model.isRepeating();
+            tts[0] = model.getTts0();
+            tts[1] = model.getTts1();
             setUtterance();
-        }
-        delayHandler = model.getDelayHandler();
-        if (delayHandler==null){
-            delayHandler=new Handler();
+            delayHandler = model.getDelayHandler();
+            isPlaying2ndLang = model.isPlaying2ndLang();
+            wordString[0] = model.getWordString0();
+            wordString[1] = model.getWordString1();
+            if (playingState > 0) {
+                delayHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewHolder[0] = (ListAdapter.ViewHolder) listRecyclerView[0].findViewHolderForLayoutPosition(currentLine);
+                        viewHolder[1] = (ListAdapter.ViewHolder) listRecyclerView[1].findViewHolderForLayoutPosition(currentLine);
+                        if (isPlaying2ndLang) {
+                            viewHolder[1].highlightString();
+                        } else {
+                            viewHolder[0].highlightString();
+                        }
+                        if (playingState == 1) {
+                            clickPlay(null);
+                        }
+                    }
+                }, 100);
+            }
+        } else {
+            initTTS(0);
+            initTTS(1);
+            setUtterance();
+            delayHandler = new Handler();
         }
     }
 
@@ -253,25 +200,31 @@ public class MainActivity extends AppCompatActivity {
         stopButton = findViewById(R.id.stopButton);
     }
 
-    private void setUtterance(){
+    private void setUtterance() {
         utterance[0] = new UtteranceProgressListener() {
             @Override
             public void onStart(String s) {
+                isPlaying2ndLang = false;
             }
 
             @Override
             public void onDone(String s) {
-                viewHolder[0].clearHighlight();
-                delayHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isRepeating) {
-                            speakString(1);
-                        } else {
-                            pickWord(1);
+                if (playingState == 1) {
+                    viewHolder[0].clearHighlight();
+                    delayHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isRepeating) {
+                                speakString(1);
+                            } else {
+                                pickWord(1);
+                            }
                         }
-                    }
-                }, wordDelay * 500);
+                    }, wordDelay * 500);
+                }
+                if (playingState == 0) {
+                    viewHolder[0].clearHighlight();
+                }
             }
 
             @Override
@@ -281,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
         utterance[1] = new UtteranceProgressListener() {
             @Override
             public void onStart(String s) {
+                isPlaying2ndLang = true;
             }
 
             @Override
@@ -338,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
         listString[0] = getListString0;
         listString[1] = getListString1;
         for (int listNum = 0; listNum < 2; listNum++) {
-//            listString[listNum] = listEditText[listNum].getText().toString();
             String tempList = listString[listNum].replaceAll("\n", "");
             lineCount[listNum] = listString[listNum].length() - tempList.length();
             String[] tempString = new String[lineCount[listNum] + 1];
@@ -388,12 +341,15 @@ public class MainActivity extends AppCompatActivity {
         listEditText[1].setEnabled(false);
         if (playingState == 2) {
             playingState = 1;
-            utterance[1].onDone("");
+            if (isPlaying2ndLang) {
+                utterance[1].onDone("");
+            } else {
+                utterance[0].onDone("");
+            }
         } else {
             playingState = 1;
             for (int i = 0; i < 2; i++) {
                 listString[i] = listEditText[i].getText().toString();
-//                wordEnd[i] = -1;
             }
             isRepeating = false;
             repeatCount = repeatNum;
@@ -402,8 +358,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pickWord(int listNum) {
-//        wordString[listNum] = listRecyclerView[listNum].findViewHolderForLayoutPosition(currentLine);
-        viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine);
+        viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForLayoutPosition(currentLine);
         wordString[listNum] = viewHolder[listNum].getText();
         speakString(listNum);
     }
@@ -710,11 +665,15 @@ public class MainActivity extends AppCompatActivity {
         model.setRepeating(isRepeating);
         model.setTts0(tts[0]);
         model.setTts1(tts[1]);
-        model.setViewHolder0(viewHolder[0]);
-        model.setViewHolder1(viewHolder[1]);
-        model.setUtterance0(utterance[0]);
-        model.setUtterance1(utterance[1]);
         model.setDelayHandler(delayHandler);
+        delayHandler.removeCallbacksAndMessages(null);
+        model.setPlaying2ndLang(isPlaying2ndLang);
+        model.setWordString0(wordString[0]);
+        model.setWordString1(wordString[1]);
+        model.setChangingState(true);
+        if (playingState == 1) {
+            clickPause(null);
+        }
         super.onDestroy();
     }
 }

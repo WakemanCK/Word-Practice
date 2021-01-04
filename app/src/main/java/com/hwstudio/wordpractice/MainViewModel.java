@@ -2,19 +2,25 @@ package com.hwstudio.wordpractice;
 
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 
 import androidx.lifecycle.ViewModel;
 
 public class MainViewModel extends ViewModel {
-    private boolean canFinish=true, canEdit, canPlay,canPause,canStop, hasRecycler;
-    private String listString0, listString1;
+    private boolean isChangingState;
+    private boolean canFinish = true, canEdit, canPlay, canPause, canStop, hasRecycler;
+    private String listString0, listString1, wordString0, wordString1;
     private int currentLine, repeatCount, playingState;
-    private boolean isRepeating;
+    private boolean isRepeating, isPlaying2ndLang;
     private TextToSpeech tts0, tts1;
-    private ListAdapter.ViewHolder viewHolder0, viewHolder1;
-    private UtteranceProgressListener utterance0, utterance1;
     private Handler delayHandler;
+
+    public boolean isChangingState() {
+        return isChangingState;
+    }
+
+    public void setChangingState(boolean changingState) {
+        isChangingState = changingState;
+    }
 
     public boolean isCanFinish() {
         return canFinish;
@@ -128,43 +134,35 @@ public class MainViewModel extends ViewModel {
         this.tts1 = tts1;
     }
 
-    public ListAdapter.ViewHolder getViewHolder0() {
-        return viewHolder0;
-    }
-
-    public void setViewHolder0(ListAdapter.ViewHolder viewHolder0) {
-        this.viewHolder0 = viewHolder0;
-    }
-
-    public ListAdapter.ViewHolder getViewHolder1() {
-        return viewHolder1;
-    }
-
-    public void setViewHolder1(ListAdapter.ViewHolder viewHolder1) {
-        this.viewHolder1 = viewHolder1;
-    }
-
-    public UtteranceProgressListener getUtterance0() {
-        return utterance0;
-    }
-
-    public void setUtterance0(UtteranceProgressListener utterance0) {
-        this.utterance0 = utterance0;
-    }
-
-    public UtteranceProgressListener getUtterance1() {
-        return utterance1;
-    }
-
-    public void setUtterance1(UtteranceProgressListener utterance1) {
-        this.utterance1 = utterance1;
-    }
-
     public Handler getDelayHandler() {
         return delayHandler;
     }
 
     public void setDelayHandler(Handler delayHandler) {
         this.delayHandler = delayHandler;
+    }
+
+    public boolean isPlaying2ndLang() {
+        return isPlaying2ndLang;
+    }
+
+    public void setPlaying2ndLang(boolean playing2ndLang) {
+        isPlaying2ndLang = playing2ndLang;
+    }
+
+    public String getWordString0() {
+        return wordString0;
+    }
+
+    public void setWordString0(String wordString0) {
+        this.wordString0 = wordString0;
+    }
+
+    public String getWordString1() {
+        return wordString1;
+    }
+
+    public void setWordString1(String wordString1) {
+        this.wordString1 = wordString1;
     }
 }

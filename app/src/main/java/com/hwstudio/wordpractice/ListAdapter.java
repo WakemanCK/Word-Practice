@@ -16,7 +16,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-        private int originalColor;
+//        private int originalColor;
 
         public ViewHolder(View view) {
             super(view);
@@ -34,7 +34,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         }
 
         public void highlightString() {
-            originalColor = textView.getCurrentTextColor();
+//            originalColor = textView.getCurrentTextColor();
             textView.setTextColor(Color.RED);
         }
 

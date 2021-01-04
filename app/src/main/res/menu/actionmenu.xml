@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
+  <!--  <item
         android:id="@+id/loadLists"
         android:icon="@drawable/ic_round_folder_open_24"
         android:title="@string/loadLists"
@@ -11,7 +11,7 @@
         android:id="@+id/saveLists"
         android:icon="@drawable/ic_round_save_24"
         android:title="@string/saveLists"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />-->
     <item
         android:id="@+id/loadExamples"
         android:title="@string/loadExamples"

@@ -57,37 +57,6 @@
             android:layout_height="wrap_content"
             android:background="?attr/editTextColor">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bg0RecyclerView"
-                android:layout_width="0dp"
-                android:visibility="invisible"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@+id/recycler0ScrollView"
-                app:layout_constraintEnd_toEndOf="@+id/recycler0ScrollView"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <HorizontalScrollView
-                android:id="@+id/recycler0ScrollView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="?attr/editTextBackground"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/editText0ScrollView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list0RecyclerView"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="12dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </HorizontalScrollView>
-
             <HorizontalScrollView
                 android:id="@+id/editText0ScrollView"
                 android:layout_width="0dp"
@@ -104,6 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:hint="@string/editText0Hint"
                     android:layout_marginEnd="8dp"
                     android:fontFamily="monospace"
                     android:lineSpacingExtra="6sp"
@@ -113,32 +83,33 @@
             </HorizontalScrollView>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bg1RecyclerView"
+                android:id="@+id/bg0RecyclerView"
                 android:layout_width="0dp"
+                android:layout_marginTop="10dp"
                 android:visibility="invisible"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@+id/recycler1ScrollView"
-                app:layout_constraintEnd_toEndOf="@+id/recycler1ScrollView"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/recycler0ScrollView"
+                app:layout_constraintEnd_toEndOf="@+id/recycler0ScrollView"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <HorizontalScrollView
-                android:id="@+id/recycler1ScrollView"
+                android:id="@+id/recycler0ScrollView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="?attr/editTextBackground"
                 android:visibility="invisible"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/editText1ScrollView"
+                app:layout_constraintEnd_toEndOf="@+id/editText0ScrollView"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list1RecyclerView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:id="@+id/list0RecyclerView"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="12dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </HorizontalScrollView>
@@ -161,9 +132,42 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:fontFamily="monospace"
+                    android:hint="@string/editText1Hint"
                     android:lineSpacingExtra="6sp"
                     android:textSize="36sp"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </HorizontalScrollView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bg1RecyclerView"
+                android:layout_width="0dp"
+                android:layout_marginTop="10dp"
+                android:visibility="invisible"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/recycler1ScrollView"
+                app:layout_constraintEnd_toEndOf="@+id/recycler1ScrollView"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <HorizontalScrollView
+                android:id="@+id/recycler1ScrollView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/editText1ScrollView"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/list1RecyclerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="12dp"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </HorizontalScrollView>
 
@@ -219,24 +223,48 @@
         android:id="@+id/finishButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:onClick="clickFinish"
         android:text="@string/finishButton"
         app:layout_constraintBottom_toTopOf="@+id/playButton"
-        app:layout_constraintEnd_toStartOf="@+id/editButton"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="@+id/playButton"
         app:layout_constraintStart_toStartOf="@+id/playButton" />
 
     <Button
         android:id="@+id/editButton"
         android:layout_width="0dp"
-        android:onClick="clickEdit"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:onClick="clickEdit"
         android:text="@string/editButton"
         app:layout_constraintBottom_toTopOf="@+id/playButton"
+        app:layout_constraintEnd_toEndOf="@+id/playButton"
+        app:layout_constraintStart_toStartOf="@+id/playButton" />
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:onClick="clickSave"
+        android:text="@string/saveButton"
+        app:layout_constraintBottom_toTopOf="@+id/pauseButton"
+        app:layout_constraintEnd_toEndOf="@+id/pauseButton"
+        app:layout_constraintStart_toStartOf="@+id/pauseButton" />
+
+    <Button
+        android:id="@+id/loadButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:onClick="clickLoad"
+        android:text="@string/loadButton"
+        app:layout_constraintBottom_toTopOf="@+id/stopButton"
         app:layout_constraintEnd_toEndOf="@+id/stopButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/finishButton" />
+        app:layout_constraintStart_toStartOf="@+id/stopButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

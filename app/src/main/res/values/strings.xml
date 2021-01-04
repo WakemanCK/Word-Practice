@@ -47,6 +47,9 @@
     <string name="prefSharedPref">prefSharedPref</string>
     <string name="emptyListErr">Please enter some words to the lists!</string>
     <string name="unequalLengthErr">Warning: the lists are not equal in length!</string>
-    <string name="finishButton">Finish editing</string>
-    <string name="editButton">Edit lists</string>
+    <string name="finishButton">Done</string>
+    <string name="editButton">Edit</string>
+    <string name="editText0Hint">Please enter the list for language 1 here.</string>
+    <string name="editText1Hint">Please enter the list for language 2 here.</string>
+    <string name="pauseButton">Pause</string>
 </resources>

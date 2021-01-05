@@ -16,13 +16,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
-//        private int originalColor;
+        private int originalColor;
 
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
 
             textView = view.findViewById(R.id.itemTextView);
+            originalColor = textView.getCurrentTextColor();
         }
 
         public TextView getTextView() {
@@ -39,7 +40,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         }
 
         public void clearHighlight() {
-            textView.setTextColor(R.attr.colorPrimary);
+            textView.setTextColor(originalColor);
         }
     }
 

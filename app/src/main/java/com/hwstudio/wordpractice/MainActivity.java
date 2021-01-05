@@ -402,14 +402,28 @@ public class MainActivity extends AppCompatActivity {
     }
     
     public class LanguageDialogFragment extends DialogFragment {
+        private String dialogTitle;
+        
+        public LanguageDialogFragment(String getTitle){
+               dialogTitle = getTitle;
+        }
+        
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             Set<Locale> languageSet = tts[0].getAvailableLanguages();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(R.string.pickLanguageTitle)
+            builder.setTitle(dialogTitle)
                 .setItems(languageSet, new DialogInterface.OnClickListener() {
-               public void onClick(DialogInterface dialog, int i) {
-                   
+               public void onClick(DialogInterface dialog, int item) {
+                   int listNum;
+                   if (dialog.getActionBar().getTitle.equals(R.string.pickLanguage0Title){
+                       listNum = 0;
+                   }else{
+                       listNum = 1;
+                   }
+                       language[listNum] = languageSet.get(item);
+                       setLanguage[listNum]
+                       langButton[listNum].setText(language[listNum].getDisplayLanguage());
                }
             });
             return builder.create();
@@ -417,8 +431,13 @@ public class MainActivity extends AppCompatActivity {
     }
     
     public void clickLang0(View view){
-        LanguageDialogFragment lang0Fragment = new LanguageDialogFragment();
+        LanguageDialogFragment lang0Fragment = new LanguageDialogFragment(R.string.pickLanguage0Title);
         lang0Fragment.show(getSupportFragmentManager(), "lang0");
+    }
+                                               
+    public void clickLang1(View view){
+        LanguageDialogFragment lang1Fragment = new LanguageDialogFragment(R.string.pickLanguage1Title);
+        lang1Fragment.show(getSupportFragmentManager(), "lang1");
     }
 
     @Override

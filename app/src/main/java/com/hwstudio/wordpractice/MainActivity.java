@@ -400,6 +400,26 @@ public class MainActivity extends AppCompatActivity {
         listEditText[0].setEnabled(true);
         listEditText[1].setEnabled(true);
     }
+    
+    public class LanguageDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            Set<Locale> languageSet = tts[0].getAvailableLanguages();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.pickLanguageTitle)
+                .setItems(languageSet, new DialogInterface.OnClickListener() {
+               public void onClick(DialogInterface dialog, int i) {
+                   
+               }
+            });
+            return builder.create();
+        }
+    }
+    
+    public void clickLang0(View view){
+        LanguageDialogFragment lang0Fragment = new LanguageDialogFragment();
+        lang0Fragment.show(getSupportFragmentManager(), "lang0");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu getMenu) {

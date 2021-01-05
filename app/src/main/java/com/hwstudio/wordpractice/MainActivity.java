@@ -44,8 +44,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -402,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
     }
     
     public class LanguageDialogFragment extends DialogFragment {
-        private String dialogTitle;
+        private final String dialogTitle;
         
         public LanguageDialogFragment(String getTitle){
                dialogTitle = getTitle;
@@ -410,19 +414,29 @@ public class MainActivity extends AppCompatActivity {
         
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-            Set<Locale> languageSet = tts[0].getAvailableLanguages();
+            Locale[] locales = Locale.getAvailableLocales();
+            List<Locale> localeList = new ArrayList<>();
+            List<String> localeString = new ArrayList<>();
+            for (Locale locale : locales) {
+                int res = tts[0].isLanguageAvailable(locale);
+                if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
+                    localeList.add(locale);
+                }
+                localeString.add(locale.toString());
+            }
+            String[] test = new String[0];
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(dialogTitle)
-                .setItems(languageSet, new DialogInterface.OnClickListener() {
+                .setItems(test, new DialogInterface.OnClickListener() {
                public void onClick(DialogInterface dialog, int item) {
                    int listNum;
-                   if (dialog.getActionBar().getTitle.equals(R.string.pickLanguage0Title){
+                   if (dialog.toString().equals(getString(R.string.pickLanguage0Title))){
                        listNum = 0;
                    }else{
                        listNum = 1;
                    }
-                       language[listNum] = languageSet.get(item);
-                       setLanguage[listNum]
+                       language[listNum] = Locale.forLanguageTag(dialog.toString());
+                       setLanguage(listNum);
                        langButton[listNum].setText(language[listNum].getDisplayLanguage());
                }
             });

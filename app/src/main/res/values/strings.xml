@@ -52,4 +52,6 @@
     <string name="editText0Hint">Please enter the list for language 1 here.</string>
     <string name="editText1Hint">Please enter the list for language 2 here.</string>
     <string name="pauseButton">Pause</string>
+    <string name="pickLanguage0Title">Please choose language 1</string>
+    <string name="pickLanguage1Title">Please choose language 2</string>
 </resources>

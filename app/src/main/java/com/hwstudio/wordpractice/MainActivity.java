@@ -10,13 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,12 +40,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private int currentLine, repeatCount;
     private boolean isRepeating, isPlaying2ndLang;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
-    private static TextToSpeech[] tts = new TextToSpeech[2];
+    public static TextToSpeech[] tts = new TextToSpeech[2];
     ListAdapter.ViewHolder[] viewHolder = new ListAdapter.ViewHolder[2];
     private UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private Handler delayHandler;
@@ -80,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Views
     private EditText[] listEditText = new EditText[2];
-    private Button[] langButton = new Button[2];
+    public Button[] langButton = new Button[2];
     private Button finishButton, editButton;
     private ImageButton playButton, pauseButton, stopButton;
     private HorizontalScrollView[] recyclerScrollView = new HorizontalScrollView[2];
@@ -367,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
         speakString(listNum);
     }
 
-    private void setLanguage(int listNum) {
+    public void setLanguage(int listNum) {
         tts[listNum].setLanguage(language[listNum]);
     }
 
@@ -404,53 +396,14 @@ public class MainActivity extends AppCompatActivity {
         listEditText[0].setEnabled(true);
         listEditText[1].setEnabled(true);
     }
-    
-    public class LanguageDialogFragment extends DialogFragment {
-        private final String dialogTitle;
-        
-        public LanguageDialogFragment(String getTitle){
-               dialogTitle = getTitle;
-        }
-        
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            Locale[] locales = Locale.getAvailableLocales();
-            List<Locale> localeList = new ArrayList<>();
-            List<String> localeString = new ArrayList<>();
-            for (Locale locale : locales) {
-                int res = tts[0].isLanguageAvailable(locale);
-                if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
-                    localeList.add(locale);
-                }
-                localeString.add(locale.toString());
-            }
-            String[] test = new String[0];
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(dialogTitle)
-                .setItems(test, new DialogInterface.OnClickListener() {
-               public void onClick(DialogInterface dialog, int item) {
-                   int listNum;
-                   if (dialog.toString().equals(getString(R.string.pickLanguage0Title))){
-                       listNum = 0;
-                   }else{
-                       listNum = 1;
-                   }
-                       language[listNum] = Locale.forLanguageTag(dialog.toString());
-                       setLanguage(listNum);
-                       langButton[listNum].setText(language[listNum].getDisplayLanguage());
-               }
-            });
-            return builder.create();
-        }
-    }
-    
-    public void clickLang0(View view){
-        LanguageDialogFragment lang0Fragment = new LanguageDialogFragment(R.string.pickLanguage0Title);
+
+    public void clickLang0(View view) {
+        LanguageDialogFragment lang0Fragment = new LanguageDialogFragment(this, getString(R.string.pickLanguage0Title));
         lang0Fragment.show(getSupportFragmentManager(), "lang0");
     }
-                                               
-    public void clickLang1(View view){
-        LanguageDialogFragment lang1Fragment = new LanguageDialogFragment(R.string.pickLanguage1Title);
+
+    public void clickLang1(View view) {
+        LanguageDialogFragment lang1Fragment = new LanguageDialogFragment(this, getString(R.string.pickLanguage1Title));
         lang1Fragment.show(getSupportFragmentManager(), "lang1");
     }
 
@@ -568,31 +521,6 @@ public class MainActivity extends AppCompatActivity {
         saveDialogFragment.show(getSupportFragmentManager(), "save");
     }
 
-    public static class SaveDialogFragment extends DialogFragment {
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
-            final EditText saveEditText = new EditText(getActivity());
-            alertBuilder.setMessage(getString(R.string.saveDialogTextView))
-                    .setView(saveEditText)
-                    .setPositiveButton(getString(R.string.saveButton), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            String s = saveEditText.getText().toString();
-                            if (s.equals("")) {
-                                s = "WordPracticeList";
-                            }
-                            saveFile(s, getActivity());
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                        }
-                    });
-            return alertBuilder.create();
-        }
-    }
-
     public static void saveFile(String fileName, Context context) {
         String saveString = // Format:   !LANGUAGE_1! Locale name here !1!
                 "!LANGUAGE_1!" + language[0].toString() + "!1!\n" + listString[0] +
@@ -676,28 +604,6 @@ public class MainActivity extends AppCompatActivity {
     private void showAbout() {
         AboutDialogFragment aboutDialogFragment = new AboutDialogFragment();
         aboutDialogFragment.show(getSupportFragmentManager(), "about");
-    }
-
-    public static class AboutDialogFragment extends DialogFragment {
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            PackageInfo packageInfo = null;
-            try {
-                packageInfo = getContext().getApplicationContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            String s = String.format(Locale.ENGLISH, "%s v%s\nWakeman Chau\nhauwingstudio@hotmail.com\n© 2021\nAll rights reserved", getString(R.string.app_name), packageInfo.versionName);
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(R.string.aboutMenu)
-                    .setMessage(s)
-                    .setPositiveButton(R.string.okText, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                        }
-                    });
-            return builder.create();
-        }
     }
 
     @Override

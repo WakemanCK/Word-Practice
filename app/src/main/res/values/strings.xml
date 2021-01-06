@@ -49,8 +49,8 @@
     <string name="unequalLengthErr">Warning: the lists are not equal in length!</string>
     <string name="finishButton">Done</string>
     <string name="editButton">Edit</string>
-    <string name="editText0Hint">Please\n enter\n the list\n for language\n 1 here.</string>
-    <string name="editText1Hint">Please\n enter\n the list\n for language\n 2 here.</string>
+    <string name="editText0Hint">Please \nenter \nthe word \nlist for \nlanguage \n1 here.</string>
+    <string name="editText1Hint">Please \nenter \nthe word \nlist for \nlanguage \n2 here.</string>
     <string name="pauseButton">Pause</string>
     <string name="pickLanguage0Title">Please choose language 1</string>
     <string name="pickLanguage1Title">Please choose language 2</string>

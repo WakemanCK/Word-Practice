@@ -27,11 +27,11 @@ public class LanguageDialogFragment extends DialogFragment {
         List<Locale> localeList = new ArrayList<>();
         List<String> localeString = new ArrayList<>();
         for (Locale locale : locales) {
-            int res = MainActivity.tts[0].isLanguageAvailable(locale);
-            if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
+            //int res = MainActivity.tts[0].isLanguageAvailable(locale);
+            if ((MainActivity.tts[0].isLanguageAvailable(locale) == TextToSpeech.LANG_COUNTRY_VAR_AVAILABLE)){
                 localeList.add(locale);
+                localeString.add(locale.getDisplayLanguage());
             }
-            localeString.add(locale.toString());
         }
         String[] stringArray = localeString.toArray(new String[localeString.size()]);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

@@ -39,7 +39,7 @@ public class LanguageDialogFragment extends DialogFragment {
             .setItems(stringArray, new DialogInterface.OnClickListener() {
            public void onClick(DialogInterface dialog, int item) {
                int listNum;
-               if (dialog.toString().equals(getString(R.string.pickLanguage0Title))){
+               if (getTag().equals("lang0")){
                    listNum = 0;
                }else{
                    listNum = 1;

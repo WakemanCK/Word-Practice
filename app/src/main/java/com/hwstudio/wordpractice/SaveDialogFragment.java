@@ -10,7 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 public class SaveDialogFragment extends DialogFragment {
-    @NonNull
+    
+    
+      private final MainActivity mainActivity;
+    
+    public LanguageDialogFragment(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+            }  
+    
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());

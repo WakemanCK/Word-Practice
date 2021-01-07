@@ -17,11 +17,9 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ExampleDialogFragment extends DialogFragment {
     private final MainActivity mainActivity;
-    private final String dialogTitle;
-
-    public ExampleDialogFragment(MainActivity mainActivity, String getTitle) {
+    
+    public ExampleDialogFragment(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        dialogTitle = getTitle;
     }
 
     @Override
@@ -44,7 +42,7 @@ public class ExampleDialogFragment extends DialogFragment {
 
         // Code start
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(dialogTitle)
+        builder.setTitle(R.id.exampleTitle)
                 .setItems(exampleList, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         for (int listNum = 0; listNum < 2; listNum++) {

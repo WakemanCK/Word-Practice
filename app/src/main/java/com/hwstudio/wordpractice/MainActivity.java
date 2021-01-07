@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     // Settings
     public static Locale[] language = new Locale[2];
     public static int wordDelay, lineDelay, repeatNum;
-    public static boolean hasListBackground;
+    public static boolean isRepeatAtEnd, hasListBackground;
     public static int[] speechRate = new int[2];
     public static int[] soundVolume = new int[2];
     public static int[] pitch = new int[2];
@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         wordDelay = sharedPref.getInt(getString(R.string.prefWordDelay), 0);
         lineDelay = sharedPref.getInt(getString(R.string.prefLineDelay), 1);
         repeatNum = sharedPref.getInt(getString(R.string.prefRepeatNum), 2);
+        isRepeatAtEnd = sharedPref.getBoolean(getString(R.string.prefIsRepeatAtEnd), false);
         hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), false);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
@@ -258,8 +259,20 @@ public class MainActivity extends AppCompatActivity {
                                 isRepeating = false;
                                 repeatCount = repeatNum;
                                 currentLine++;
-                                if (currentLine >= listAdapter[0].getItemCount() || currentLine >= listAdapter[1].getItemCount()) {
-                                    clickStop(null);
+                                if (currentLine >= listAdapter[0].getItemCount() || currentLine >= listAdapter[1].getItemCount()) { // Either list ended
+                                    clickStop();
+                                        Toast.makeText(this, R.string.endOfList, Toast.LENGTH_SHORT).show();
+                                       MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.long_beep);
+                                        mediaPlayer.start();
+                                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                        @Override
+                                        public void onCompletion(MediaPlayer mediaPlayer) {
+                                            mediaPlayer.release();
+                                            }
+                                        });
+                                    if (isRepeatAtEnd){
+                                        clickPlay();
+                                    }
                                 } else {
                                     pickWord(0);
                                 }

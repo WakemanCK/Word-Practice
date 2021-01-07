@@ -43,6 +43,8 @@
     <string name="prefHasListBackground">prefHasListBackground</string>
     <string name="prefTextSize0">prefTextSize0</string>
     <string name="prefTextSize1">prefTextSize1</string>
+    <string name="clearButton">Clear both word lists</string>
+    <string name="clearListToast">Both word lists are reset.</string>
     <string name="resetButton">Reset all settings to default</string>
     <string name="prefSharedPref">prefSharedPref</string>
     <string name="emptyListErr">Please enter some words to the lists!</string>

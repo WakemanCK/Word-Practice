@@ -61,7 +61,24 @@
         android:max="9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/repeatNumTextView" />
+    
+<TextView
+        android:id="@+id/repeatAtEndTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/repeatAtEndTextView"
+        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
+        app:layout_constraintTop_toBottomOf="@+id/repeatNumTextView" />
 
+    <CheckBox
+        android:id="@+id/repeatAtEndCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/repeatAtEndTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/repeatAtEndTextView" />
+    
     <TextView
         android:id="@+id/listBackgroundTextView"
         android:layout_width="wrap_content"
@@ -69,7 +86,7 @@
         android:layout_marginTop="24dp"
         android:text="@string/listBackgroundTextView"
         app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
-        app:layout_constraintTop_toBottomOf="@+id/repeatNumTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/repeatAtEndTextView" />
 
     <CheckBox
         android:id="@+id/listBackgroundCheckBox"
@@ -241,6 +258,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    
+    <Button
+        android:id="@+id/clearButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:onClick="clickClear"
+        android:text="@string/clearButton"
+        app:layout_constraintBottom_toTopOf="+id/resetButton"
+        app:layout_constraintEnd_toEndOf="+id/resetButton"
+        app:layout_constraintStart_toStartOf="@+id/resetButton" />
+    
     <Button
         android:id="@+id/resetButton"
         android:layout_width="wrap_content"

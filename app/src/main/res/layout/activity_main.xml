@@ -23,6 +23,7 @@
         style="@android:style/Widget.Material.ImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="clickSwap"
         android:backgroundTint="?attr/colorPrimary"
         android:src="@drawable/ic_baseline_swap_horiz_24"
         android:tint="@color/mtrl_btn_text_color_selector"

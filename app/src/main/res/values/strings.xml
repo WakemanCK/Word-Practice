@@ -54,4 +54,5 @@
     <string name="pauseButton">Pause</string>
     <string name="pickLanguage0Title">Please choose language 1</string>
     <string name="pickLanguage1Title">Please choose language 2</string>
+    <string name="cnExampleColor">紅\n橙\n黃\n綠\n藍\n紫\n黑\n白\n灰</string>
 </resources>

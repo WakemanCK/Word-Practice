@@ -23,7 +23,7 @@ public class SaveDialogFragment extends DialogFragment {
                         if (s.equals("")) {
                             s = "WordPracticeList";
                         }
-                        MainActivity.saveFile(s, getActivity());
+                        mainActivity.saveFile(s, getActivity());
                     }
                 })
                 .setNegativeButton(getString(R.string.cancelButton), new DialogInterface.OnClickListener() {

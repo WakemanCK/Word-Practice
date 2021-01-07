@@ -59,14 +59,14 @@ public class MainActivity extends AppCompatActivity {
     public static int[] textSize = new int[2];
 
     // Variables
-    private int currentLine, repeatCount;
-    private boolean isRepeating, isPlaying2ndLang;
+    private int repeatCount, currentLine;
+    private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
     public static TextToSpeech[] tts = new TextToSpeech[2];
     ListAdapter.ViewHolder[] viewHolder = new ListAdapter.ViewHolder[2];
     private UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private Handler delayHandler;
-    private static String[] listString = new String[2];
+    private String[] listString = new String[2];
     private String[] wordString = new String[2];
     MainViewModel model;
 
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText[] listEditText = new EditText[2];
     public Button[] langButton = new Button[2];
     private Button finishButton, editButton;
-    private ImageButton playButton, pauseButton, stopButton;
+    private ImageButton playButton, pauseButton, stopButton, swapButton;
     private HorizontalScrollView[] recyclerScrollView = new HorizontalScrollView[2];
     private RecyclerView[] listRecyclerView = new RecyclerView[2];
     private ListAdapter[] listAdapter = new ListAdapter[2];
@@ -93,11 +93,12 @@ public class MainActivity extends AppCompatActivity {
         // Prepare UI
         model = new ViewModelProvider(this).get(MainViewModel.class);
         setMultipleEnable(model.isCanFinish(), model.isCanEdit(), model.isCanPlay(), model.isCanPause(), model.isCanStop());
+        listString[0]=model.getListString0();
+        listString[1]=model.getWordString1();
         if (model.isHasRecycler()) {
-            drawRecyclerView(model.getListString0(), model.getListString1());
+            drawRecyclerView();
         }
-        langButton[0].setText(language[0].getDisplayLanguage());
-        langButton[1].setText(language[1].getDisplayLanguage());
+
         // Prepare action
         if (model.isChangingState()) {
             currentLine = model.getCurrentLine();
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
             setUtterance();
             delayHandler = model.getDelayHandler();
             isPlaying2ndLang = model.isPlaying2ndLang();
+            isListClicked = model.isListClicked();
             wordString[0] = model.getWordString0();
             wordString[1] = model.getWordString1();
             if (playingState > 0) {
@@ -150,20 +152,8 @@ public class MainActivity extends AppCompatActivity {
         pitch[1] = sharedPref.getInt(getString(R.string.prefPitch1), 3);
         textSize[0] = sharedPref.getInt(getString(R.string.prefTextSize0), 36);
         textSize[1] = sharedPref.getInt(getString(R.string.prefTextSize1), 36);
-        language[0] = new Locale(sharedPref.getString(getString(R.string.prefLanguage0), "zh_CN"));
+        language[0] = new Locale(sharedPref.getString(getString(R.string.prefLanguage0), "zh_CH_#Hans"));
         language[1] = new Locale(sharedPref.getString(getString(R.string.prefLanguage1), "en_US"));
-    }
-
-    private void initTTS(int listNum) {
-        tts[listNum] = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
-
-            }
-        });
-        setLanguage(listNum);
-        setSpeechRate(listNum);
-        setPitch(listNum);
     }
 
     private void initView() {
@@ -187,13 +177,24 @@ public class MainActivity extends AppCompatActivity {
         recyclerScrollView[1] = findViewById(R.id.recycler1ScrollView);
         langButton[0] = findViewById(R.id.lang0Button);
         langButton[1] = findViewById(R.id.lang1Button);
-        langButton[0].setText(language[0].getDisplayLanguage());
-        langButton[1].setText(language[1].getDisplayLanguage());
         finishButton = findViewById(R.id.finishButton);
         editButton = findViewById(R.id.editButton);
         playButton = findViewById(R.id.playButton);
         pauseButton = findViewById(R.id.pauseButton);
         stopButton = findViewById(R.id.stopButton);
+        swapButton = findViewById(R.id.swapButton);
+    }
+
+    private void initTTS(int listNum) {
+        tts[listNum] = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+
+            }
+        });
+        setLanguageTtsButton(listNum);
+        setSpeechRate(listNum);
+        setPitch(listNum);
     }
 
     private void setUtterance() {
@@ -220,6 +221,15 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (playingState == 0) {
                     viewHolder[0].clearHighlight();
+                    if (isListClicked) {
+                        delayHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                isListClicked = false;
+                                clickPlay(null);
+                            }
+                        }, lineDelay * 500);
+                    }
                 }
             }
 
@@ -259,6 +269,15 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (playingState == 0) {
                     viewHolder[1].clearHighlight();
+                    if (isListClicked) {
+                        delayHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                isListClicked = false;
+                                clickPlay(null);
+                            }
+                        }, lineDelay * 500);
+                    }
                 }
             }
 
@@ -280,13 +299,15 @@ public class MainActivity extends AppCompatActivity {
         setMultipleEnable(false, true, true, false, false);
         currentLine = 0;
         playingState = 0;
-        drawRecyclerView(listEditText[0].getText().toString(), listEditText[1].getText().toString());
+        listString[0] = listEditText[0].getText().toString();
+        listString[1] = listEditText[1].getText().toString();
+        drawRecyclerView();
     }
 
-    private void drawRecyclerView(String getListString0, String getListString1) {
+    private void drawRecyclerView() {
         int[] lineCount = new int[2];
-        listString[0] = getListString0;
-        listString[1] = getListString1;
+//        listString[0] = getListString0;
+//        listString[1] = getListString1;
         for (int listNum = 0; listNum < 2; listNum++) {
             String tempList = listString[listNum].replaceAll("\n", "");
             lineCount[listNum] = listString[listNum].length() - tempList.length();
@@ -308,9 +329,32 @@ public class MainActivity extends AppCompatActivity {
                 bgAdapter[listNum] = new BackgroundAdapter(tempString, textSize[listNum]);
                 bgRecyclerView[listNum].setAdapter(bgAdapter[listNum]);
                 bgRecyclerView[listNum].setVisibility(View.VISIBLE);
+            } else {
+                bgRecyclerView[listNum].setVisibility(View.INVISIBLE);
             }
             listEditText[listNum].setVisibility(View.INVISIBLE);
             recyclerScrollView[listNum].setVisibility(View.VISIBLE);
+            listAdapter[listNum].setOnWordClickedListener(new ListAdapter.OnWordClickedListener() {
+                @Override
+                public void onWordClicked(int position) {
+                    if (!isListClicked) {
+                        int currentState = playingState;
+                        clickStop(null);
+                        currentLine = position;
+                        if (currentState == 1) {
+                            isListClicked = true;
+                        } else {
+                            if (viewHolder[0] != null) {
+                                viewHolder[0].clearHighlight();
+                            }
+                            if (viewHolder[1] != null) {
+                                viewHolder[1].clearHighlight();
+                            }
+                            clickPlay(null);
+                        }
+                    }
+                }
+            });
         }
         if (lineCount[0] != lineCount[1]) {
             Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
@@ -333,8 +377,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         setMultipleEnable(false, true, false, true, true);
-        listEditText[0].setEnabled(false);
-        listEditText[1].setEnabled(false);
+//        listEditText[0].setEnabled(false);
+//        listEditText[1].setEnabled(false);
         if (playingState == 2) {
             playingState = 1;
             if (isPlaying2ndLang) {
@@ -359,8 +403,9 @@ public class MainActivity extends AppCompatActivity {
         speakString(listNum);
     }
 
-    public void setLanguage(int listNum) {
+    public void setLanguageTtsButton(int listNum) {
         tts[listNum].setLanguage(language[listNum]);
+        langButton[listNum].setText(language[listNum].getDisplayName());
     }
 
     public static void setSpeechRate(int listNum) {
@@ -385,26 +430,76 @@ public class MainActivity extends AppCompatActivity {
     public void clickPause(View view) {
         playingState = 2;
         setMultipleEnable(false, true, true, false, true);
-        listEditText[0].setEnabled(false);
-        listEditText[1].setEnabled(false);
     }
 
     public void clickStop(View view) {
         playingState = 0;
         currentLine = 0;
         setMultipleEnable(false, true, true, false, false);
-        listEditText[0].setEnabled(true);
-        listEditText[1].setEnabled(true);
     }
 
     public void clickLang0(View view) {
+        langButton[0].setEnabled(false);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                langButton[0].setEnabled(true);
+            }
+        },100);
         LanguageDialogFragment lang0Fragment = new LanguageDialogFragment(this, getString(R.string.pickLanguage0Title));
         lang0Fragment.show(getSupportFragmentManager(), "lang0");
     }
 
     public void clickLang1(View view) {
+        langButton[1].setEnabled(false);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                langButton[1].setEnabled(true);
+            }
+        },100);
         LanguageDialogFragment lang1Fragment = new LanguageDialogFragment(this, getString(R.string.pickLanguage1Title));
         lang1Fragment.show(getSupportFragmentManager(), "lang1");
+    }
+
+    public void clickSwap(View view) {
+        swapButton.setEnabled(false);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                swapButton.setEnabled(true);
+            }
+        },100);
+        swap(language);
+        swap(listString);
+        swapInt(speechRate);
+        swapInt(soundVolume);
+        swapInt(pitch);
+        swapInt(textSize);
+        for (int listNum = 0; listNum < 2; listNum++) {
+            listEditText[listNum].setTextSize(textSize[listNum]);
+            listEditText[listNum].setText(listString[listNum]);
+            initTTS(listNum);
+            setLanguageTtsButton(listNum);
+            if (recyclerScrollView[0].getVisibility()==View.VISIBLE){
+                drawRecyclerView();
+            }
+        }
+    }
+
+    private void swap(Object[] object) {
+        Object tempObject = object[0];
+        object[0] = object[1];
+        object[1] = tempObject;
+    }
+
+    private void swapInt(int[] object) {
+        int tempObject = object[0];
+        object[0] = object[1];
+        object[1] = tempObject;
     }
 
     @Override
@@ -478,17 +573,10 @@ public class MainActivity extends AppCompatActivity {
             listEditText[0].setTextSize(textSize[0]);
             listEditText[1].setTextSize(textSize[1]);
             if (recyclerScrollView[0].getVisibility() == View.VISIBLE) {
-                drawRecyclerView(listEditText[0].getText().toString(), listEditText[1].getText().toString());
+                drawRecyclerView();
             }
         }
     }
-
-//    private void saveSettings() {
-//        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putInt(getString(R.string.prefWordDelay), wordDelay);
-//        editor.putInt(getString(R.string.prefLineDelay), lineDelay);
-//    }
 
     public void clickSave(View view) {
         // Check has permission
@@ -521,7 +609,7 @@ public class MainActivity extends AppCompatActivity {
         saveDialogFragment.show(getSupportFragmentManager(), "save");
     }
 
-    public static void saveFile(String fileName, Context context) {
+    public void saveFile(String fileName, Context context) {
         String saveString = // Format:   !LANGUAGE_1! Locale name here !1!
                 "!LANGUAGE_1!" + language[0].toString() + "!1!\n" + listString[0] +
                         "\n\n!LANGUAGE_2!" + language[1].toString() + "!2!\n" + listString[1];
@@ -569,12 +657,10 @@ public class MainActivity extends AppCompatActivity {
         }
         String tempLang0 = loadedString.substring(index[0] + 12, index[1]);
         language[0] = new Locale(tempLang0);
-        setLanguage(0);
-        langButton[0].setText(tempLang0);
+        setLanguageTtsButton(0);
         String tempLang1 = loadedString.substring(index[2] + 12, index[3]);
         language[1] = new Locale(tempLang1);
-        setLanguage(1);
-        langButton[1].setText(tempLang1);
+        setLanguageTtsButton(1);
         String tempList0 = loadedString.substring(index[1] + 4, index[2] - 2);
         listEditText[0].setText(tempList0);
         String tempList1 = loadedString.substring(index[3] + 4, loadedString.length() - 1);
@@ -594,11 +680,23 @@ public class MainActivity extends AppCompatActivity {
 //        addBackgroundSpan();
         language[0] = Locale.JAPANESE;
         language[1] = new Locale("zh_hk");
-        setLanguage(0);
-        setLanguage(1);
-        langButton[0].setText(language[0].getDisplayLanguage());
-        langButton[1].setText(language[1].getDisplayLanguage());
+        setLanguageTtsButton(0);
+        setLanguageTtsButton(1);
         clickFinish(null);
+    }
+
+    public void showExample(Locale locale0, Locale locale1, String listString0, String listString1){
+        language[0] = locale0;
+        language[1] = locale1;
+        listString[0]=listString0;
+        listString[1]=listString1;
+        for (int listNum = 0; listNum<2; listNum++) {
+            setLanguageTtsButton(listNum);
+            listEditText[listNum].setText(listString[listNum]);
+        }
+        if (recyclerScrollView[0].getVisibility()==View.VISIBLE){
+            drawRecyclerView();
+        }
     }
 
     private void showAbout() {
@@ -627,6 +725,7 @@ public class MainActivity extends AppCompatActivity {
         model.setDelayHandler(delayHandler);
         delayHandler.removeCallbacksAndMessages(null);
         model.setPlaying2ndLang(isPlaying2ndLang);
+        model.setListClicked(isListClicked);
         model.setWordString0(wordString[0]);
         model.setWordString1(wordString[1]);
         model.setChangingState(true);

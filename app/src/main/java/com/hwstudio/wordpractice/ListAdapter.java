@@ -13,17 +13,38 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     private final String[] localDataSet;
     private final int textSize;
+    private OnWordClickedListener onWordClickedListener;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public interface OnWordClickedListener {
+    void onWordClicked(int position);
+}
+
+    public void setOnWordClickedListener(OnWordClickedListener listener){
+        onWordClickedListener = listener;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
         private final int originalColor;
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
-
             textView = view.findViewById(R.id.itemTextView);
             originalColor = textView.getCurrentTextColor();
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(onWordClickedListener!=null) {
+                        int position = getAdapterPosition();
+                        if(position!=RecyclerView.NO_POSITION){
+                            onWordClickedListener.onWordClicked(position);
+                        }
+                    }
+//                    highlightString();
+//                    MainActivity.clickStop();
+//                    MainActivity.currentLine = getAdapterPosition();
+                }
+            });
         }
 
         public TextView getTextView() {
@@ -35,7 +56,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         }
 
         public void highlightString() {
-//            originalColor = textView.getCurrentTextColor();
             textView.setTextColor(Color.RED);
         }
 

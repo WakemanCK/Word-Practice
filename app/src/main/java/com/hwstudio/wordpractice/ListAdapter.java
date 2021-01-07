@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,14 +17,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private OnWordClickedListener onWordClickedListener;
 
     public interface OnWordClickedListener {
-    void onWordClicked(int position);
-}
+        void onWordClicked(int position);
+    }
 
-    public void setOnWordClickedListener(OnWordClickedListener listener){
+    public void setOnWordClickedListener(OnWordClickedListener listener) {
         onWordClickedListener = listener;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
         private final int originalColor;
 
@@ -34,15 +35,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(onWordClickedListener!=null) {
+                    if (onWordClickedListener != null) {
                         int position = getAdapterPosition();
-                        if(position!=RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             onWordClickedListener.onWordClicked(position);
                         }
                     }
-//                    highlightString();
-//                    MainActivity.clickStop();
-//                    MainActivity.currentLine = getAdapterPosition();
                 }
             });
         }

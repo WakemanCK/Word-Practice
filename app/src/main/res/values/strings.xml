@@ -57,4 +57,8 @@
     <string name="pickLanguage0Title">Please choose language 1</string>
     <string name="pickLanguage1Title">Please choose language 2</string>
     <string name="cnExampleColor">紅\n橙\n黃\n綠\n藍\n紫\n黑\n白\n灰</string>
+    <string name="repeatAtEndTextView">At the end of the list, repeat from the beginning.</string>
+    <string name="exampleTitle">Please select example lists:</string>
+    <string name="prefIsRepeatAtEnd">prefIsRepeatAtEnd</string>
+    <string name="endOfListToast">This is the end of the list.</string>
 </resources>

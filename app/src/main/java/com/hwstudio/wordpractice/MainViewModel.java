@@ -9,7 +9,7 @@ public class MainViewModel extends ViewModel {
     private boolean isChangingState;
     private boolean canFinish = true, canEdit, canPlay, canPause, canStop, hasRecycler;
     private String listString0, listString1, wordString0, wordString1;
-    private int currentLine, repeatCount, playingState;
+    private int currentLine, maxLine, repeatCount, playingState;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private TextToSpeech tts0, tts1;
     private Handler delayHandler;
@@ -92,6 +92,14 @@ public class MainViewModel extends ViewModel {
 
     public void setCurrentLine(int currentLine) {
         this.currentLine = currentLine;
+    }
+
+    public int getMaxLine() {
+        return maxLine;
+    }
+
+    public void setMaxLine(int maxLine) {
+        this.maxLine = maxLine;
     }
 
     public int getRepeatCount() {

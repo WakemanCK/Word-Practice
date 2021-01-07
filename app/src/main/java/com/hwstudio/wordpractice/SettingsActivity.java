@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -241,8 +242,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
     
     public void clickClear(View view){
-        MainActivity.langString[0] = "";
-        MainActivity.langString[1] = "";
+        MainActivity.listString[0] = "";
+        MainActivity.listString[1] = "";
         Toast.makeText(this, R.string.clearListToast, Toast.LENGTH_SHORT).show();
     }
 

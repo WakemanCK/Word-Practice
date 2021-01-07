@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Locale;
 import static android.content.Context.MODE_PRIVATE;
 
 public class LanguageDialogFragment extends DialogFragment {
+
     private final MainActivity mainActivity;
     private final String dialogTitle;
 
@@ -24,6 +26,7 @@ public class LanguageDialogFragment extends DialogFragment {
         dialogTitle = getTitle;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Locale[] locales = Locale.getAvailableLocales();

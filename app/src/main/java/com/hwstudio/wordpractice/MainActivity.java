@@ -2,6 +2,7 @@ package com.hwstudio.wordpractice;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -14,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,6 +32,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
@@ -59,14 +62,14 @@ public class MainActivity extends AppCompatActivity {
     public static int[] textSize = new int[2];
 
     // Variables
-    private int repeatCount, currentLine;
+    private int repeatCount, currentLine, maxLine;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
     public static TextToSpeech[] tts = new TextToSpeech[2];
     ListAdapter.ViewHolder[] viewHolder = new ListAdapter.ViewHolder[2];
     private UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private Handler delayHandler;
-    private String[] listString = new String[2];
+    public static String[] listString = new String[2];
     private String[] wordString = new String[2];
     MainViewModel model;
 
@@ -82,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView[] bgRecyclerView = new RecyclerView[2];
     private BackgroundAdapter[] bgAdapter = new BackgroundAdapter[2];
     private RecyclerView.LayoutManager[] bgLayoutManager = new RecyclerView.LayoutManager[2];
+    private ScrollView listScrollView;
+    private ConstraintLayout mainConstraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
         // Prepare UI
         model = new ViewModelProvider(this).get(MainViewModel.class);
         setMultipleEnable(model.isCanFinish(), model.isCanEdit(), model.isCanPlay(), model.isCanPause(), model.isCanStop());
-        listString[0]=model.getListString0();
-        listString[1]=model.getWordString1();
+        listString[0] = model.getListString0();
+        listString[1] = model.getListString1();
         if (model.isHasRecycler()) {
             drawRecyclerView();
         }
@@ -102,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         // Prepare action
         if (model.isChangingState()) {
             currentLine = model.getCurrentLine();
+            maxLine = model.getMaxLine();
             repeatCount = model.getRepeatCount();
             playingState = model.getPlayingState();
             isRepeating = model.isRepeating();
@@ -117,13 +123,15 @@ public class MainActivity extends AppCompatActivity {
                 delayHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        viewHolder[0] = (ListAdapter.ViewHolder) listRecyclerView[0].findViewHolderForLayoutPosition(currentLine);
-                        viewHolder[1] = (ListAdapter.ViewHolder) listRecyclerView[1].findViewHolderForLayoutPosition(currentLine);
+                        viewHolder[0] = (ListAdapter.ViewHolder) listRecyclerView[0].findViewHolderForAdapterPosition(currentLine);
+                        viewHolder[1] = (ListAdapter.ViewHolder) listRecyclerView[1].findViewHolderForAdapterPosition(currentLine);
                         if (isPlaying2ndLang) {
                             viewHolder[1].highlightString();
                         } else {
                             viewHolder[0].highlightString();
                         }
+                        scrollToWord();
+//                        listScrollView.smoothScrollTo(0, mainConstraintLayout.getHeight() * (currentLine - 5) / maxLine);
                         if (playingState == 1) {
                             clickPlay(null);
                         }
@@ -184,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
         pauseButton = findViewById(R.id.pauseButton);
         stopButton = findViewById(R.id.stopButton);
         swapButton = findViewById(R.id.swapButton);
+        listScrollView = findViewById(R.id.mainScrollView);
+        mainConstraintLayout = findViewById(R.id.mainConstraintLayout);
     }
 
     private void initTTS(int listNum) {
@@ -230,6 +240,8 @@ public class MainActivity extends AppCompatActivity {
                                 clickPlay(null);
                             }
                         }, lineDelay * 500);
+                    }else {
+                        currentLine=0;
                     }
                 }
             }
@@ -260,19 +272,19 @@ public class MainActivity extends AppCompatActivity {
                                 repeatCount = repeatNum;
                                 currentLine++;
                                 if (currentLine >= listAdapter[0].getItemCount() || currentLine >= listAdapter[1].getItemCount()) { // Either list ended
-                                    clickStop();
-                                        Toast.makeText(this, R.string.endOfList, Toast.LENGTH_SHORT).show();
-                                       MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.long_beep);
-                                        mediaPlayer.start();
-                                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                    clickStop(null);
+                                    Toast.makeText(MainActivity.this, R.string.endOfListToast, Toast.LENGTH_SHORT).show();
+                                    MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.long_beep);
+                                    mediaPlayer.start();
+                                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                                         @Override
                                         public void onCompletion(MediaPlayer mediaPlayer) {
                                             mediaPlayer.release();
+                                            if (isRepeatAtEnd) {
+                                                clickPlay(null);
                                             }
-                                        });
-                                    if (isRepeatAtEnd){
-                                        clickPlay();
-                                    }
+                                        }
+                                    });
                                 } else {
                                     pickWord(0);
                                 }
@@ -290,6 +302,8 @@ public class MainActivity extends AppCompatActivity {
                                 clickPlay(null);
                             }
                         }, lineDelay * 500);
+                    }else {
+                        currentLine=0;
                     }
                 }
             }
@@ -369,6 +383,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+        maxLine = lineCount[0];
         if (lineCount[0] != lineCount[1]) {
             Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
         }
@@ -411,9 +426,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pickWord(int listNum) {
-        viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForLayoutPosition(currentLine);
-        wordString[listNum] = viewHolder[listNum].getText();
-        speakString(listNum);
+        listRecyclerView[listNum].scrollToPosition(currentLine);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine);
+                wordString[listNum] = viewHolder[listNum].getText();
+                speakString(listNum);
+            }
+        }, 100);
+    }
+
+    public void scrollToWord() {
+        listScrollView.smoothScrollTo(0, mainConstraintLayout.getHeight() * (currentLine - 5) / maxLine);
     }
 
     public void setLanguageTtsButton(int listNum) {
@@ -433,6 +459,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void speakString(int listNum) {
         viewHolder[listNum].highlightString();
+        scrollToWord();
+//        listScrollView.smoothScrollTo(0, mainConstraintLayout.getHeight() * (currentLine - 5) / maxLine);
         tts[listNum].setOnUtteranceProgressListener(utterance[listNum]);
         Bundle params = new Bundle();
         params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, (soundVolume[listNum] + 1) / 7f);
@@ -447,7 +475,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickStop(View view) {
         playingState = 0;
-        currentLine = 0;
+//        currentLine = 0;
         setMultipleEnable(false, true, true, false, false);
     }
 
@@ -459,7 +487,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 langButton[0].setEnabled(true);
             }
-        },100);
+        }, 100);
         LanguageDialogFragment lang0Fragment = new LanguageDialogFragment(this, getString(R.string.pickLanguage0Title));
         lang0Fragment.show(getSupportFragmentManager(), "lang0");
     }
@@ -472,7 +500,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 langButton[1].setEnabled(true);
             }
-        },100);
+        }, 100);
         LanguageDialogFragment lang1Fragment = new LanguageDialogFragment(this, getString(R.string.pickLanguage1Title));
         lang1Fragment.show(getSupportFragmentManager(), "lang1");
     }
@@ -485,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 swapButton.setEnabled(true);
             }
-        },100);
+        }, 100);
         swap(language);
         swap(listString);
         swapInt(speechRate);
@@ -497,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
             listEditText[listNum].setText(listString[listNum]);
             initTTS(listNum);
             setLanguageTtsButton(listNum);
-            if (recyclerScrollView[0].getVisibility()==View.VISIBLE){
+            if (recyclerScrollView[0].getVisibility() == View.VISIBLE) {
                 drawRecyclerView();
             }
         }
@@ -598,8 +626,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == OPEN_SETTINGS) {
             listEditText[0].setTextSize(textSize[0]);
             listEditText[1].setTextSize(textSize[1]);
-            listEditText[0].setText(langString[0]);
-            listEditText[1].setText(langString[1]);
+            listEditText[0].setText(listString[0]);
+            listEditText[1].setText(listString[1]);
             if (recyclerScrollView[0].getVisibility() == View.VISIBLE) {
                 drawRecyclerView();
             }
@@ -633,7 +661,7 @@ public class MainActivity extends AppCompatActivity {
     private void saveList() {
         listString[0] = listEditText[0].getText().toString();
         listString[1] = listEditText[1].getText().toString();
-        DialogFragment saveDialogFragment = new SaveDialogFragment();
+        DialogFragment saveDialogFragment = new SaveDialogFragment(this);
         saveDialogFragment.show(getSupportFragmentManager(), "save");
     }
 
@@ -702,31 +730,32 @@ public class MainActivity extends AppCompatActivity {
         ExampleDialogFragment exampleDialogFragment = new ExampleDialogFragment(this);
         exampleDialogFragment.show(getSupportFragmentManager(), "example");
         //debug
-     //   listEditText[0].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
-  //      listEditText[1].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
+        //   listEditText[0].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
+        //      listEditText[1].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
         //listEditText[0].setText("1\n蘋果\n橙\n香蕉");
 //        addBackgroundSpan(0);
         //listEditText[1].setText("1\napple\norange\nbanana");
 //        addBackgroundSpan();
 //        language[0] = Locale.JAPANESE;
- //       language[1] = new Locale("zh_hk");
-  //      setLanguageTtsButton(0);
- //       setLanguageTtsButton(1);
- //       clickFinish(null);
+        //       language[1] = new Locale("zh_hk");
+        //      setLanguageTtsButton(0);
+        //       setLanguageTtsButton(1);
+        //       clickFinish(null);
     }
 
-    public void showExample(Locale locale0, Locale locale1, String listString0, String listString1){
+    public void showExample(Locale locale0, Locale locale1, String listString0, String listString1) {
         language[0] = locale0;
         language[1] = locale1;
-        listString[0]=listString0;
-        listString[1]=listString1;
-        for (int listNum = 0; listNum<2; listNum++) {
+        listString[0] = listString0;
+        listString[1] = listString1;
+        for (int listNum = 0; listNum < 2; listNum++) {
             setLanguageTtsButton(listNum);
             listEditText[listNum].setText(listString[listNum]);
         }
-        if (recyclerScrollView[0].getVisibility()==View.VISIBLE){
+        if (recyclerScrollView[0].getVisibility() == View.VISIBLE) {
             drawRecyclerView();
         }
+        clickFinish(null);
     }
 
     private void showAbout() {
@@ -747,6 +776,7 @@ public class MainActivity extends AppCompatActivity {
         model.setListString1(listEditText[1].getText().toString());
         // Save action
         model.setCurrentLine(currentLine);
+        model.setMaxLine(maxLine);
         model.setRepeatCount(repeatCount);
         model.setPlayingState(playingState);
         model.setRepeating(isRepeating);

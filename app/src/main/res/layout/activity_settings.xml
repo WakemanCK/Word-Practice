@@ -254,7 +254,7 @@
         android:layout_height="1dp"
         android:layout_marginBottom="16dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toTopOf="@+id/resetButton"
+        app:layout_constraintBottom_toTopOf="@+id/clearButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -266,8 +266,8 @@
         android:layout_marginBottom="8dp"
         android:onClick="clickClear"
         android:text="@string/clearButton"
-        app:layout_constraintBottom_toTopOf="+id/resetButton"
-        app:layout_constraintEnd_toEndOf="+id/resetButton"
+        app:layout_constraintBottom_toTopOf="@+id/resetButton"
+        app:layout_constraintEnd_toEndOf="@+id/resetButton"
         app:layout_constraintStart_toStartOf="@+id/resetButton" />
     
     <Button

@@ -42,7 +42,7 @@ public class ExampleDialogFragment extends DialogFragment {
 
         // Code start
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.id.exampleTitle)
+        builder.setTitle(R.string.exampleTitle)
                 .setItems(exampleList, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         for (int listNum = 0; listNum < 2; listNum++) {

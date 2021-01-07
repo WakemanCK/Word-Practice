@@ -488,6 +488,19 @@ public class MainActivity extends AppCompatActivity {
                 drawRecyclerView();
             }
         }
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.prefLanguage0), language[0].toString());
+        editor.putString(getString(R.string.prefLanguage1), language[1].toString());
+        editor.putInt(getString(R.string.prefSpeechRate0), speechRate[0]);
+        editor.putInt(getString(R.string.prefSpeechRate1), speechRate[1]);
+        editor.putInt(getString(R.string.prefSoundVolume0), soundVolume[0]);
+        editor.putInt(getString(R.string.prefSoundVolume1), soundVolume[1]);
+        editor.putInt(getString(R.string.prefPitch0), pitch[0]);
+        editor.putInt(getString(R.string.prefPitch1), pitch[1]);
+        editor.putInt(getString(R.string.prefTextSize0), textSize[0]);
+        editor.putInt(getString(R.string.prefTextSize1), textSize[1]);
+        editor.apply();
     }
 
     private void swap(Object[] object) {

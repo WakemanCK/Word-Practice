@@ -684,18 +684,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadExamples() {
+        ExampleDialogFragment exampleDialogFragment = new ExampleDialogFragment(this);
+        exampleDialogFragment.show(getSupportFragmentManager(), "example");
         //debug
-        listEditText[0].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
-        listEditText[1].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
+     //   listEditText[0].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
+  //      listEditText[1].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
         //listEditText[0].setText("1\n蘋果\n橙\n香蕉");
 //        addBackgroundSpan(0);
         //listEditText[1].setText("1\napple\norange\nbanana");
 //        addBackgroundSpan();
-        language[0] = Locale.JAPANESE;
-        language[1] = new Locale("zh_hk");
-        setLanguageTtsButton(0);
-        setLanguageTtsButton(1);
-        clickFinish(null);
+//        language[0] = Locale.JAPANESE;
+ //       language[1] = new Locale("zh_hk");
+  //      setLanguageTtsButton(0);
+ //       setLanguageTtsButton(1);
+ //       clickFinish(null);
     }
 
     public void showExample(Locale locale0, Locale locale1, String listString0, String listString1){

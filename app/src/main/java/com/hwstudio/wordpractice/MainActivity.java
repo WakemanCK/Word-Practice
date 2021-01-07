@@ -585,6 +585,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == OPEN_SETTINGS) {
             listEditText[0].setTextSize(textSize[0]);
             listEditText[1].setTextSize(textSize[1]);
+            listEditText[0].setText(langString[0]);
+            listEditText[1].setText(langString[1]);
             if (recyclerScrollView[0].getVisibility() == View.VISIBLE) {
                 drawRecyclerView();
             }

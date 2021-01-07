@@ -16,7 +16,7 @@ import android.widget.TextView;
 public class SettingsActivity extends AppCompatActivity {
 
     private SeekBar wordDelaySeekBar, lineDelaySeekBar, repeatNumSeekBar, speechRate0SeekBar, speechRate1SeekBar, volume0SeekBar, volume1SeekBar, pitch0SeekBar, pitch1SeekBar;
-    private CheckBox listBackgroundCheckBox;
+    private CheckBox repeatAtEndCheckBox, listBackgroundCheckBox;
     private EditText textSize0EditText, textSize1EditText;
     private TextView wordDelayTextView, lineDelayTextView, repeatNumTextView;
 
@@ -37,6 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
         wordDelaySeekBar = findViewById(R.id.wordDelaySeekBar);
         lineDelaySeekBar = findViewById(R.id.lineDelaySeekBar);
         repeatNumSeekBar = findViewById(R.id.repeatNumSeekBar);
+        repeatAtEndCheckBox = findViewById(R.id.repeatAtEndCheckBox);
         listBackgroundCheckBox = findViewById(R.id.listBackgroundCheckBox);
         speechRate0SeekBar = findViewById(R.id.speechRate0SeekBar);
         speechRate1SeekBar = findViewById(R.id.speechRate1SeekBar);
@@ -58,6 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
         wordDelaySeekBar.setProgress(MainActivity.wordDelay);
         lineDelaySeekBar.setProgress(MainActivity.lineDelay);
         repeatNumSeekBar.setProgress(MainActivity.repeatNum - 1);
+        repeatAtEndCheckBox.setChecked(MainActivity.isRepeatAtEnd);
         listBackgroundCheckBox.setChecked(MainActivity.hasListBackground);
         speechRate0SeekBar.setProgress(MainActivity.speechRate[0]);
         speechRate1SeekBar.setProgress(MainActivity.speechRate[1]);
@@ -122,6 +124,12 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+            }
+        });
+        repeatAtEndCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                MainActivity.isRepeatAtEnd = b;
             }
         });
         listBackgroundCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -231,11 +239,17 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
+    
+    public void clickClear(View view){
+        MainActivity.langString[0] = "";
+        MainActivity.langString[1] = "";
+    }
 
     public void clickReset(View view){
         wordDelaySeekBar.setProgress(0);
         lineDelaySeekBar.setProgress(1);
         repeatNumSeekBar.setProgress(2);
+        repeatAtEndCheckBox.setChecked(false);
         listBackgroundCheckBox.setChecked(false);
         speechRate0SeekBar.setProgress(3);
         speechRate1SeekBar.setProgress(3);

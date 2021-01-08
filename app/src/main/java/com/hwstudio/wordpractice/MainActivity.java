@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
         if (defaultFile.startWith("!list!"){
             ExampleDialogFragment exampleDialogFragment = new ExampleDialogFragment(this);
-            exampleDialogFragment.chooseExample(
+            exampleDialogFragment.chooseExample(Integer.valueOf(defaultFile.subString(6)));
         }else{
             loadFile(Uri.parse(defaultFile));
         }
@@ -760,7 +760,7 @@ public class MainActivity extends AppCompatActivity {
         //       clickFinish(null);
     }
 
-    public void showExample(Locale locale0, Locale locale1, String listString0, String listString1) {
+    public void showExample(int exampleNum, Locale locale0, Locale locale1, String listString0, String listString1) {
         language[0] = locale0;
         language[1] = locale1;
         listString[0] = listString0;
@@ -773,6 +773,7 @@ public class MainActivity extends AppCompatActivity {
             drawRecyclerView();
         }
         clickFinish(null);
+        saveDefaultFile("!LIST!" + exampleNum);
     }
 
     public void saveDefaultFile(String fileUri){

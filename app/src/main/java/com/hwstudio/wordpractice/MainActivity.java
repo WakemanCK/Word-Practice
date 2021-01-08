@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     public static int[] textSize = new int[2];
 
     // Variables
+    private String defaultFile;
     private int repeatCount, currentLine, maxLine;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadSettings();
         initView();
+        loadFile(Uri.parse(defaultFile));
         // Prepare UI
         model = new ViewModelProvider(this).get(MainViewModel.class);
         setMultipleEnable(model.isCanFinish(), model.isCanEdit(), model.isCanPlay(), model.isCanPause(), model.isCanStop());
@@ -161,8 +163,9 @@ public class MainActivity extends AppCompatActivity {
         pitch[1] = sharedPref.getInt(getString(R.string.prefPitch1), 3);
         textSize[0] = sharedPref.getInt(getString(R.string.prefTextSize0), 36);
         textSize[1] = sharedPref.getInt(getString(R.string.prefTextSize1), 36);
-        language[0] = new Locale(sharedPref.getString(getString(R.string.prefLanguage0), "zh_CH_#Hans"));
-        language[1] = new Locale(sharedPref.getString(getString(R.string.prefLanguage1), "en_US"));
+        //language[0] = new Locale(sharedPref.getString(getString(R.string.prefLanguage0), "zh_CH_#Hans"));
+        //language[1] = new Locale(sharedPref.getString(getString(R.string.prefLanguage1), "en_US"));
+        defaultFile = sharedPref.getString(getString(R.string.prefDefaultFile), "!LIST!0"));
     }
 
     private void initView() {
@@ -608,19 +611,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == LOAD_FILE && resultCode == RESULT_OK) {
             if (data != null) {
                 Uri fileUri = data.getData();
-                StringBuilder loadedString = new StringBuilder();
-                try (InputStream inputStream = getContentResolver().openInputStream(fileUri);
-                     BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        loadedString.append(line).append("\n");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (!analyzeFileSuccess(loadedString.toString())) {
-                    Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
-                }
+                loadFile(fileUri);
             }
         }
         if (requestCode == OPEN_SETTINGS) {
@@ -632,8 +623,8 @@ public class MainActivity extends AppCompatActivity {
                 drawRecyclerView();
             }
         }
-    }
-
+    }  
+    
     public void clickSave(View view) {
         // Check has permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -678,8 +669,11 @@ public class MainActivity extends AppCompatActivity {
                     .getPath() + "/" + fileName + i + ".txt").exists());
             fileName = fileName + i;
         }
-        File outputFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-                .getPath() + "/" + fileName + ".txt");
+        String fileString = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                .getPath() + "/" + fileName + ".txt";
+        //File outputFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                //.getPath() + "/" + fileName + ".txt");
+        File outputFile = new File(fileString);
         try {
             DataOutputStream out = new DataOutputStream(new BufferedOutputStream(
                     new FileOutputStream(outputFile)));
@@ -689,6 +683,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Toast.makeText(context, String.format(context.getString(R.string.saveListText), fileName), Toast.LENGTH_LONG).show();
+        saveDefaultFile(fileString);
     }
 
     public void clickLoad(View view) {
@@ -698,6 +693,23 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI,
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
         startActivityForResult(intent, LOAD_FILE);
+    }
+    
+    private void loadFile(Uri fileUri){
+        StringBuilder loadedString = new StringBuilder();
+                try (InputStream inputStream = getContentResolver().openInputStream(fileUri);
+                     BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        loadedString.append(line).append("\n");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (!analyzeFileSuccess(loadedString.toString())) {
+                    Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
+                }
+        saveDefaultFile(fileUri.toString());
     }
 
     private boolean analyzeFileSuccess(String loadedString) {
@@ -758,6 +770,13 @@ public class MainActivity extends AppCompatActivity {
         clickFinish(null);
     }
 
+    public void saveDefaultFile(String fileUri){
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.prefDefaultFile), fileUri;
+        editor.apply();
+    }
+    
     private void showAbout() {
         AboutDialogFragment aboutDialogFragment = new AboutDialogFragment();
         aboutDialogFragment.show(getSupportFragmentManager(), "about");

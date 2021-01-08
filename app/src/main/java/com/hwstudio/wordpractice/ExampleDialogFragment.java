@@ -46,7 +46,7 @@ public class ExampleDialogFragment extends DialogFragment {
                 .setItems(exampleList, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         for (int listNum = 0; listNum < 2; listNum++) {
-                            mainActivity.showExample(language[0][item], language[1][item]
+                            mainActivity.showExample(item, language[0][item], language[1][item]
                                     , listString[0][item], listString[1][item]);
                         }
 //                        SharedPreferences sharedPref = getContext().getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
@@ -57,5 +57,10 @@ public class ExampleDialogFragment extends DialogFragment {
                     }
                 });
         return builder.create();
+    }
+    
+    public void chooseExample(int item){
+        mainActivity.showExample(item, language[0][item], language[1][item]
+                                    , listString[0][item], listString[1][item]);
     }
 }

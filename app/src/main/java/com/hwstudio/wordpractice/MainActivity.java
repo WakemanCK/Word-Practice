@@ -96,7 +96,12 @@ public class MainActivity extends AppCompatActivity {
 
         loadSettings();
         initView();
-        loadFile(Uri.parse(defaultFile));
+        if (defaultFile.startWith("!list!"){
+            ExampleDialogFragment exampleDialogFragment = new ExampleDialogFragment(this);
+            exampleDialogFragment.chooseExample(
+        }else{
+            loadFile(Uri.parse(defaultFile));
+        }
         // Prepare UI
         model = new ViewModelProvider(this).get(MainViewModel.class);
         setMultipleEnable(model.isCanFinish(), model.isCanEdit(), model.isCanPlay(), model.isCanPause(), model.isCanStop());

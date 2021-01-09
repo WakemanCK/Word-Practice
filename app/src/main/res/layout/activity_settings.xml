@@ -6,279 +6,346 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
-
-    <TextView
-        android:id="@+id/wordDelayTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:text="@string/wordDelayTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <SeekBar
-        android:id="@+id/wordDelaySeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:max="9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/wordDelayTextView" />
-
-    <TextView
-        android:id="@+id/lineDelayTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/lineDelayTextView"
-        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
-        app:layout_constraintTop_toBottomOf="@+id/wordDelayTextView" />
-
-    <SeekBar
-        android:id="@+id/lineDelaySeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:max="9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/lineDelayTextView" />
-
-    <TextView
-        android:id="@+id/repeatNumTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/repeatNumTextView"
-        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
-        app:layout_constraintTop_toBottomOf="@+id/lineDelayTextView" />
-
-    <SeekBar
-        android:id="@+id/repeatNumSeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:max="9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/repeatNumTextView" />
-    
-<TextView
-        android:id="@+id/repeatAtEndTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/repeatAtEndTextView"
-        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
-        app:layout_constraintTop_toBottomOf="@+id/repeatNumTextView" />
-
-    <CheckBox
-        android:id="@+id/repeatAtEndCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/repeatAtEndTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/repeatAtEndTextView" />
-    
-    <TextView
-        android:id="@+id/listBackgroundTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/listBackgroundTextView"
-        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
-        app:layout_constraintTop_toBottomOf="@+id/repeatAtEndTextView" />
-
-    <CheckBox
-        android:id="@+id/listBackgroundCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/listBackgroundTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/listBackgroundTextView" />
-
-    <View
-        android:id="@+id/divider"
+    <ScrollView
+        android:id="@+id/settingScrollView"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="24dp"
-        android:background="?android:attr/listDivider"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/AdFrameLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listBackgroundTextView" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/lang0TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/lang0TextView"
-        app:layout_constraintEnd_toStartOf="@+id/lang1TextView"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/speechRateTextView"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/settingConstraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/lang1TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/lang1TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/lang0TextView"
-        app:layout_constraintTop_toTopOf="@+id/lang0TextView" />
+            <TextView
+                android:id="@+id/wordDelayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/wordDelayTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/speechRateTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/speechRateTextView"
-        app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
-        app:layout_constraintTop_toBottomOf="@+id/lang0TextView" />
+            <SeekBar
+                android:id="@+id/wordDelaySeekBar"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:max="9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/wordDelayTextView" />
 
-    <SeekBar
-        android:id="@+id/speechRate0SeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:max="6"
-        app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
-        app:layout_constraintStart_toStartOf="@+id/lang0TextView"
-        app:layout_constraintTop_toTopOf="@+id/speechRateTextView" />
+            <TextView
+                android:id="@+id/lineDelayTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/lineDelayTextView"
+                app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
+                app:layout_constraintTop_toBottomOf="@+id/wordDelayTextView" />
 
-    <SeekBar
-        android:id="@+id/speechRate1SeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:max="6"
-        app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
-        app:layout_constraintStart_toStartOf="@+id/lang1TextView"
-        app:layout_constraintTop_toTopOf="@+id/speechRateTextView" />
+            <SeekBar
+                android:id="@+id/lineDelaySeekBar"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:max="9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/lineDelayTextView" />
 
-    <TextView
-        android:id="@+id/volumeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/volumeTextView"
-        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
-        app:layout_constraintTop_toBottomOf="@+id/speechRateTextView" />
+            <TextView
+                android:id="@+id/repeatNumTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/repeatNumTextView"
+                app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
+                app:layout_constraintTop_toBottomOf="@+id/lineDelayTextView" />
 
-    <SeekBar
-        android:id="@+id/volume0SeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:max="6"
-        app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
-        app:layout_constraintStart_toStartOf="@+id/lang0TextView"
-        app:layout_constraintTop_toTopOf="@+id/volumeTextView"
-        tools:layout_editor_absoluteX="144dp" />
+            <SeekBar
+                android:id="@+id/repeatNumSeekBar"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:max="9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/repeatNumTextView" />
 
-    <SeekBar
-        android:id="@+id/volume1SeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:max="6"
-        app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
-        app:layout_constraintStart_toStartOf="@+id/lang1TextView"
-        app:layout_constraintTop_toTopOf="@+id/volumeTextView"
-        tools:layout_editor_absoluteX="270dp" />
+            <TextView
+                android:id="@+id/repeatAtEndTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/repeatAtEndTextView"
+                app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
+                app:layout_constraintTop_toBottomOf="@+id/repeatNumTextView" />
 
-    <TextView
-        android:id="@+id/pitchTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/pitchTextView"
-        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
-        app:layout_constraintTop_toBottomOf="@+id/volumeTextView" />
+            <RadioGroup
+                android:id="@+id/repeatAtEndGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/repeatAtEndTextView">
 
-    <SeekBar
-        android:id="@+id/pitch0SeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:max="6"
-        app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
-        app:layout_constraintStart_toStartOf="@+id/lang0TextView"
-        app:layout_constraintTop_toTopOf="@+id/pitchTextView"
-        tools:layout_editor_absoluteX="144dp" />
+                <RadioButton
+                    android:id="@+id/doNothingButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="clickDoNothing"
+                    android:text="@string/doNothingButton" />
 
-    <SeekBar
-        android:id="@+id/pitch1SeekBar"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:max="6"
-        app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
-        app:layout_constraintStart_toStartOf="@+id/lang1TextView"
-        app:layout_constraintTop_toTopOf="@+id/pitchTextView"
-        tools:layout_editor_absoluteX="278dp" />
+                <RadioButton
+                    android:id="@+id/repeatButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="clickRepeat"
+                    android:text="@string/repeatButton" />
+
+                <RadioButton
+                    android:id="@+id/playNextFileButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="clickPlayNextFile"
+                    android:text="@string/playNextFileButton" />
+
+                <RadioButton
+                    android:id="@+id/playRandomFileButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="clickPlayRandomFile"
+                    android:text="@string/playRandomFileButton" />
+
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/selectFileButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:onClick="clickSelectFile"
+                android:text="@string/selectFileButton"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/repeatAtEndGroup"
+                app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
+                app:layout_constraintTop_toBottomOf="@+id/repeatAtEndTextView" />
+
+            <TextView
+                android:id="@+id/listBackgroundTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/listBackgroundTextView"
+                app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
+                app:layout_constraintTop_toBottomOf="@+id/repeatAtEndGroup" />
+
+            <CheckBox
+                android:id="@+id/listBackgroundCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/listBackgroundTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/listBackgroundTextView" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="24dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/listBackgroundTextView" />
+
+            <TextView
+                android:id="@+id/lang0TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/lang0TextView"
+                app:layout_constraintEnd_toStartOf="@+id/lang1TextView"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/speechRateTextView"
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+            <TextView
+                android:id="@+id/lang1TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lang1TextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/lang0TextView"
+                app:layout_constraintTop_toTopOf="@+id/lang0TextView" />
+
+            <TextView
+                android:id="@+id/speechRateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/speechRateTextView"
+                app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
+                app:layout_constraintTop_toBottomOf="@+id/lang0TextView" />
+
+            <SeekBar
+                android:id="@+id/speechRate0SeekBar"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:max="6"
+                app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
+                app:layout_constraintStart_toStartOf="@+id/lang0TextView"
+                app:layout_constraintTop_toTopOf="@+id/speechRateTextView" />
+
+            <SeekBar
+                android:id="@+id/speechRate1SeekBar"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:max="6"
+                app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
+                app:layout_constraintStart_toStartOf="@+id/lang1TextView"
+                app:layout_constraintTop_toTopOf="@+id/speechRateTextView" />
+
+            <TextView
+                android:id="@+id/volumeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/volumeTextView"
+                app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+                app:layout_constraintTop_toBottomOf="@+id/speechRateTextView" />
+
+            <SeekBar
+                android:id="@+id/volume0SeekBar"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:max="6"
+                app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
+                app:layout_constraintStart_toStartOf="@+id/lang0TextView"
+                app:layout_constraintTop_toTopOf="@+id/volumeTextView"
+                tools:layout_editor_absoluteX="144dp" />
+
+            <SeekBar
+                android:id="@+id/volume1SeekBar"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:max="6"
+                app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
+                app:layout_constraintStart_toStartOf="@+id/lang1TextView"
+                app:layout_constraintTop_toTopOf="@+id/volumeTextView"
+                tools:layout_editor_absoluteX="270dp" />
+
+            <TextView
+                android:id="@+id/pitchTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/pitchTextView"
+                app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+                app:layout_constraintTop_toBottomOf="@+id/volumeTextView" />
+
+            <SeekBar
+                android:id="@+id/pitch0SeekBar"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:max="6"
+                app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
+                app:layout_constraintStart_toStartOf="@+id/lang0TextView"
+                app:layout_constraintTop_toTopOf="@+id/pitchTextView"
+                tools:layout_editor_absoluteX="144dp" />
+
+            <SeekBar
+                android:id="@+id/pitch1SeekBar"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:max="6"
+                app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
+                app:layout_constraintStart_toStartOf="@+id/lang1TextView"
+                app:layout_constraintTop_toTopOf="@+id/pitchTextView"
+                tools:layout_editor_absoluteX="278dp" />
 
 
-    <TextView
-        android:id="@+id/textSizeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/textSizeTextView"
-        app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
-        app:layout_constraintTop_toBottomOf="@+id/pitchTextView" />
+            <TextView
+                android:id="@+id/textSizeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/textSizeTextView"
+                app:layout_constraintStart_toStartOf="@+id/speechRateTextView"
+                app:layout_constraintTop_toBottomOf="@+id/pitchTextView" />
 
-    <EditText
-        android:id="@+id/textSize0EditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="2"
-        android:inputType="number"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textSizeTextView"
-        app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
-        app:layout_constraintStart_toStartOf="@+id/lang0TextView" />
+            <EditText
+                android:id="@+id/textSize0EditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="2"
+                android:inputType="number"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textSizeTextView"
+                app:layout_constraintEnd_toEndOf="@+id/lang0TextView"
+                app:layout_constraintStart_toStartOf="@+id/lang0TextView" />
 
-    <EditText
-        android:id="@+id/textSize1EditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="2"
-        android:inputType="number"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textSizeTextView"
-        app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
-        app:layout_constraintStart_toStartOf="@+id/lang1TextView" />
+            <EditText
+                android:id="@+id/textSize1EditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="2"
+                android:inputType="number"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textSizeTextView"
+                app:layout_constraintEnd_toEndOf="@+id/lang1TextView"
+                app:layout_constraintStart_toStartOf="@+id/lang1TextView" />
 
-    <View
-        android:id="@+id/divider2"
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textSize0EditText" />
+
+
+            <Button
+                android:id="@+id/clearButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:onClick="clickClear"
+                android:text="@string/clearButton"
+                app:layout_constraintEnd_toEndOf="@+id/resetButton"
+                app:layout_constraintStart_toStartOf="@+id/resetButton"
+                app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+            <Button
+                android:id="@+id/resetButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:onClick="clickReset"
+                android:text="@string/resetButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/clearButton" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/AdFrameLayout"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginBottom="16dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toTopOf="@+id/clearButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    
-    <Button
-        android:id="@+id/clearButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:onClick="clickClear"
-        android:text="@string/clearButton"
-        app:layout_constraintBottom_toTopOf="@+id/resetButton"
-        app:layout_constraintEnd_toEndOf="@+id/resetButton"
-        app:layout_constraintStart_toStartOf="@+id/resetButton" />
-    
-    <Button
-        android:id="@+id/resetButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:onClick="clickReset"
-        android:text="@string/resetButton"
+        android:layout_height="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

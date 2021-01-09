@@ -7,9 +7,12 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +20,10 @@ import android.widget.Toast;
 public class SettingsActivity extends AppCompatActivity {
 
     private SeekBar wordDelaySeekBar, lineDelaySeekBar, repeatNumSeekBar, speechRate0SeekBar, speechRate1SeekBar, volume0SeekBar, volume1SeekBar, pitch0SeekBar, pitch1SeekBar;
-    private CheckBox repeatAtEndCheckBox, listBackgroundCheckBox;
+    private RadioGroup repeatAtEndGroup;
+    private RadioButton doNothingButton, repeatButton, playNextFileButton, playRandomFileButton;
+    private Button selectButton;
+    private CheckBox listBackgroundCheckBox;
     private EditText textSize0EditText, textSize1EditText;
     private TextView wordDelayTextView, lineDelayTextView, repeatNumTextView;
 
@@ -38,7 +44,12 @@ public class SettingsActivity extends AppCompatActivity {
         wordDelaySeekBar = findViewById(R.id.wordDelaySeekBar);
         lineDelaySeekBar = findViewById(R.id.lineDelaySeekBar);
         repeatNumSeekBar = findViewById(R.id.repeatNumSeekBar);
-        repeatAtEndCheckBox = findViewById(R.id.repeatAtEndCheckBox);
+        repeatAtEndGroup=findViewById(R.id.repeatAtEndGroup);
+        doNothingButton=findViewById(R.id.doNothingButton);
+        repeatButton=findViewById(R.id.repeatButton);
+        playNextFileButton=findViewById(R.id.playNextFileButton);
+        playRandomFileButton=findViewById(R.id.playRandomFileButton);
+        selectButton=findViewById(R.id.selectFileButton);
         listBackgroundCheckBox = findViewById(R.id.listBackgroundCheckBox);
         speechRate0SeekBar = findViewById(R.id.speechRate0SeekBar);
         speechRate1SeekBar = findViewById(R.id.speechRate1SeekBar);
@@ -60,7 +71,10 @@ public class SettingsActivity extends AppCompatActivity {
         wordDelaySeekBar.setProgress(MainActivity.wordDelay);
         lineDelaySeekBar.setProgress(MainActivity.lineDelay);
         repeatNumSeekBar.setProgress(MainActivity.repeatNum - 1);
-        repeatAtEndCheckBox.setChecked(MainActivity.isRepeatAtEnd);
+        ((RadioButton)repeatAtEndGroup.getChildAt(MainActivity.repeatAtEnd)).setChecked(true);
+        if (MainActivity.repeatAtEnd>1){
+            selectButton.setVisibility(View.VISIBLE);
+        }
         listBackgroundCheckBox.setChecked(MainActivity.hasListBackground);
         speechRate0SeekBar.setProgress(MainActivity.speechRate[0]);
         speechRate1SeekBar.setProgress(MainActivity.speechRate[1]);
@@ -127,13 +141,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-        repeatAtEndCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                MainActivity.isRepeatAtEnd = b;
-            }
-        });
-        listBackgroundCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+           listBackgroundCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 MainActivity.hasListBackground = b;
@@ -240,7 +248,32 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
-    
+
+    public void clickDoNothing(View view){
+        MainActivity.repeatAtEnd=0;
+        selectButton.setVisibility(View.INVISIBLE);
+    }
+
+    public void clickRepeat(View view){
+        MainActivity.repeatAtEnd=1;
+        selectButton.setVisibility(View.INVISIBLE);
+    }
+
+    public void clickPlayNextFile(View view){
+        MainActivity.repeatAtEnd=2;
+        selectButton.setVisibility(View.VISIBLE);
+    }
+
+    public void clickPlayRandomFile(View view){
+        MainActivity.repeatAtEnd=3;
+        selectButton.setVisibility(View.VISIBLE);
+    }
+
+    public void clickSelectFile(View view){
+SelectFileDialogFragment selectFileDialogFragment = new SelectFileDialogFragment();
+selectFileDialogFragment.show(getSupportFragmentManager(), "selectFiles");
+    }
+
     public void clickClear(View view){
         MainActivity.listString[0] = "";
         MainActivity.listString[1] = "";
@@ -251,7 +284,7 @@ public class SettingsActivity extends AppCompatActivity {
         wordDelaySeekBar.setProgress(0);
         lineDelaySeekBar.setProgress(1);
         repeatNumSeekBar.setProgress(2);
-        repeatAtEndCheckBox.setChecked(false);
+        repeatButton.setChecked(true);
         listBackgroundCheckBox.setChecked(false);
         speechRate0SeekBar.setProgress(3);
         speechRate1SeekBar.setProgress(3);
@@ -287,6 +320,7 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putInt(getString(R.string.prefWordDelay), MainActivity.wordDelay);
         editor.putInt(getString(R.string.prefLineDelay), MainActivity.lineDelay);
         editor.putInt(getString(R.string.prefRepeatNum), MainActivity.repeatNum);
+        editor.putInt(getString(R.string.prefRepeatAtEnd), MainActivity.repeatAtEnd);
         editor.putBoolean(getString(R.string.prefHasListBackground), MainActivity.hasListBackground);
         editor.putInt(getString(R.string.prefSpeechRate0), MainActivity.speechRate[0]);
         editor.putInt(getString(R.string.prefSpeechRate1), MainActivity.speechRate[1]);

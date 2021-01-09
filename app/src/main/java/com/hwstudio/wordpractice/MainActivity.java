@@ -44,8 +44,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,15 +57,17 @@ public class MainActivity extends AppCompatActivity {
 
     // Settings
     public static Locale[] language = new Locale[2];
-    public static int wordDelay, lineDelay, repeatNum;
-    public static boolean isRepeatAtEnd, hasListBackground;
+    public static int wordDelay, lineDelay, repeatNum, repeatAtEnd;
+    public static Set<String> selectedFilenames = new HashSet<>();
+    public static boolean hasListBackground;
     public static int[] speechRate = new int[2];
     public static int[] soundVolume = new int[2];
     public static int[] pitch = new int[2];
     public static int[] textSize = new int[2];
 
     // Variables
-    private String defaultFile;
+    private String defaultFile, currentFile;
+    private String[] selectedArray;
     private int repeatCount, currentLine, maxLine;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
@@ -182,7 +186,9 @@ public class MainActivity extends AppCompatActivity {
         wordDelay = sharedPref.getInt(getString(R.string.prefWordDelay), 0);
         lineDelay = sharedPref.getInt(getString(R.string.prefLineDelay), 1);
         repeatNum = sharedPref.getInt(getString(R.string.prefRepeatNum), 2);
-        isRepeatAtEnd = sharedPref.getBoolean(getString(R.string.prefIsRepeatAtEnd), false);
+        repeatAtEnd = sharedPref.getInt(getString(R.string.prefRepeatAtEnd), 1);
+        selectedFilenames = sharedPref.getStringSet(getString(R.string.prefSelectedFiles),null);
+        selectedArray = selectedFilenames.toArray(new String[selectedFilenames.size()]);
         hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), false);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
@@ -305,6 +311,8 @@ public class MainActivity extends AppCompatActivity {
                                 currentLine++;
                                 if (currentLine >= listAdapter[0].getItemCount() || currentLine >= listAdapter[1].getItemCount()) { // Either list ended
                                     clickStop(null);
+                                    currentLine=0;
+                                    scrollToWord();
                                     Toast.makeText(MainActivity.this, R.string.endOfListToast, Toast.LENGTH_SHORT).show();
                                     MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.long_beep);
                                     mediaPlayer.start();
@@ -312,8 +320,16 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void onCompletion(MediaPlayer mediaPlayer) {
                                             mediaPlayer.release();
-                                            if (isRepeatAtEnd) {
-                                                clickPlay(null);
+                                            switch (repeatAtEnd) {
+                                                case 1: clickPlay(null);
+                                                break;
+                                                case 2:
+
+                                                    int currentInt = selectedFilenames.
+                                                    break;
+                                                case 3:
+                                                    break;
+                                                default:
                                             }
                                         }
                                     });
@@ -463,6 +479,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                scrollToWord();
                 viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine);
                 wordString[listNum] = viewHolder[listNum].getText();
                 speakString(listNum);
@@ -492,7 +509,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void speakString(int listNum) {
         viewHolder[listNum].highlightString();
-        scrollToWord();
+//        scrollToWord();
 //        listScrollView.smoothScrollTo(0, mainConstraintLayout.getHeight() * (currentLine - 5) / maxLine);
         tts[listNum].setOnUtteranceProgressListener(utterance[listNum]);
         Bundle params = new Bundle();
@@ -735,7 +752,9 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             return false;
         }
-        if (!analyzeFileSuccess(loadedString.toString())) {
+        if (analyzeFileSuccess(loadedString.toString())) {
+            currentFile = fileUri.getLastPathSegment();
+        }else{
             Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
         }
         return true;

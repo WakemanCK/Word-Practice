@@ -1,17 +1,24 @@
 <resources>
     <string name="app_name">Word Practice</string>
+    <string name="prefSharedPref" translatable="false">prefSharedPref</string>
+    <string name="prefWordDelay" translatable="false">prefWordDelay</string>
+    <string name="prefLineDelay" translatable="false">prefLineDelay</string>
+    <string name="prefRepeatNum" translatable="false">prefRepeatNum</string>
+    <string name="prefPitch0" translatable="false">prefPitch0</string>
+    <string name="prefPitch1" translatable="false">prefPitch1</string>
+    <string name="prefSpeechRate0" translatable="false">prefSpeechRate0</string>
+    <string name="prefSpeechRate1" translatable="false">prefSpeechRate1</string>
+    <string name="prefSoundVolume0" translatable="false">prefSoundVolume0</string>
+    <string name="prefSoundVolume1" translatable="false">prefSoundVolume1</string>
+    <string name="prefLanguage0" translatable="false">prefLanguage0</string>
+    <string name="prefLanguage1" translatable="false">prefLanguage1</string>
+    <string name="prefTextSize0" translatable="false">prefTextSize0</string>
+    <string name="prefTextSize1" translatable="false">prefTextSize1</string>
+    <string name="prefHasListBackground" translatable="false">prefHasListBackground</string>
+    <string name="prefRepeatAtEnd" translatable="false">prefRepeatAtEnd</string>
+    <string name="prefDefaultFile" translatable="false">prefDefaultFile</string>
+    <string name="prefSelectedFiles" translatable="false">prefSelectedFiles</string>
     <string name="playButton">Play</string>
-    <string name="prefWordDelay">prefWordDelay</string>
-    <string name="prefLineDelay">prefLineDelay</string>
-    <string name="prefRepeatNum">prefRepeatNum</string>
-    <string name="prefPitch0">prefPitch0</string>
-    <string name="prefPitch1">prefPitch1</string>
-    <string name="prefSpeechRate0">prefSpeechRate0</string>
-    <string name="prefSpeechRate1">prefSpeechRate1</string>
-    <string name="prefSoundVolume0">prefSoundVolume0</string>
-    <string name="prefSoundVolume1">prefSoundVolume1</string>
-    <string name="prefLanguage0">prefLanguage0</string>
-    <string name="prefLanguage1">prefLanguage1</string>
     <string name="loadLists">Load lists</string>
     <string name="saveLists">Save lists</string>
     <string name="loadExamples">Load examples</string>
@@ -40,13 +47,9 @@
     <string name="repeatNumTextView">"Repeat how many times: "</string>
     <string name="textSizeTextView">Text size (18–48)</string>
     <string name="listBackgroundTextView">Word lists background color</string>
-    <string name="prefHasListBackground">prefHasListBackground</string>
-    <string name="prefTextSize0">prefTextSize0</string>
-    <string name="prefTextSize1">prefTextSize1</string>
     <string name="clearButton">Clear both word lists</string>
     <string name="clearListToast">Both word lists are reset.</string>
     <string name="resetButton">Reset all settings to default</string>
-    <string name="prefSharedPref">prefSharedPref</string>
     <string name="emptyListErr">Please enter some words to the lists!</string>
     <string name="unequalLengthErr">Warning: the lists are not equal in length!</string>
     <string name="finishButton">Done</string>
@@ -57,9 +60,12 @@
     <string name="pickLanguage0Title">Please choose language 1</string>
     <string name="pickLanguage1Title">Please choose language 2</string>
     <string name="cnExampleColor">紅色\n橙色\n黃色\n綠色\n藍色\n紫色\n黑色\n白色\n灰色\n棕色\n粉紅色</string>
-    <string name="repeatAtEndTextView">At the end of the list, repeat from the beginning.</string>
+    <string name="repeatAtEndTextView">At the end of the list:</string>
+    <string name="doNothingButton">do nothing</string>
+    <string name="repeatButton">repeat from the beginning</string>
+    <string name="playNextFileButton">play next file</string>
+    <string name="playRandomFileButton">play random file</string>
     <string name="exampleTitle">Please select example lists:</string>
-    <string name="prefIsRepeatAtEnd">prefIsRepeatAtEnd</string>
     <string name="endOfListToast">This is the end of the list.</string>
-    <string name="prefDefaultFile">prefDefaultFile</string>
+    <string name="selectFileButton">Select files</string>
 </resources>

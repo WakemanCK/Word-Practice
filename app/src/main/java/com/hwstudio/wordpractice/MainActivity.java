@@ -68,16 +68,16 @@ public class MainActivity extends AppCompatActivity {
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
     public static TextToSpeech[] tts = new TextToSpeech[2];
-    ListAdapter.ViewHolder[] viewHolder = new ListAdapter.ViewHolder[2];
+    private ListAdapter.ViewHolder[] viewHolder = new ListAdapter.ViewHolder[2];
     private UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private Handler delayHandler;
     public static String[] listString = new String[2];
     private String[] wordString = new String[2];
-    MainViewModel model;
+    private MainViewModel model;
 
     // Views
     private EditText[] listEditText = new EditText[2];
-    public Button[] langButton = new Button[2];
+    private Button[] langButton = new Button[2];
     private Button finishButton, editButton;
     private ImageButton playButton, pauseButton, stopButton, swapButton;
     private HorizontalScrollView[] recyclerScrollView = new HorizontalScrollView[2];
@@ -702,8 +702,6 @@ public class MainActivity extends AppCompatActivity {
         }
         String fileString = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
                 .getPath() + "/" + fileName + ".txt";
-        //File outputFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-        //.getPath() + "/" + fileName + ".txt");
         File outputFile = new File(fileString);
         try {
             DataOutputStream out = new DataOutputStream(new BufferedOutputStream(
@@ -791,10 +789,7 @@ public class MainActivity extends AppCompatActivity {
         ExampleDialogFragment exampleDialogFragment = new ExampleDialogFragment(this);
         exampleDialogFragment.show(getSupportFragmentManager(), "example");
         //debug
-        //   listEditText[0].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
-        //      listEditText[1].setText("1\n2\n3\n4\n5\n6\n7\n8\n9\n10");
         //listEditText[0].setText("1\n蘋果\n橙\n香蕉");
-//        addBackgroundSpan(0);
         //listEditText[1].setText("1\napple\norange\nbanana");
     }
 

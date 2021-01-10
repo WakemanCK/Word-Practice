@@ -47,6 +47,7 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int OPEN_SETTINGS = 10;
     private static final int LOAD_FILE = 11;
     private static final int REQUEST_WRITE_PERMISSION = 30;
+//    private static final int REQUEST_READ_PERMISSION_FROM_LOAD_FILE = 31;
+//    private static final int REQUEST_READ_PERMISSION_FROM_LOAD_SAVED_FILE = 32;
 
     // Settings
     public static Locale[] language = new Locale[2];
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Variables
     private String defaultFile, currentFile;
-    private String[] selectedArray;
+//    private String[] selectedArray;
     private int repeatCount, currentLine, maxLine;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
@@ -99,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                    REQUEST_READ_PERMISSION_FROM_LOAD_SAVED_FILE);
         loadSettings();
         initView();
 
@@ -187,8 +192,10 @@ public class MainActivity extends AppCompatActivity {
         lineDelay = sharedPref.getInt(getString(R.string.prefLineDelay), 1);
         repeatNum = sharedPref.getInt(getString(R.string.prefRepeatNum), 2);
         repeatAtEnd = sharedPref.getInt(getString(R.string.prefRepeatAtEnd), 1);
-        selectedFilenames = sharedPref.getStringSet(getString(R.string.prefSelectedFiles),null);
-        selectedArray = selectedFilenames.toArray(new String[selectedFilenames.size()]);
+        selectedFilenames = sharedPref.getStringSet(getString(R.string.prefSelectedFiles), null);
+//        if (selectedFilenames!= null) {
+//            selectedArray = selectedFilenames.toArray(new String[selectedFilenames.size()]);
+//        }
         hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), false);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
@@ -311,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
                                 currentLine++;
                                 if (currentLine >= listAdapter[0].getItemCount() || currentLine >= listAdapter[1].getItemCount()) { // Either list ended
                                     clickStop(null);
-                                    currentLine=0;
+                                    currentLine = 0;
                                     scrollToWord();
                                     Toast.makeText(MainActivity.this, R.string.endOfListToast, Toast.LENGTH_SHORT).show();
                                     MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.long_beep);
@@ -321,41 +328,14 @@ public class MainActivity extends AppCompatActivity {
                                         public void onCompletion(MediaPlayer mediaPlayer) {
                                             mediaPlayer.release();
                                             switch (repeatAtEnd) {
-                                                case 1: clickPlay(null);
-                                                break;
+                                                case 1:
+                                                    clickPlay(null);
+                                                    break;
                                                 case 2:
-                                                    int arraySize = selectedFilenames.size();
-                                                    if (arraySize >0){
-                                                    String[] selectedArray = selectedFilenames.toArray(new String[arraySize]);
-                                                        int currentInt = -1;
-                                                        for (int i = 0; i<arraySize; i++){
-                                                            if (currentFile.equals(selectedArray[i]){
-                                                                currentInt = i;   
-                                                            }
-                                                        }
-                                                        if (currentInt==-1 || currentInt >= arraySize -1){
-                                                            currentFile = selectedArray[0];
-                                                        }else{                                                              
-                                                                currentFile = selectedArray[currentInt + 1];
-                                                            }
-                                                        }
-                                                        String s = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-                                                            .getPath() + "/" + currentFile;
-                                                        loadSavedFile(s);
-                                                        clickPlay(null);
-                                                    }
+                                                    playNextFile();
                                                     break;
                                                 case 3:
-                                                                  int arraySize = selectedFilenames.size();
-                                                    if (arraySize >0){
-                                                    String[] selectedArray = selectedFilenames.toArray(new String[arraySize]);
-                                                        Random random = new Random();
-                                                     currentFile = selectedArray[random.nextInt(arraySize)];
-                                                        String s = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-                                                            .getPath() + "/" + currentFile;
-                                                        loadSavedFile(s);
-                                                        clickPlay(null);
-                                                    }
+                                                    playRandomFile();
                                                     break;
                                                 default:
                                             }
@@ -388,6 +368,58 @@ public class MainActivity extends AppCompatActivity {
             public void onError(String s) {
             }
         };
+    }
+
+    private void playNextFile() {
+        if (selectedFilenames == null){
+            return;
+        }
+        int arraySize = selectedFilenames.size();
+        if (arraySize > 0) {
+            String[] selectedArray = selectedFilenames.toArray(new String[arraySize]);
+            int currentInt = -1;
+            for (int i = 0; i < arraySize; i++) {
+                if (currentFile.equals(selectedArray[i])) {
+                    {
+                        currentInt = i;
+                    }
+                }
+                if (currentInt == -1 || currentInt >= arraySize - 1) {
+                    currentFile = selectedArray[0];
+                } else {
+                    currentFile = selectedArray[currentInt + 1];
+                }
+                String s = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                        .getPath() + "/" + currentFile;
+                if (loadSavedFile(s)) {
+                    clickPlay(null);
+                } else {
+                    Toast.makeText(this, getString(R.string.fileNotFoundErr) + currentFile, Toast.LENGTH_SHORT).show();
+                    utterance[1].onDone("");
+                }
+            }
+        }
+    }
+
+    private void playRandomFile() {
+        if (selectedFilenames == null){
+            return;
+        }
+        int arraySize = selectedFilenames.size();
+        if (arraySize > 0) {
+            String[] selectedArray = selectedFilenames.toArray(new String[arraySize]);
+            Random random = new Random();
+            currentFile = selectedArray[random.nextInt(arraySize)];
+            String s = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                    .getPath() + "/" + currentFile;
+            loadSavedFile(s);
+            if (loadSavedFile(s)) {
+                clickPlay(null);
+            } else {
+                Toast.makeText(this, getString(R.string.fileNotFoundErr) + currentFile, Toast.LENGTH_SHORT).show();
+                utterance[1].onDone("");
+            }
+        }
     }
 
     private void setMultipleEnable(boolean canFinish, boolean canEdit, boolean canPlay, boolean canPause, boolean canStop) {
@@ -723,6 +755,22 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.noPermissionErr), Toast.LENGTH_SHORT).show();
             }
         }
+//        if (requestCode == REQUEST_READ_PERMISSION_FROM_LOAD_FILE) {
+//            if (grantResults.length > 0 &&
+//                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                loadFile();
+//            } else {
+//                Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.noReadPermissionErr), Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        if (requestCode == REQUEST_READ_PERMISSION_FROM_LOAD_SAVED_FILE) {
+//            if (grantResults.length > 0 &&
+//                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                loadSavedFile();
+//            } else {
+//                Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.noReadPermissionErr), Toast.LENGTH_SHORT).show();
+//            }
+//        }
     }
 
     private void saveList() {
@@ -770,41 +818,55 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean loadFile(Uri fileUri) {
-        StringBuilder loadedString = new StringBuilder();
-        try (InputStream inputStream = getContentResolver().openInputStream(fileUri);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                loadedString.append(line).append("\n");
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+////            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+////                    REQUEST_READ_PERMISSION_FROM_LOAD_FILE);
+//            return false;
+//        } else {
+            StringBuilder loadedString = new StringBuilder();
+            try (InputStream inputStream = getContentResolver().openInputStream(fileUri);
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    loadedString.append(line).append("\n");
+                }
+            } catch (IOException e) {
+                return false;
             }
-        } catch (IOException e) {
-            return false;
+            if (analyzeFileSuccess(loadedString.toString())) {
+                currentFile = fileUri.getLastPathSegment();
+            } else {
+                Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
+            }
+            return true;
         }
-        if (analyzeFileSuccess(loadedString.toString())) {
-            currentFile = fileUri.getLastPathSegment();
-        }else{
-            Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
-        }
-        return true;
-    }
+//    }
 
     private boolean loadSavedFile(String defaultFile) {
-        File inputFile = new File(defaultFile);
-        StringBuilder loadedString = new StringBuilder();
-        try (InputStream inputStream = new FileInputStream(inputFile);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                loadedString.append(line).append("\n");
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+////            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+////                    REQUEST_READ_PERMISSION_FROM_LOAD_SAVED_FILE);
+//            return false;
+//        } else {
+            File inputFile = new File(defaultFile);
+            StringBuilder loadedString = new StringBuilder();
+            try (InputStream inputStream = new FileInputStream(inputFile);
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    loadedString.append(line).append("\n");
+                }
+            } catch (IOException e) {
+                return false;
             }
-        } catch (IOException e) {
-            return false;
+            if (!analyzeFileSuccess(loadedString.toString())) {
+                Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
+            }
+            return true;
         }
-        if (!analyzeFileSuccess(loadedString.toString())) {
-            Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
-        }
-        return true;
-    }
+//    }
 
     private boolean analyzeFileSuccess(String loadedString) {
         int[] index = new int[4];

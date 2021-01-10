@@ -20,7 +20,7 @@ public class ExampleDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String[] exampleList = {"Numbers", "Chinese vs English (Color)", "Japanese vs English (Color)", "Chinese vs English (Body parts)", "Chinese vs English (Body parts)"
+        String[] exampleList = {"Numbers", "Chinese vs English (Color)", "Japanese vs English (Color)", "Chinese vs English (Body parts)", "Japanese vs English (Body parts)"
                                , "Chinese vs English (Date & time)", "Japanese vs English (Date & time)", "Chinese vs English (Direction & position)", "Japanese vs English (Direction & position)"
                                , "Chinese vs English (Transportation)", "Japanese vs English (Transportation)", "Chinese vs English (Food)", "Japanese vs English (Food)"
                                 , "Chinese vs English (Conversation)", "Japanese vs English (Conversation)"};
@@ -85,7 +85,7 @@ public class ExampleDialogFragment extends DialogFragment {
         egListString[1][3] = "head\neye\neyebrow\near\nnose\nmouth\ntooth\ncheek\nforehead\nhair\nneck\nbody\nstomach\nshoulder\narm\nhand\nfinger\nthigh\nfoot";
         egListString[0][4] = "頭\n目\n眉毛\n耳\n鼻\n口\n歯\n頰\n額\n髪\n首\n体\nお腹\n肩\n腕\n手\n指\n腿\n足";
         egListString[1][4] = "head\neye\neyebrow\near\nnose\nmouth\ntooth\ncheek\nforehead\nhair\nneck\nbody\nstomach\nshoulder\narm\nhand\nfinger\nthigh\nfoot";
-        egListString[0][5]
+    /*    egListString[0][5]
         egListString[1][5]
         egListString[0][6]
         egListString[1][6]
@@ -104,6 +104,6 @@ public class ExampleDialogFragment extends DialogFragment {
         egListString[0][13]
         egListString[1][13]
         egListString[0][14]
-        egListString[1][14]
+        egListString[1][14]*/
     }
 }

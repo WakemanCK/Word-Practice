@@ -57,6 +57,12 @@ public class LanguageDialogFragment extends DialogFragment {
                         editor.putString(getString(R.string.prefLanguage1), MainActivity.language[1].toString());
                         editor.apply();
                     }
+                })
+                .setNegativeButton(R.string.cancelButton, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
                 });
         return builder.create();
     }

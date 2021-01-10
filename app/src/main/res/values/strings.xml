@@ -33,7 +33,7 @@
     <string name="fileName">File name</string>
     <string name="saveDialogTextView">Please enter a file name</string>
     <string name="cancelButton">Cancel</string>
-    <string name="noPermissionErr">Error: no storage \naccess permission. \nList is NOT saved!</string>
+    <string name="noPermissionErr">Error: no storage \nwrite permission. \nList is NOT saved!</string>
     <string name="saveListText">Word lists are saved to %s.txt.</string>
     <string name="fileLoadedText">Word lists are loaded.</string>
     <string name="fileLoadErr">Not a correct word lists file!</string>
@@ -68,4 +68,6 @@
     <string name="exampleTitle">Please select example lists:</string>
     <string name="endOfListToast">This is the end of the list.</string>
     <string name="selectFileButton">Select files</string>
+    <string name="fileNotFoundErr">\"File not found: \"</string>
+    <string name="noReadPermissionErr">Error: no storage \nread permission.</string>
 </resources>

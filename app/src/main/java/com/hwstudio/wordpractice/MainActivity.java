@@ -333,10 +333,11 @@ public class MainActivity extends AppCompatActivity {
                                                                 currentInt = i;   
                                                             }
                                                         }
-                                                        if (currentInt==-1){
+                                                        if (currentInt==-1 || currentInt >= arraySize -1){
                                                             currentFile = selectedArray[0];
-                                                        }else{
-                                                            currentFile = selectedArray[currentInt];
+                                                        }else{                                                              
+                                                                currentFile = selectedArray[currentInt + 1];
+                                                            }
                                                         }
                                                         String s = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
                                                             .getPath() + "/" + currentFile;
@@ -345,6 +346,16 @@ public class MainActivity extends AppCompatActivity {
                                                     }
                                                     break;
                                                 case 3:
+                                                                  int arraySize = selectedFilenames.size();
+                                                    if (arraySize >0){
+                                                    String[] selectedArray = selectedFilenames.toArray(new String[arraySize]);
+                                                        Random random = new Random();
+                                                     currentFile = selectedArray[random.nextInt(arraySize)];
+                                                        String s = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                                                            .getPath() + "/" + currentFile;
+                                                        loadSavedFile(s);
+                                                        clickPlay(null);
+                                                    }
                                                     break;
                                                 default:
                                             }

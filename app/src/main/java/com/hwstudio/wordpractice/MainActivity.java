@@ -324,8 +324,25 @@ public class MainActivity extends AppCompatActivity {
                                                 case 1: clickPlay(null);
                                                 break;
                                                 case 2:
-
-                                                    int currentInt = selectedFilenames.
+                                                    int arraySize = selectedFilenames.size();
+                                                    if (arraySize >0){
+                                                    String[] selectedArray = selectedFilenames.toArray(new String[arraySize]);
+                                                        int currentInt = -1;
+                                                        for (int i = 0; i<arraySize; i++){
+                                                            if (currentFile.equals(selectedArray[i]){
+                                                                currentInt = i;   
+                                                            }
+                                                        }
+                                                        if (currentInt==-1){
+                                                            currentFile = selectedArray[0];
+                                                        }else{
+                                                            currentFile = selectedArray[currentInt];
+                                                        }
+                                                        String s = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                                                            .getPath() + "/" + currentFile;
+                                                        loadSavedFile(s);
+                                                        clickPlay(null);
+                                                    }
                                                     break;
                                                 case 3:
                                                     break;

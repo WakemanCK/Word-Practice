@@ -20,7 +20,7 @@ public class ExampleDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String[] exampleList = {"Numbers", "Chinese vs English (Color)", "Japanese vs English (Color)"};
+        String[] exampleList = {"Numbers", "Chinese vs English (Color)", "Japanese vs English (Color)", "Chinese vs English (Body parts)", "Chinese vs English (Body parts)"};
         defineExample();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.exampleTitle)
@@ -48,11 +48,19 @@ public class ExampleDialogFragment extends DialogFragment {
         egLanguage[1][1] = Locale.US;
         egLanguage[0][2] = Locale.JAPAN;
         egLanguage[1][2] = Locale.US;
+        egLanguage[0][1] = Locale.CHINA;
+        egLanguage[1][1] = Locale.US;
+        egLanguage[0][2] = Locale.JAPAN;
+        egLanguage[1][2] = Locale.US;
         egListString[0][0] = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
         egListString[1][0] = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
         egListString[0][1] = mainActivity.getString(R.string.cnExampleColor);
         egListString[1][1] = "red\norange\nyellow\ngreen\nblue\npurple\nblack\nwhite\ngrey\nbrown\npink";
         egListString[0][2] = "赤\nオレンジ色\n黄色\n緑\n青\n紫\n黒\n白\n灰色\n茶色\nピンク";
         egListString[1][2] = "red\norange\nyellow\ngreen\nblue\npurple\nblack\nwhite\ngrey\nbrown\npink";
+        egListString[0][3] = "頭\n眼睛\n眉毛\n耳朵\n鼻子\n口\n牙齒\n臉頰\n前額\n頭髮\n頸部\n身體\n肚子\n肩膀\n手臂\n手\n手指\n大腿\n腳";
+        egListString[1][3] = "head\neye\neyebrow\near\nnose\nmouth\ntooth\ncheek\nforehead\nhair\nneck\nbody\nstomach\nshoulder\narm\nhand\nfinger\nthigh\nfoot";
+        egListString[0][4] = "頭\n目\n眉毛\n耳\n鼻\n口\n歯\n頰\n額\n髪\n首\n体\nお腹\n肩\n腕\n手\n指\n腿\n足";
+        egListString[1][4] = "head\neye\neyebrow\near\nnose\nmouth\ntooth\ncheek\nforehead\nhair\nneck\nbody\nstomach\nshoulder\narm\nhand\nfinger\nthigh\nfoot";
     }
 }

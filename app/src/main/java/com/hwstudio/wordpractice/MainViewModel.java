@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 public class MainViewModel extends ViewModel {
     private boolean isChangingState;
     private boolean canFinish = true, canEdit, canPlay, canPause, canStop, hasRecycler;
-    private String listString0, listString1, wordString0, wordString1;
+    private String listString0, listString1, wordString0, wordString1, currentFile;
     private int currentLine, maxLine, repeatCount, playingState;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private TextToSpeech tts0, tts1;
@@ -180,5 +180,13 @@ public class MainViewModel extends ViewModel {
 
     public void setListClicked(boolean listClicked) {
         isListClicked = listClicked;
+    }
+
+    public String getCurrentFile() {
+        return currentFile;
+    }
+
+    public void setCurrentFile(String currentFile) {
+        this.currentFile = currentFile;
     }
 }

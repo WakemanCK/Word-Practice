@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int OPEN_SETTINGS = 10;
     private static final int LOAD_FILE = 11;
     private static final int REQUEST_WRITE_PERMISSION = 30;
-//    private static final int REQUEST_READ_PERMISSION_FROM_LOAD_FILE = 31;
+    private static final int REQUEST_READ_PERMISSION = 31;
 //    private static final int REQUEST_READ_PERMISSION_FROM_LOAD_SAVED_FILE = 32;
 
     // Settings
@@ -69,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
     public static int[] textSize = new int[2];
 
     // Variables
-    private String defaultFile, currentFile;
-//    private String[] selectedArray;
+    private String defaultFile, currentFile = "";
+    //    private String[] selectedArray;
     private int repeatCount, currentLine, maxLine;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
@@ -102,8 +102,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                    REQUEST_READ_PERMISSION_FROM_LOAD_SAVED_FILE);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                REQUEST_READ_PERMISSION);
         loadSettings();
         initView();
 
@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
             isListClicked = model.isListClicked();
             wordString[0] = model.getWordString0();
             wordString[1] = model.getWordString1();
+            currentFile = model.getCurrentFile();
             if (playingState > 0) {
                 delayHandler.postDelayed(new Runnable() {
                     @Override
@@ -193,9 +194,6 @@ public class MainActivity extends AppCompatActivity {
         repeatNum = sharedPref.getInt(getString(R.string.prefRepeatNum), 2);
         repeatAtEnd = sharedPref.getInt(getString(R.string.prefRepeatAtEnd), 1);
         selectedFilenames = sharedPref.getStringSet(getString(R.string.prefSelectedFiles), null);
-//        if (selectedFilenames!= null) {
-//            selectedArray = selectedFilenames.toArray(new String[selectedFilenames.size()]);
-//        }
         hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), false);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
@@ -371,16 +369,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void playNextFile() {
-        if (selectedFilenames == null){
+        if (selectedFilenames == null) {
             return;
         }
         int arraySize = selectedFilenames.size();
         if (arraySize > 0) {
             String[] selectedArray = selectedFilenames.toArray(new String[arraySize]);
-            int currentInt = -1;
-            for (int i = 0; i < arraySize; i++) {
-                if (currentFile.equals(selectedArray[i])) {
-                    {
+            if (currentFile.equals("")) {
+                currentFile = selectedArray[0];
+            } else {
+                int currentInt = -1;
+                for (int i = 0; i < arraySize; i++) {
+                    if (currentFile.equals(selectedArray[i])) {
                         currentInt = i;
                     }
                 }
@@ -389,20 +389,20 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     currentFile = selectedArray[currentInt + 1];
                 }
-                String s = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-                        .getPath() + "/" + currentFile;
-                if (loadSavedFile(s)) {
-                    clickPlay(null);
-                } else {
-                    Toast.makeText(this, getString(R.string.fileNotFoundErr) + currentFile, Toast.LENGTH_SHORT).show();
-                    utterance[1].onDone("");
-                }
+            }
+            String s = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                    .getPath() + "/" + currentFile;
+            if (loadSavedFile(s)) {
+                clickPlay(null);
+            } else {
+                Toast.makeText(this, getString(R.string.fileNotFoundErr) + currentFile, Toast.LENGTH_SHORT).show();
+                utterance[1].onDone("");
             }
         }
     }
 
     private void playRandomFile() {
-        if (selectedFilenames == null){
+        if (selectedFilenames == null) {
             return;
         }
         int arraySize = selectedFilenames.size();
@@ -541,8 +541,13 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 scrollToWord();
                 viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine);
-                wordString[listNum] = viewHolder[listNum].getText();
-                speakString(listNum);
+                if (viewHolder[listNum]==null) {
+                    clickStop(null);
+                    currentLine=0;
+                }else {
+                    wordString[listNum] = viewHolder[listNum].getText();
+                    speakString(listNum);
+                }
             }
         }, 100);
     }
@@ -569,12 +574,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void speakString(int listNum) {
         viewHolder[listNum].highlightString();
-//        scrollToWord();
-//        listScrollView.smoothScrollTo(0, mainConstraintLayout.getHeight() * (currentLine - 5) / maxLine);
         tts[listNum].setOnUtteranceProgressListener(utterance[listNum]);
         Bundle params = new Bundle();
         params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, (soundVolume[listNum] + 1) / 7f);
-        tts[listNum].speak(wordString[listNum], TextToSpeech.QUEUE_ADD, params
+        tts[listNum].stop();
+        tts[listNum].speak(wordString[listNum], TextToSpeech.QUEUE_FLUSH, params
                 , TextToSpeech.ACTION_TTS_QUEUE_PROCESSING_COMPLETED);
     }
 
@@ -755,22 +759,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.noPermissionErr), Toast.LENGTH_SHORT).show();
             }
         }
-//        if (requestCode == REQUEST_READ_PERMISSION_FROM_LOAD_FILE) {
-//            if (grantResults.length > 0 &&
-//                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                loadFile();
-//            } else {
-//                Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.noReadPermissionErr), Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//        if (requestCode == REQUEST_READ_PERMISSION_FROM_LOAD_SAVED_FILE) {
-//            if (grantResults.length > 0 &&
-//                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                loadSavedFile();
-//            } else {
-//                Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.noReadPermissionErr), Toast.LENGTH_SHORT).show();
-//            }
-//        }
     }
 
     private void saveList() {
@@ -818,55 +806,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean loadFile(Uri fileUri) {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-//                != PackageManager.PERMISSION_GRANTED) {
-////            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-////                    REQUEST_READ_PERMISSION_FROM_LOAD_FILE);
-//            return false;
-//        } else {
-            StringBuilder loadedString = new StringBuilder();
-            try (InputStream inputStream = getContentResolver().openInputStream(fileUri);
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    loadedString.append(line).append("\n");
-                }
-            } catch (IOException e) {
-                return false;
+        StringBuilder loadedString = new StringBuilder();
+        try (InputStream inputStream = getContentResolver().openInputStream(fileUri);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                loadedString.append(line).append("\n");
             }
-            if (analyzeFileSuccess(loadedString.toString())) {
-                currentFile = fileUri.getLastPathSegment();
-            } else {
-                Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
-            }
-            return true;
+        } catch (IOException e) {
+            return false;
         }
-//    }
+        if (analyzeFileSuccess(loadedString.toString())) {
+            currentFile = fileUri.getLastPathSegment();
+        } else {
+            Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
+        }
+        return true;
+    }
 
     private boolean loadSavedFile(String defaultFile) {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-//                != PackageManager.PERMISSION_GRANTED) {
-////            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-////                    REQUEST_READ_PERMISSION_FROM_LOAD_SAVED_FILE);
-//            return false;
-//        } else {
-            File inputFile = new File(defaultFile);
-            StringBuilder loadedString = new StringBuilder();
-            try (InputStream inputStream = new FileInputStream(inputFile);
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    loadedString.append(line).append("\n");
-                }
-            } catch (IOException e) {
-                return false;
+        File inputFile = new File(defaultFile);
+        StringBuilder loadedString = new StringBuilder();
+        try (InputStream inputStream = new FileInputStream(inputFile);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                loadedString.append(line).append("\n");
             }
-            if (!analyzeFileSuccess(loadedString.toString())) {
-                Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
-            }
-            return true;
+        } catch (IOException e) {
+            return false;
         }
-//    }
+        if (analyzeFileSuccess(loadedString.toString())) {
+            currentFile = inputFile.getName();
+        } else {
+            Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
+        }
+        return true;
+    }
 
     private boolean analyzeFileSuccess(String loadedString) {
         int[] index = new int[4];
@@ -956,6 +932,7 @@ public class MainActivity extends AppCompatActivity {
         model.setWordString0(wordString[0]);
         model.setWordString1(wordString[1]);
         model.setChangingState(true);
+        model.setCurrentFile(currentFile);
         if (playingState == 1) {
             clickPause(null);
         }

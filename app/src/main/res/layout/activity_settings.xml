@@ -126,13 +126,13 @@
                 android:id="@+id/selectFileButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="96dp"
                 android:onClick="clickSelectFile"
                 android:text="@string/selectFileButton"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="@+id/repeatAtEndGroup"
                 app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
-                app:layout_constraintTop_toBottomOf="@+id/repeatAtEndTextView" />
+                app:layout_constraintTop_toTopOf="@+id/repeatAtEndGroup" />
 
             <TextView
                 android:id="@+id/listBackgroundTextView"

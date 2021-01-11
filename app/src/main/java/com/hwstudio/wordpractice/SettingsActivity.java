@@ -44,12 +44,12 @@ public class SettingsActivity extends AppCompatActivity {
         wordDelaySeekBar = findViewById(R.id.wordDelaySeekBar);
         lineDelaySeekBar = findViewById(R.id.lineDelaySeekBar);
         repeatNumSeekBar = findViewById(R.id.repeatNumSeekBar);
-        repeatAtEndGroup=findViewById(R.id.repeatAtEndGroup);
-        doNothingButton=findViewById(R.id.doNothingButton);
-        repeatButton=findViewById(R.id.repeatButton);
-        playNextFileButton=findViewById(R.id.playNextFileButton);
-        playRandomFileButton=findViewById(R.id.playRandomFileButton);
-        selectButton=findViewById(R.id.selectFileButton);
+        repeatAtEndGroup = findViewById(R.id.repeatAtEndGroup);
+        doNothingButton = findViewById(R.id.doNothingButton);
+        repeatButton = findViewById(R.id.repeatButton);
+        playNextFileButton = findViewById(R.id.playNextFileButton);
+        playRandomFileButton = findViewById(R.id.playRandomFileButton);
+        selectButton = findViewById(R.id.selectFileButton);
         listBackgroundCheckBox = findViewById(R.id.listBackgroundCheckBox);
         speechRate0SeekBar = findViewById(R.id.speechRate0SeekBar);
         speechRate1SeekBar = findViewById(R.id.speechRate1SeekBar);
@@ -71,8 +71,8 @@ public class SettingsActivity extends AppCompatActivity {
         wordDelaySeekBar.setProgress(MainActivity.wordDelay);
         lineDelaySeekBar.setProgress(MainActivity.lineDelay);
         repeatNumSeekBar.setProgress(MainActivity.repeatNum - 1);
-        ((RadioButton)repeatAtEndGroup.getChildAt(MainActivity.repeatAtEnd)).setChecked(true);
-        if (MainActivity.repeatAtEnd>1){
+        ((RadioButton) repeatAtEndGroup.getChildAt(MainActivity.repeatAtEnd)).setChecked(true);
+        if (MainActivity.repeatAtEnd > 1) {
             selectButton.setVisibility(View.VISIBLE);
         }
         listBackgroundCheckBox.setChecked(MainActivity.hasListBackground);
@@ -141,7 +141,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-           listBackgroundCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        listBackgroundCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 MainActivity.hasListBackground = b;
@@ -249,38 +249,38 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    public void clickDoNothing(View view){
-        MainActivity.repeatAtEnd=0;
+    public void clickDoNothing(View view) {
+        MainActivity.repeatAtEnd = 0;
         selectButton.setVisibility(View.INVISIBLE);
     }
 
-    public void clickRepeat(View view){
-        MainActivity.repeatAtEnd=1;
+    public void clickRepeat(View view) {
+        MainActivity.repeatAtEnd = 1;
         selectButton.setVisibility(View.INVISIBLE);
     }
 
-    public void clickPlayNextFile(View view){
-        MainActivity.repeatAtEnd=2;
+    public void clickPlayNextFile(View view) {
+        MainActivity.repeatAtEnd = 2;
         selectButton.setVisibility(View.VISIBLE);
     }
 
-    public void clickPlayRandomFile(View view){
-        MainActivity.repeatAtEnd=3;
+    public void clickPlayRandomFile(View view) {
+        MainActivity.repeatAtEnd = 3;
         selectButton.setVisibility(View.VISIBLE);
     }
 
-    public void clickSelectFile(View view){
-SelectFileDialogFragment selectFileDialogFragment = new SelectFileDialogFragment();
-selectFileDialogFragment.show(getSupportFragmentManager(), "selectFiles");
+    public void clickSelectFile(View view) {
+        SelectFileDialogFragment selectFileDialogFragment = new SelectFileDialogFragment(this);
+        selectFileDialogFragment.show(getSupportFragmentManager(), "selectFiles");
     }
 
-    public void clickClear(View view){
+    public void clickClear(View view) {
         MainActivity.listString[0] = "";
         MainActivity.listString[1] = "";
         Toast.makeText(this, R.string.clearListToast, Toast.LENGTH_SHORT).show();
     }
 
-    public void clickReset(View view){
+    public void clickReset(View view) {
         wordDelaySeekBar.setProgress(0);
         lineDelaySeekBar.setProgress(1);
         repeatNumSeekBar.setProgress(2);

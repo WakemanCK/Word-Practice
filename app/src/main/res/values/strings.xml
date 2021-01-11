@@ -70,4 +70,6 @@
     <string name="selectFileButton">Select files</string>
     <string name="fileNotFoundErr">\"File not found: \"</string>
     <string name="noReadPermissionErr">Error: no storage \nread permission.</string>
+    <string name="noFilesErr">No .txt file found in the Document directory!</string>
+    <string name="selectFileDialogTitle">Select files that will be played:</string>
 </resources>

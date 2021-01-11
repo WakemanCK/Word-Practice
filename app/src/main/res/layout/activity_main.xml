@@ -177,51 +177,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <ImageButton
-        android:id="@+id/playButton"
-        style="@android:style/Widget.ImageButton"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="?attr/colorPrimary"
-        android:onClick="clickPlay"
-        android:tint="@color/mtrl_btn_text_color_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/pauseButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_round_play_circle_24" />
-
-    <ImageButton
-        android:id="@+id/pauseButton"
-        style="@android:style/Widget.ImageButton"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:backgroundTint="?attr/colorPrimary"
-        android:onClick="clickPause"
-        android:tint="@color/mtrl_btn_text_color_selector"
-        app:layout_constraintEnd_toStartOf="@+id/stopButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/playButton"
-        app:layout_constraintTop_toTopOf="@+id/playButton"
-        app:srcCompat="@drawable/ic_round_pause_circle_24" />
-
-    <ImageButton
-        android:id="@+id/stopButton"
-        style="@android:style/Widget.ImageButton"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="?attr/colorPrimary"
-        android:onClick="clickStop"
-        android:tint="@color/mtrl_btn_text_color_selector"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/pauseButton"
-        app:layout_constraintTop_toTopOf="@+id/playButton"
-        app:srcCompat="@drawable/ic_round_stop_circle_24" />
-
     <Button
         android:id="@+id/finishButton"
         android:layout_width="0dp"
@@ -269,5 +224,59 @@
         app:layout_constraintBottom_toTopOf="@+id/stopButton"
         app:layout_constraintEnd_toEndOf="@+id/stopButton"
         app:layout_constraintStart_toStartOf="@+id/stopButton" />
+
+    <ImageButton
+        android:id="@+id/playButton"
+        style="@android:style/Widget.ImageButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="?attr/colorPrimary"
+        android:onClick="clickPlay"
+        android:tint="@color/mtrl_btn_text_color_selector"
+        app:layout_constraintBottom_toTopOf="@id/adFrameLayout"
+        app:layout_constraintEnd_toStartOf="@+id/pauseButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_round_play_circle_24" />
+
+    <ImageButton
+        android:id="@+id/pauseButton"
+        style="@android:style/Widget.ImageButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:backgroundTint="?attr/colorPrimary"
+        android:onClick="clickPause"
+        android:tint="@color/mtrl_btn_text_color_selector"
+        app:layout_constraintEnd_toStartOf="@+id/stopButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/playButton"
+        app:layout_constraintTop_toTopOf="@+id/playButton"
+        app:srcCompat="@drawable/ic_round_pause_circle_24" />
+
+    <ImageButton
+        android:id="@+id/stopButton"
+        style="@android:style/Widget.ImageButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="?attr/colorPrimary"
+        android:onClick="clickStop"
+        android:tint="@color/mtrl_btn_text_color_selector"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/pauseButton"
+        app:layout_constraintTop_toTopOf="@+id/playButton"
+        app:srcCompat="@drawable/ic_round_stop_circle_24" />
+
+    <FrameLayout
+        android:id="@+id/adFrameLayout"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

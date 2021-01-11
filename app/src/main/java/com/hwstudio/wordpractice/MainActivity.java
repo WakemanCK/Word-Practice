@@ -24,12 +24,14 @@ import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
@@ -101,6 +103,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Load banner ad
+        MobileService mainAd = new MobileService();
+        FrameLayout adContainerView = findViewById(R.id.adFrameLayout);
+        Display display = getWindowManager().getDefaultDisplay();
+        mainAd.initBanner(this, adContainerView, display);
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 REQUEST_READ_PERMISSION);
@@ -513,8 +521,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         setMultipleEnable(false, true, false, true, true);
-//        listEditText[0].setEnabled(false);
-//        listEditText[1].setEnabled(false);
         if (playingState == 2) {
             playingState = 1;
             if (isPlaying2ndLang) {
@@ -541,10 +547,10 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 scrollToWord();
                 viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine);
-                if (viewHolder[listNum]==null) {
+                if (viewHolder[listNum] == null) {
                     clickStop(null);
-                    currentLine=0;
-                }else {
+                    currentLine = 0;
+                } else {
                     wordString[listNum] = viewHolder[listNum].getText();
                     speakString(listNum);
                 }
@@ -674,9 +680,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu getMenu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionmenu, getMenu);
-        //     muteAlarm = getMenu.findItem(R.id.muteAlarm);
-        //      comboTimer = getMenu.findItem(R.id.comboTimer);
-        //     comboTimer.setVisible(false);
         return true;
     }
 
@@ -688,27 +691,21 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, OPEN_SETTINGS);
                 break;
-//            case R.id.loadLists:
-//                clickLoad();
-//                break;
-//            case R.id.saveLists:
-//                clickSave();
-//                break;
             case R.id.loadExamples:
                 loadExamples();
                 break;
-            /** case R.id.openHelpTips:
-             intent = new Intent(this, HelpActivity.class);
-             startActivity(intent);
-             break;
-             case R.id.rateApp:
-             MobileService msRate = new MobileService();
-             msRate.rateApp(this);
-             break;
-             case R.id.shareApp:
-             MobileService msShare = new MobileService();
-             msShare.shareApp(this);
-             break;  **/
+            case R.id.openHelpTips:
+                intent = new Intent(this, HelpActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.rateApp:
+                MobileService msRate = new MobileService();
+                msRate.rateApp(this);
+                break;
+            case R.id.shareApp:
+                MobileService msShare = new MobileService();
+                msShare.shareApp(this);
+                break;
             case R.id.openAbout:
                 showAbout();
                 break;

@@ -25,17 +25,14 @@ import static android.content.Context.MODE_PRIVATE;
 public class SelectFileDialogFragment extends DialogFragment {
     private final SettingsActivity settingsActivity;
 
-//    private List<File> listedFiles;
     public Set<String> selectedFiles;
 
     public SelectFileDialogFragment(SettingsActivity settingsActivity) {
         this.settingsActivity = settingsActivity;
     }
 
-    //    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-//        listedFiles = new ArrayList<>();
         selectedFiles = new HashSet<>();
         File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getPath()+"/");
         String[] listedArray = dir.list(
@@ -46,20 +43,9 @@ public class SelectFileDialogFragment extends DialogFragment {
                     }
                 }
         );
-//        Toast.makeText(settingsActivity, "debug path: " + dir.toString(), Toast.LENGTH_LONG).show();
-//        File[] fileArray = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).listFiles();
-//        if (fileArray != null) {
-//            for (File file : fileArray) {
-//                if (file.isFile() && file.getPath().endsWith(".txt")) {
-//                    listedFiles.add(file);
-//                }
-//            }
-//        } else {
         if (listedArray==null) {
             Toast.makeText(settingsActivity, getString(R.string.noFilesErr), Toast.LENGTH_SHORT).show();
         }
-//        }
-//        String[] stringArray = new String[listedFiles.size()];
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.selectFileDialogTitle)
                 .setMultiChoiceItems(listedArray, null
@@ -76,10 +62,6 @@ public class SelectFileDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.okText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                      /*  Set<String> selectedFilenames = new HashSet<>();
-                        for (File file : selectedFiles) {
-                            selectedFilenames.add(file.getName());
-                        }*/
                         MainActivity.selectedFilenames=selectedFiles;
                         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
@@ -95,14 +77,4 @@ public class SelectFileDialogFragment extends DialogFragment {
                 });
         return builder.create();
     }
-
-//    public class SelectFiles extends SimpleFileVisitor<Path>{
-//        @Override
-//        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-//            if (file.toString().endsWith(".txt")){
-//                selectedItems.add(file);
-//                return CONTINUE;
-//            }
-//        }
-//    }
 }

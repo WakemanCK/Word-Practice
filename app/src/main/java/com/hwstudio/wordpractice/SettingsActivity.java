@@ -6,11 +6,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -31,6 +33,12 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        // Load ad
+        MobileService mainAd = new MobileService();
+        FrameLayout adContainerView = findViewById(R.id.adFrameLayout);
+        Display display = getWindowManager().getDefaultDisplay();
+        mainAd.initBanner(this, adContainerView, display);
 
         initView();
         setView();

@@ -34,7 +34,12 @@ public class ExampleDialogFragment extends DialogFragment {
                                     , egListString[0][item], egListString[1][item]);
                         }
                     }
-                });
+                }).setNegativeButton(R.string.cancelButton, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
         return builder.create();
     }
 

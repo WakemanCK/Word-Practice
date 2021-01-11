@@ -10,7 +10,7 @@
         android:id="@+id/settingScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/AdFrameLayout"
+        app:layout_constraintBottom_toTopOf="@+id/adFrameLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -339,13 +339,12 @@
     </ScrollView>
 
     <FrameLayout
-        android:id="@+id/AdFrameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:id="@+id/adFrameLayout"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -651,8 +651,8 @@ public class MainActivity extends AppCompatActivity {
         }
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.prefLanguage0), language[0].toString());
-        editor.putString(getString(R.string.prefLanguage1), language[1].toString());
+        editor.putString(getString(R.string.prefLanguage0), language[0].toLanguageTag());
+        editor.putString(getString(R.string.prefLanguage1), language[1].toLanguageTag());
         editor.putInt(getString(R.string.prefSpeechRate0), speechRate[0]);
         editor.putInt(getString(R.string.prefSpeechRate1), speechRate[1]);
         editor.putInt(getString(R.string.prefSoundVolume0), soundVolume[0]);
@@ -767,8 +767,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void saveFile(String fileName, Context context) {
         String saveString = // Format:   !LANGUAGE_1! Locale name here !1!
-                "!LANGUAGE_1!" + language[0].toString() + "!1!\n" + listString[0] +
-                        "\n\n!LANGUAGE_2!" + language[1].toString() + "!2!\n" + listString[1];
+                "!LANGUAGE_1!" + language[0].toLanguageTag() + "!1!\n" + listString[0] +
+                        "\n\n!LANGUAGE_2!" + language[1].toLanguageTag() + "!2!\n" + listString[1];
         int i = 0;
         if (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
                 .getPath() + "/" + fileName + ".txt").exists()) {

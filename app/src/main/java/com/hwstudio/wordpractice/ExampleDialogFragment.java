@@ -90,11 +90,11 @@ public class ExampleDialogFragment extends DialogFragment {
         egListString[1][3] = "head\neye\neyebrow\near\nnose\nmouth\ntooth\ncheek\nforehead\nhair\nneck\nbody\nstomach\nshoulder\narm\nhand\nfinger\nthigh\nfoot";
         egListString[0][4] = "頭\n目\n眉毛\n耳\n鼻\n口\n歯\n頰\n額\n髪\n首\n体\nお腹\n肩\n腕\n手\n指\n腿\n足";
         egListString[1][4] = "head\neye\neyebrow\near\nnose\nmouth\ntooth\ncheek\nforehead\nhair\nneck\nbody\nstomach\nshoulder\narm\nhand\nfinger\nthigh\nfoot";
-    /*    egListString[0][5]
-        egListString[1][5]
-        egListString[0][6]
-        egListString[1][6]
-        egListString[0][7]
+        egListString[0][5] = "星期天\n星期一\n星期二\n星期三\n星期四\n星期五\n星期六\n一月\n二月\n三月\n四月\n五月\n六月\n七月\n八月\n九月\n十月\n十一月\n十二月\n早上\n中午\n下午\n黃昏\n晚上\n年\n月\n週\n日\n小時\n分鐘\n秒";
+        egListString[1][5] = "Sunday\nMonday\nTuesday\nWednesday\nThursday\nFriday\nSaturday\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember\nmorning\nnoon\nafternoon\nevening\nnight\nyear\nmonth\nweek\nday\nhour\nminute\nsecond";
+        egListString[0][6] = "日曜日\n月曜日\n火曜日\n水曜日\n木曜日\n金曜日\n土曜日\n一月\n二月\n三月\n四月\n五月\n六月\n七月\n八月\n九月\n十月\n十一月\n十二月\n朝\n正午\n午後\n夕方\n晚\n年\n月\n週\n日\n時\n分\n秒";
+        egListString[1][6] = "Sunday\nMonday\nTuesday\nWednesday\nThursday\nFriday\nSaturday\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember\nmorning\nnoon\nafternoon\nevening\nnight\nyear\nmonth\nweek\nday\nhour\nminute\nsecond";
+    /*    egListString[0][7]
         egListString[1][7]
         egListString[0][8]
         egListString[1][8]

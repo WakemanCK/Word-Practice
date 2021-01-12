@@ -211,8 +211,8 @@ public class MainActivity extends AppCompatActivity {
         pitch[1] = sharedPref.getInt(getString(R.string.prefPitch1), 3);
         textSize[0] = sharedPref.getInt(getString(R.string.prefTextSize0), 36);
         textSize[1] = sharedPref.getInt(getString(R.string.prefTextSize1), 36);
-        language[0] = new Locale(sharedPref.getString(getString(R.string.prefLanguage0), "zh-CH-#Hans"));
-        language[1] = new Locale(sharedPref.getString(getString(R.string.prefLanguage1), "en-US"));
+        language[0] = Locale.forLanguageTag(sharedPref.getString(getString(R.string.prefLanguage0), "zh-CN"));
+        language[1] = Locale.forLanguageTag(sharedPref.getString(getString(R.string.prefLanguage1), "en-US"));
         defaultFile = sharedPref.getString(getString(R.string.prefDefaultFile), "!NULL!");
     }
 
@@ -853,10 +853,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         String tempLang0 = loadedString.substring(index[0] + 12, index[1]);
-        language[0] = new Locale(tempLang0);
+        language[0] = Locale.forLanguageTag(tempLang0);
         setLanguageTtsButton(0);
         String tempLang1 = loadedString.substring(index[2] + 12, index[3]);
-        language[1] = new Locale(tempLang1);
+        language[1] = Locale.forLanguageTag(tempLang1);
         setLanguageTtsButton(1);
         String tempList0 = loadedString.substring(index[1] + 4, index[2] - 2);
         listEditText[0].setText(tempList0);

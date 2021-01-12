@@ -211,8 +211,8 @@ public class MainActivity extends AppCompatActivity {
         pitch[1] = sharedPref.getInt(getString(R.string.prefPitch1), 3);
         textSize[0] = sharedPref.getInt(getString(R.string.prefTextSize0), 36);
         textSize[1] = sharedPref.getInt(getString(R.string.prefTextSize1), 36);
-        language[0] = new Locale(sharedPref.getString(getString(R.string.prefLanguage0), "zh_CH_#Hans"));
-        language[1] = new Locale(sharedPref.getString(getString(R.string.prefLanguage1), "en_US"));
+        language[0] = new Locale(sharedPref.getString(getString(R.string.prefLanguage0), "zh-CH-#Hans"));
+        language[1] = new Locale(sharedPref.getString(getString(R.string.prefLanguage1), "en-US"));
         defaultFile = sharedPref.getString(getString(R.string.prefDefaultFile), "!NULL!");
     }
 

@@ -27,7 +27,7 @@ public class MobileService {
             }
         });
         mAdView = new AdView(getContext);
-        mAdView.setAdUnitId("ca-app-pub-1067337728169403/4075052826");
+        mAdView.setAdUnitId("ca-app-pub-1067337728169403/5258231779");
         getLayout.addView(mAdView);
         AdRequest adRequest = new AdRequest.Builder().build();
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -47,7 +47,7 @@ public class MobileService {
             }
         });
         mInterstitialAd = new InterstitialAd(getContext);
-        mInterstitialAd.setAdUnitId("ca-app-pub-1067337728169403/2258326705");
+        mInterstitialAd.setAdUnitId("ca-app-pub-1067337728169403/5557614670");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 

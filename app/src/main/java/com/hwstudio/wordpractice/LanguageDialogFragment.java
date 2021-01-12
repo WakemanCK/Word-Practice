@@ -53,8 +53,8 @@ public class LanguageDialogFragment extends DialogFragment {
                         mainActivity.setLanguageTtsButton(listNum);
                         SharedPreferences sharedPref = getContext().getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(getString(R.string.prefLanguage0), MainActivity.language[0].toString());
-                        editor.putString(getString(R.string.prefLanguage1), MainActivity.language[1].toString());
+                        editor.putString(getString(R.string.prefLanguage0), MainActivity.language[0].toLanguageTag());
+                        editor.putString(getString(R.string.prefLanguage1), MainActivity.language[1].toLanguageTag());
                         editor.apply();
                     }
                 })

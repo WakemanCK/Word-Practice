@@ -21,9 +21,9 @@ public class ExampleDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String[] exampleList = {"Numbers", "Chinese vs English (Color)", "Japanese vs English (Color)", "Chinese vs English (Body parts)", "Japanese vs English (Body parts)"
-                               , "Chinese vs English (Date & time)", "Japanese vs English (Date & time)", "Chinese vs English (Direction & position)", "Japanese vs English (Direction & position)"
-                               , "Chinese vs English (Transportation)", "Japanese vs English (Transportation)", "Chinese vs English (Food)", "Japanese vs English (Food)"
-                                , "Chinese vs English (Conversation)", "Japanese vs English (Conversation)"};
+                , "Chinese vs English (Date & time)", "Japanese vs English (Date & time)", "Chinese vs English (Position & direction)", "Japanese vs English (Position & direction)"
+                , "Chinese vs English (Transportation)", "Japanese vs English (Transportation)", "Chinese vs English (Food)", "Japanese vs English (Food)"
+                , "Chinese vs English (Conversation)", "Japanese vs English (Conversation)"};
         defineExample();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.exampleTitle)
@@ -94,21 +94,21 @@ public class ExampleDialogFragment extends DialogFragment {
         egListString[1][5] = "Sunday\nMonday\nTuesday\nWednesday\nThursday\nFriday\nSaturday\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember\nmorning\nnoon\nafternoon\nevening\nnight\nyear\nmonth\nweek\nday\nhour\nminute\nsecond";
         egListString[0][6] = "日曜日\n月曜日\n火曜日\n水曜日\n木曜日\n金曜日\n土曜日\n一月\n二月\n三月\n四月\n五月\n六月\n七月\n八月\n九月\n十月\n十一月\n十二月\n朝\n正午\n午後\n夕方\n晚\n年\n月\n週\n日\n時\n分\n秒";
         egListString[1][6] = "Sunday\nMonday\nTuesday\nWednesday\nThursday\nFriday\nSaturday\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember\nmorning\nnoon\nafternoon\nevening\nnight\nyear\nmonth\nweek\nday\nhour\nminute\nsecond";
-    /*    egListString[0][7]
-        egListString[1][7]
-        egListString[0][8]
-        egListString[1][8]
-        egListString[0][9]
-        egListString[1][9]
-        egListString[0][10]
-        egListString[1][10]
-        egListString[0][11]
-        egListString[1][11]
-        egListString[0][12]
-        egListString[1][12]
+        egListString[0][7] = "上\n下\n左\n右\n中間\n前方\n後方\n裡面\n外面\n附近\n旁邊\n東\n南\n西\n北";
+        egListString[1][7] = "above\nbelow\nleft\nright\nbetween\nin front of\nbehind\ninside\noutside\nnear\nnext to\neast\nsouth\nwest\nnorth";
+        egListString[0][8] = "上\n下\n左\n右\n中\n前\n後ろ\n內\n外\n辺\n隣\n東\n南\n西\n北";
+        egListString[1][8] = "above\nbelow\nleft\nright\nbetween\nin front of\nbehind\ninside\noutside\nnear\nnext to\neast\nsouth\nwest\nnorth";
+        egListString[0][9] = "自行車\n汽車\n公共汽車\n出租車\n地鐵\n火車\n高速鐵路\n車站\n船\n飛機\n機場\n票\n行李";
+        egListString[1][9] = "bicycle\ncar\nbus\ntaxi\nmetro\ntrain\nhigh-speed rail\nstation\nship\nairplane\nairport\nticket\nbaggage";
+        egListString[0][10] = "自転車\n車\nバス\nタクシー\n地下鉄\n列車\n高速鉄道\n駅\n船\n飛行機\n空港\n切符\n荷物";
+        egListString[1][10] = "bicycle\ncar\nbus\ntaxi\nmetro\ntrain\nhigh-speed rail\nstation\nship\nairplane\nairport\nticket\nbaggage";
+        egListString[0][11] = "食物\n早餐\n午餐\n晚餐\n肉\n魚\n菜\n蛋\n飯\n麵\n麵包\n水果\n飲料\n水\n茶\n牛奶\n果汁\n咖啡\n酒\n啤酒";
+        egListString[1][11] = "food\nbreakfast\nlunch\ndinner\nmeat\nfish\nvegetable\negg\nrice\nnoodle\nbread\nfruit\ndrink\nwater\ntea\nmilk\njuice\ncoffee\nwine\nbeer";
+        egListString[0][12] = "食べ物\n朝ご飯\n昼ご飯\n晩ご飯\n肉\n魚\n野菜\n卵\nご飯\n麺\nパン\n果物\n飲み物\n水\nお茶\n牛乳\nジュース\nコーヒー\nお酒\nビール";
+        egListString[1][12] = "food\nbreakfast\nlunch\ndinner\nmeat\nfish\nvegetable\negg\nrice\nnoodle\nbread\nfruit\ndrink\nwater\ntea\nmilk\njuice\ncoffee\nwine\nbeer";
         egListString[0][13]
         egListString[1][13]
         egListString[0][14]
-        egListString[1][14]*/
+        egListString[1][14]
     }
 }

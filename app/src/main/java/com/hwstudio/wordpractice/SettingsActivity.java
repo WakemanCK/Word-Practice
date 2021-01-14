@@ -23,7 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SeekBar wordDelaySeekBar, lineDelaySeekBar, repeatNumSeekBar, speechRate0SeekBar, speechRate1SeekBar, volume0SeekBar, volume1SeekBar, pitch0SeekBar, pitch1SeekBar;
     private RadioGroup repeatAtEndGroup;
-    private RadioButton doNothingButton, repeatButton, playNextFileButton, playRandomFileButton;
+  //  private RadioButton doNothingButton, repeatButton, playNextFileButton, playRandomFileButton;
     private Button selectButton;
     private CheckBox listBackgroundCheckBox;
     private EditText textSize0EditText, textSize1EditText;
@@ -53,10 +53,10 @@ public class SettingsActivity extends AppCompatActivity {
         lineDelaySeekBar = findViewById(R.id.lineDelaySeekBar);
         repeatNumSeekBar = findViewById(R.id.repeatNumSeekBar);
         repeatAtEndGroup = findViewById(R.id.repeatAtEndGroup);
-        doNothingButton = findViewById(R.id.doNothingButton);
-        repeatButton = findViewById(R.id.repeatButton);
-        playNextFileButton = findViewById(R.id.playNextFileButton);
-        playRandomFileButton = findViewById(R.id.playRandomFileButton);
+//        doNothingButton = findViewById(R.id.doNothingButton);
+//        repeatButton = findViewById(R.id.repeatButton);
+//        playNextFileButton = findViewById(R.id.playNextFileButton);
+//        playRandomFileButton = findViewById(R.id.playRandomFileButton);
         selectButton = findViewById(R.id.selectFileButton);
         listBackgroundCheckBox = findViewById(R.id.listBackgroundCheckBox);
         speechRate0SeekBar = findViewById(R.id.speechRate0SeekBar);
@@ -292,7 +292,7 @@ public class SettingsActivity extends AppCompatActivity {
         wordDelaySeekBar.setProgress(0);
         lineDelaySeekBar.setProgress(1);
         repeatNumSeekBar.setProgress(2);
-        repeatButton.setChecked(true);
+        ((RadioButton)findViewById(R.id.repeatButton)).setChecked(true);
         listBackgroundCheckBox.setChecked(false);
         speechRate0SeekBar.setProgress(3);
         speechRate1SeekBar.setProgress(3);

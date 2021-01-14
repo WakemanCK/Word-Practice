@@ -35,6 +35,7 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
@@ -85,19 +86,21 @@ public class MainActivity extends AppCompatActivity {
     private MainViewModel model;
 
     // Views
+    private ScrollView mainRecyclerScrollView, mainEditTextScrollView;
+    private ConstraintLayout mainConstraintLayout;
+    private TextView dummyRecyclerTextView;
     private EditText[] listEditText = new EditText[2];
     private Button[] langButton = new Button[2];
     private Button finishButton, editButton;
     private ImageButton playButton, pauseButton, stopButton, swapButton;
-    private HorizontalScrollView[] recyclerScrollView = new HorizontalScrollView[2];
+//    private HorizontalScrollView[] recyclerScrollView = new HorizontalScrollView[2];
     private RecyclerView[] listRecyclerView = new RecyclerView[2];
     private ListAdapter[] listAdapter = new ListAdapter[2];
     private RecyclerView.LayoutManager[] layoutManager = new RecyclerView.LayoutManager[2];
     private RecyclerView[] bgRecyclerView = new RecyclerView[2];
     private BackgroundAdapter[] bgAdapter = new BackgroundAdapter[2];
     private RecyclerView.LayoutManager[] bgLayoutManager = new RecyclerView.LayoutManager[2];
-    private ScrollView listScrollView;
-    private ConstraintLayout mainConstraintLayout;
+//    private ScrollView listScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +220,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        mainRecyclerScrollView = findViewById(R.id.recyclerScrollView);
+        mainEditTextScrollView= findViewById(R.id.editTextScrollView);
+        dummyRecyclerTextView =findViewById(R.id.dummyRecyclerTextView);
         listEditText[0] = findViewById(R.id.list0EditText);
         listEditText[1] = findViewById(R.id.list1EditText);
         listEditText[0].setTextSize(textSize[0]);
@@ -233,8 +239,8 @@ public class MainActivity extends AppCompatActivity {
         bgRecyclerView[1].setHasFixedSize(true);
 //        editTextScrollView[0] = findViewById(R.id.editText0ScrollView);
 //        editTextScrollView[1] = findViewById(R.id.editText1ScrollView);
-        recyclerScrollView[0] = findViewById(R.id.recycler0ScrollView);
-        recyclerScrollView[1] = findViewById(R.id.recycler1ScrollView);
+//        recyclerScrollView[0] = findViewById(R.id.recycler0ScrollView);
+//        recyclerScrollView[1] = findViewById(R.id.recycler1ScrollView);
         langButton[0] = findViewById(R.id.lang0Button);
         langButton[1] = findViewById(R.id.lang1Button);
         finishButton = findViewById(R.id.finishButton);
@@ -243,8 +249,8 @@ public class MainActivity extends AppCompatActivity {
         pauseButton = findViewById(R.id.pauseButton);
         stopButton = findViewById(R.id.stopButton);
         swapButton = findViewById(R.id.swapButton);
-        listScrollView = findViewById(R.id.mainScrollView);
-        mainConstraintLayout = findViewById(R.id.mainConstraintLayout);
+//        listScrollView = findViewById(R.id.recyclerScrollView);
+        mainConstraintLayout = findViewById(R.id.recyclerConstraintLayout);
     }
 
     private void initTTS(int listNum) {
@@ -403,7 +409,9 @@ public class MainActivity extends AppCompatActivity {
             if (loadSavedFile(s)) {
                 clickPlay(null);
             } else {
-                Toast.makeText(this, getString(R.string.fileNotFoundErr) + currentFile, Toast.LENGTH_SHORT).show();
+                playingState = 1;
+                repeatCount=1;
+                currentLine = listAdapter[0].getItemCount();
                 utterance[1].onDone("");
             }
         }
@@ -424,7 +432,9 @@ public class MainActivity extends AppCompatActivity {
             if (loadSavedFile(s)) {
                 clickPlay(null);
             } else {
-                Toast.makeText(this, getString(R.string.fileNotFoundErr) + currentFile, Toast.LENGTH_SHORT).show();
+                playingState = 1;
+                repeatCount=1;
+                currentLine = listAdapter[0].getItemCount();
                 utterance[1].onDone("");
             }
         }
@@ -475,8 +485,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 bgRecyclerView[listNum].setVisibility(View.INVISIBLE);
             }
-            listEditText[listNum].setVisibility(View.INVISIBLE);
-            recyclerScrollView[listNum].setVisibility(View.VISIBLE);
+//            listEditText[listNum].setVisibility(View.INVISIBLE);
+//            recyclerScrollView[listNum].setVisibility(View.VISIBLE);
             listAdapter[listNum].setOnWordClickedListener(new ListAdapter.OnWordClickedListener() {
                 @Override
                 public void onWordClicked(int position) {
@@ -499,7 +509,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-        maxLine = lineCount[0];
+        maxLine = Math.max(lineCount[0], lineCount[1]);
+        dummyRecyclerTextView.setTextSize(Math.max(textSize[0], textSize[1]));
+        StringBuilder dummyString = new StringBuilder();
+        for(int i = 0; i < maxLine; i++){
+            dummyString.append("\n");
+        }
+        dummyRecyclerTextView.setText(dummyString);
+        mainEditTextScrollView.setVisibility(View.INVISIBLE);
+        mainRecyclerScrollView.setVisibility(View.VISIBLE);
         if (lineCount[0] != lineCount[1]) {
             Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
         }
@@ -508,11 +526,13 @@ public class MainActivity extends AppCompatActivity {
     public void clickEdit(View view) {
         setMultipleEnable(true, false, false, false, false);
         playingState = 0;
-        for (int listNum = 0; listNum < 2; listNum++) {
-            listEditText[listNum].setVisibility(View.VISIBLE);
-            recyclerScrollView[listNum].setVisibility(View.INVISIBLE);
-            bgRecyclerView[listNum].setVisibility(View.INVISIBLE);
-        }
+        mainEditTextScrollView.setVisibility(View.VISIBLE);
+        mainRecyclerScrollView.setVisibility(View.INVISIBLE);
+//        for (int listNum = 0; listNum < 2; listNum++) {
+//            listEditText[listNum].setVisibility(View.VISIBLE);
+//            recyclerScrollView[listNum].setVisibility(View.INVISIBLE);
+//            bgRecyclerView[listNum].setVisibility(View.INVISIBLE);
+//        }
     }
 
     public void clickPlay(View view) {
@@ -559,7 +579,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void scrollToWord() {
-        listScrollView.smoothScrollTo(0, mainConstraintLayout.getHeight() * (currentLine - 5) / maxLine);
+        mainRecyclerScrollView.smoothScrollTo(0, mainConstraintLayout.getHeight() * (currentLine - 5) / maxLine);
     }
 
     public void setLanguageTtsButton(int listNum) {
@@ -645,7 +665,7 @@ public class MainActivity extends AppCompatActivity {
             listEditText[listNum].setText(listString[listNum]);
             initTTS(listNum);
             setLanguageTtsButton(listNum);
-            if (recyclerScrollView[0].getVisibility() == View.VISIBLE) {
+            if (mainRecyclerScrollView.getVisibility() == View.VISIBLE) {
                 drawRecyclerView();
             }
         }
@@ -728,7 +748,7 @@ public class MainActivity extends AppCompatActivity {
             listEditText[1].setTextSize(textSize[1]);
             listEditText[0].setText(listString[0]);
             listEditText[1].setText(listString[1]);
-            if (recyclerScrollView[0].getVisibility() == View.VISIBLE) {
+            if (mainRecyclerScrollView.getVisibility() == View.VISIBLE) {
                 drawRecyclerView();
             }
         }
@@ -804,6 +824,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean loadFile(Uri fileUri) {
         StringBuilder loadedString = new StringBuilder();
+        currentFile = fileUri.getLastPathSegment();
         try (InputStream inputStream = getContentResolver().openInputStream(fileUri);
              BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
             String line;
@@ -811,18 +832,21 @@ public class MainActivity extends AppCompatActivity {
                 loadedString.append(line).append("\n");
             }
         } catch (IOException e) {
+            Toast.makeText(this, String.format(getString(R.string.fileNotFoundErr), currentFile), Toast.LENGTH_SHORT).show();
             return false;
         }
         if (analyzeFileSuccess(loadedString.toString())) {
-            currentFile = fileUri.getLastPathSegment();
+            Toast.makeText(this, String.format(getString(R.string.fileLoadSuccess), currentFile), Toast.LENGTH_SHORT).show();
+            return true;
         } else {
-            Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, String.format(getString(R.string.fileFormatErr), currentFile), Toast.LENGTH_SHORT).show();
+            return false;
         }
-        return true;
     }
 
     private boolean loadSavedFile(String defaultFile) {
         File inputFile = new File(defaultFile);
+        currentFile = inputFile.getName();
         StringBuilder loadedString = new StringBuilder();
         try (InputStream inputStream = new FileInputStream(inputFile);
              BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
@@ -831,14 +855,16 @@ public class MainActivity extends AppCompatActivity {
                 loadedString.append(line).append("\n");
             }
         } catch (IOException e) {
+            Toast.makeText(this, String.format(getString(R.string.fileNotFoundErr), currentFile), Toast.LENGTH_SHORT).show();
             return false;
         }
         if (analyzeFileSuccess(loadedString.toString())) {
-            currentFile = inputFile.getName();
+            Toast.makeText(this, String.format(getString(R.string.fileLoadSuccess), currentFile), Toast.LENGTH_SHORT).show();
+            return true;
         } else {
-            Toast.makeText(this, R.string.fileLoadErr, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, String.format(getString(R.string.fileFormatErr), currentFile), Toast.LENGTH_SHORT).show();
+            return false;
         }
-        return true;
     }
 
     private boolean analyzeFileSuccess(String loadedString) {
@@ -884,7 +910,7 @@ public class MainActivity extends AppCompatActivity {
             setLanguageTtsButton(listNum);
             listEditText[listNum].setText(listString[listNum]);
         }
-        if (recyclerScrollView[0].getVisibility() == View.VISIBLE) {
+        if (mainRecyclerScrollView.getVisibility() == View.VISIBLE) {
             drawRecyclerView();
         }
         clickFinish(null);
@@ -911,7 +937,7 @@ public class MainActivity extends AppCompatActivity {
         model.setCanPlay(playButton.isEnabled());
         model.setCanPause(pauseButton.isEnabled());
         model.setCanStop(stopButton.isEnabled());
-        model.setHasRecycler(recyclerScrollView[0].getVisibility() == View.VISIBLE);
+        model.setHasRecycler(mainRecyclerScrollView.getVisibility() == View.VISIBLE);
         model.setListString0(listEditText[0].getText().toString());
         model.setListString1(listEditText[1].getText().toString());
         // Save action

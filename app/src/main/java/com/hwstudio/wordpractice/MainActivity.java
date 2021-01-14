@@ -485,8 +485,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 bgRecyclerView[listNum].setVisibility(View.INVISIBLE);
             }
-//            listEditText[listNum].setVisibility(View.INVISIBLE);
-//            recyclerScrollView[listNum].setVisibility(View.VISIBLE);
             listAdapter[listNum].setOnWordClickedListener(new ListAdapter.OnWordClickedListener() {
                 @Override
                 public void onWordClicked(int position) {
@@ -510,7 +508,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         maxLine = Math.max(lineCount[0], lineCount[1]);
-        dummyRecyclerTextView.setTextSize(Math.max(textSize[0], textSize[1]));
+        dummyRecyclerTextView.setTextSize(Math.max(textSize[0], textSize[1])*1.17f);
         StringBuilder dummyString = new StringBuilder();
         for(int i = 0; i < maxLine; i++){
             dummyString.append("\n");

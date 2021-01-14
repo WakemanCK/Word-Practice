@@ -140,12 +140,13 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/bg0RecyclerView"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginTop="10dp"
                 android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/recycler0ScrollView"
                 app:layout_constraintEnd_toEndOf="@+id/recycler0ScrollView"
                 app:layout_constraintStart_toStartOf="@+id/recycler0ScrollView"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/recycler0ScrollView" />
 
             <HorizontalScrollView
                 android:id="@+id/recycler0ScrollView"
@@ -171,12 +172,13 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/bg1RecyclerView"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginTop="10dp"
                 android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/recycler1ScrollView"
                 app:layout_constraintEnd_toEndOf="@+id/recycler1ScrollView"
                 app:layout_constraintStart_toStartOf="@+id/recycler1ScrollView"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/recycler1ScrollView" />
 
             <HorizontalScrollView
                 android:id="@+id/recycler1ScrollView"

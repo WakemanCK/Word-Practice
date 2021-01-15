@@ -108,7 +108,7 @@ public class ExampleDialogFragment extends DialogFragment {
         egListString[1][12] = "food\nbreakfast\nlunch\ndinner\nmeat\nfish\nvegetable\negg\nrice\nnoodle\nbread\nfruit\ndrink\nwater\ntea\nmilk\njuice\ncoffee\nwine\nbeer";
         egListString[0][13] = mainActivity.getString(R.string.cnExampleConversation);
         egListString[1][13] = "Good morning\nGood afternoon\nGood evening\nHow are you\nThank you\nPlease\nExcuse me\nSorry\nWait a minute\nGood bye\nCan I have the bill please?\nExcuse me, where is the train station?\nExcuse me, is there a toilet nearby?";
-        egListString[0][14] = "おはよう\nこんにちは\nこんばんは\nおげんきですか\nありがとう\nおねがいします\nすみません\nごめんなさい\nちょっとまって\nさようなら\nさようなら\nすみません，鉄道駅はどこですか？\nすみません，この辺にトイレがありますか？";
+        egListString[0][14] = "おはよう\nこんにちは\nこんばんは\nおげんきですか\nありがとう\nおねがいします\nすみません\nごめんなさい\nちょっとまって\nさようなら\nお会計お願いします\nすみません，鉄道駅はどこですか？\nすみません，この辺にトイレがありますか？";
         egListString[1][14] = "Good morning\nGood afternoon\nGood evening\nHow are you\nThank you\nPlease\nExcuse me\nSorry\nWait a minute\nGood bye\nCan I have the bill please?\nExcuse me, where is the train station?\nExcuse me, is there a toilet nearby?";
     }
 }

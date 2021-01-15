@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -93,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     private Button[] langButton = new Button[2];
     private Button finishButton, editButton;
     private ImageButton playButton, pauseButton, stopButton, swapButton;
-//    private HorizontalScrollView[] recyclerScrollView = new HorizontalScrollView[2];
+    //    private HorizontalScrollView[] recyclerScrollView = new HorizontalScrollView[2];
     private RecyclerView[] listRecyclerView = new RecyclerView[2];
     private ListAdapter[] listAdapter = new ListAdapter[2];
     private RecyclerView.LayoutManager[] layoutManager = new RecyclerView.LayoutManager[2];
@@ -143,24 +145,36 @@ public class MainActivity extends AppCompatActivity {
             wordString[0] = model.getWordString0();
             wordString[1] = model.getWordString1();
             currentFile = model.getCurrentFile();
+            Handler handler = new Handler();
             if (playingState > 0) {
-                delayHandler.postDelayed(new Runnable() {
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         viewHolder[0] = (ListAdapter.ViewHolder) listRecyclerView[0].findViewHolderForAdapterPosition(currentLine);
                         viewHolder[1] = (ListAdapter.ViewHolder) listRecyclerView[1].findViewHolderForAdapterPosition(currentLine);
                         if (isPlaying2ndLang) {
                             viewHolder[1].highlightString();
+                            scrollToWord(1);
                         } else {
                             viewHolder[0].highlightString();
+                            scrollToWord(0);
                         }
-                        scrollToWord();
                         if (playingState == 1) {
                             clickPlay(null);
                         }
                     }
                 }, 100);
             }
+            Handler handler2 = new Handler();
+            handler2.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    String s = language[0].getDisplayName().replace("(", "\n(");
+                    langButton[0].setText(s);
+                    s = language[1].getDisplayName().replace("(", "\n(");
+                    langButton[1].setText(s);
+                }
+            }, 500);
         } else {
             initTTS(0);
             initTTS(1);
@@ -221,8 +235,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         mainRecyclerScrollView = findViewById(R.id.recyclerScrollView);
-        mainEditTextScrollView= findViewById(R.id.editTextScrollView);
-        dummyRecyclerTextView =findViewById(R.id.dummyRecyclerTextView);
+        mainEditTextScrollView = findViewById(R.id.editTextScrollView);
+        dummyRecyclerTextView = findViewById(R.id.dummyRecyclerTextView);
         listEditText[0] = findViewById(R.id.list0EditText);
         listEditText[1] = findViewById(R.id.list1EditText);
         listEditText[0].setTextSize(textSize[0]);
@@ -331,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (currentLine >= listAdapter[0].getItemCount() || currentLine >= listAdapter[1].getItemCount()) { // Either list ended
                                     clickStop(null);
                                     currentLine = 0;
-                                    scrollToWord();
+                                    scrollToWord(1);
                                     Toast.makeText(MainActivity.this, R.string.endOfListToast, Toast.LENGTH_SHORT).show();
                                     MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.long_beep);
                                     mediaPlayer.start();
@@ -410,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
                 clickPlay(null);
             } else {
                 playingState = 1;
-                repeatCount=1;
+                repeatCount = 1;
                 currentLine = listAdapter[0].getItemCount();
                 utterance[1].onDone("");
             }
@@ -433,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
                 clickPlay(null);
             } else {
                 playingState = 1;
-                repeatCount=1;
+                repeatCount = 1;
                 currentLine = listAdapter[0].getItemCount();
                 utterance[1].onDone("");
             }
@@ -508,9 +522,9 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         maxLine = Math.max(lineCount[0], lineCount[1]);
-        dummyRecyclerTextView.setTextSize(Math.max(textSize[0], textSize[1])*1.17f);
+        dummyRecyclerTextView.setTextSize(Math.max(textSize[0], textSize[1]) * 1.17f);
         StringBuilder dummyString = new StringBuilder();
-        for(int i = 0; i < maxLine; i++){
+        for (int i = 0; i < maxLine; i++) {
             dummyString.append("\n");
         }
         dummyRecyclerTextView.setText(dummyString);
@@ -563,7 +577,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                scrollToWord();
+                scrollToWord(listNum);
                 viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine);
                 if (viewHolder[listNum] == null) {
                     clickStop(null);
@@ -576,8 +590,13 @@ public class MainActivity extends AppCompatActivity {
         }, 100);
     }
 
-    public void scrollToWord() {
-        mainRecyclerScrollView.smoothScrollTo(0, mainConstraintLayout.getHeight() * (currentLine - 5) / maxLine);
+    public void scrollToWord(int listNum) {
+        float scaledPixel = textSize[listNum] * 10 / getResources().getDisplayMetrics().scaledDensity;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mainRecyclerScrollView.smoothScrollTo(0, (int) ((currentLine - 1) * scaledPixel));
+        } else {
+            mainRecyclerScrollView.smoothScrollTo(0, (int) (currentLine * scaledPixel));
+        }
     }
 
     public void setLanguageTtsButton(int listNum) {

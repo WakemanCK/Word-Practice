@@ -26,7 +26,10 @@ import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -179,6 +182,8 @@ public class MainActivity extends AppCompatActivity {
             initTTS(0);
             initTTS(1);
 
+            MediaBrowserCompat mediaBrowserCompat = new MediaBrowserCompat(this, )
+
             if (defaultFile.startsWith("!NULL!")) {
                 showIntroduction();
             } else if (defaultFile.startsWith("!LIST!")) {
@@ -200,9 +205,37 @@ public class MainActivity extends AppCompatActivity {
                     setLanguageTtsButton(0);
                     setLanguageTtsButton(1);
                     playButton.setEnabled(true);
+
+               /*     MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(getApplicationContext(), "mediaButton");
+                    mediaSessionCompat.setCallback(new MediaSessionCompat.Callback() {
+                        @Override
+                        public boolean onMediaButtonEvent(Intent mediaButtonEvent) {
+                            Toast.makeText(MainActivity.this, "debug "+mediaButtonEvent, Toast.LENGTH_SHORT).show();
+                            if (playingState ==1){
+                                clickPause(null);
+                            }else{
+                                clickPlay(null);
+                            }
+                            return true;
+                        }
+                    });*/
                 }
             }, 1000);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Toast.makeText(this, "debug "+ event, Toast.LENGTH_SHORT).show();
+        if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK){
+
+            if (playingState ==1){
+                clickPause(null);
+            }else{
+                clickPlay(null);
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void showIntroduction() {
@@ -913,9 +946,6 @@ public class MainActivity extends AppCompatActivity {
     private void loadExamples() {
         ExampleDialogFragment exampleDialogFragment = new ExampleDialogFragment(this);
         exampleDialogFragment.show(getSupportFragmentManager(), "example");
-        //debug
-        //listEditText[0].setText("1\n蘋果\n橙\n香蕉");
-        //listEditText[1].setText("1\napple\norange\nbanana");
     }
 
     public void showExample(int exampleNum, Locale language0, Locale language1, String listString0, String listString1) {

@@ -1,4 +1,4 @@
-package com.worksheetmaker;
+package com.hwstudio.wordpractice;
 
 import android.content.Context;
 import android.view.Display;

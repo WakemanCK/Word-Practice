@@ -7,18 +7,30 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.media.session.MediaButtonReceiver;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothHeadset;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 
@@ -27,7 +39,9 @@ import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.v4.media.MediaBrowserCompat;
+import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -53,6 +67,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
@@ -78,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
     // Variables
     private String defaultFile, currentFile = "";
-    //    private String[] selectedArray;
     private int repeatCount, currentLine, maxLine;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
@@ -92,20 +106,17 @@ public class MainActivity extends AppCompatActivity {
 
     // Views
     private ScrollView mainRecyclerScrollView, mainEditTextScrollView;
-    private ConstraintLayout mainConstraintLayout;
     private TextView dummyRecyclerTextView;
     private EditText[] listEditText = new EditText[2];
     private Button[] langButton = new Button[2];
     private Button finishButton, editButton;
     private ImageButton playButton, pauseButton, stopButton, swapButton;
-    //    private HorizontalScrollView[] recyclerScrollView = new HorizontalScrollView[2];
     private RecyclerView[] listRecyclerView = new RecyclerView[2];
     private ListAdapter[] listAdapter = new ListAdapter[2];
     private RecyclerView.LayoutManager[] layoutManager = new RecyclerView.LayoutManager[2];
     private RecyclerView[] bgRecyclerView = new RecyclerView[2];
     private BackgroundAdapter[] bgAdapter = new BackgroundAdapter[2];
     private RecyclerView.LayoutManager[] bgLayoutManager = new RecyclerView.LayoutManager[2];
-//    private ScrollView listScrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,8 +193,6 @@ public class MainActivity extends AppCompatActivity {
             initTTS(0);
             initTTS(1);
 
-            MediaBrowserCompat mediaBrowserCompat = new MediaBrowserCompat(this, )
-
             if (defaultFile.startsWith("!NULL!")) {
                 showIntroduction();
             } else if (defaultFile.startsWith("!LIST!")) {
@@ -196,47 +205,18 @@ public class MainActivity extends AppCompatActivity {
             }
             setUtterance();
             delayHandler = new Handler();
-            // Below is needed because tts takes time to load
-            playButton.setEnabled(false);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    setLanguageTtsButton(0);
-                    setLanguageTtsButton(1);
-                    playButton.setEnabled(true);
-
-               /*     MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(getApplicationContext(), "mediaButton");
-                    mediaSessionCompat.setCallback(new MediaSessionCompat.Callback() {
-                        @Override
-                        public boolean onMediaButtonEvent(Intent mediaButtonEvent) {
-                            Toast.makeText(MainActivity.this, "debug "+mediaButtonEvent, Toast.LENGTH_SHORT).show();
-                            if (playingState ==1){
-                                clickPause(null);
-                            }else{
-                                clickPlay(null);
-                            }
-                            return true;
-                        }
-                    });*/
-                }
-            }, 1000);
         }
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Toast.makeText(this, "debug "+ event, Toast.LENGTH_SHORT).show();
-        if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK){
+    //debug/////////////
 
-            if (playingState ==1){
-                clickPause(null);
-            }else{
-                clickPlay(null);
-            }
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+//    public void clickHeadset() {
+//        if (playingState == 1) {
+//            clickPause(null);
+//        } else {
+//            clickPlay(null);
+//        }
+//    }
 
     private void showIntroduction() {
         IntroDialogFragment introDialogFragment = new IntroDialogFragment();
@@ -274,8 +254,6 @@ public class MainActivity extends AppCompatActivity {
         listEditText[1] = findViewById(R.id.list1EditText);
         listEditText[0].setTextSize(textSize[0]);
         listEditText[1].setTextSize(textSize[1]);
-//        backgroundTextView[0] = findViewById(R.id.background0TextView);
-//        backgroundTextView[1] = findViewById(R.id.background1TextView);
         listRecyclerView[0] = findViewById(R.id.list0RecyclerView);
         listRecyclerView[1] = findViewById(R.id.list1RecyclerView);
         listRecyclerView[0].setHasFixedSize(true);
@@ -284,10 +262,6 @@ public class MainActivity extends AppCompatActivity {
         bgRecyclerView[1] = findViewById(R.id.bg1RecyclerView);
         bgRecyclerView[0].setHasFixedSize(true);
         bgRecyclerView[1].setHasFixedSize(true);
-//        editTextScrollView[0] = findViewById(R.id.editText0ScrollView);
-//        editTextScrollView[1] = findViewById(R.id.editText1ScrollView);
-//        recyclerScrollView[0] = findViewById(R.id.recycler0ScrollView);
-//        recyclerScrollView[1] = findViewById(R.id.recycler1ScrollView);
         langButton[0] = findViewById(R.id.lang0Button);
         langButton[1] = findViewById(R.id.lang1Button);
         finishButton = findViewById(R.id.finishButton);
@@ -296,18 +270,15 @@ public class MainActivity extends AppCompatActivity {
         pauseButton = findViewById(R.id.pauseButton);
         stopButton = findViewById(R.id.stopButton);
         swapButton = findViewById(R.id.swapButton);
-//        listScrollView = findViewById(R.id.recyclerScrollView);
-        mainConstraintLayout = findViewById(R.id.recyclerConstraintLayout);
     }
 
     private void initTTS(int listNum) {
         tts[listNum] = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
-
+                setLanguageTtsButton(listNum);
             }
         });
-//        setLanguageTtsButton(listNum);
         setSpeechRate(listNum);
         setPitch(listNum);
     }
@@ -506,8 +477,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void drawRecyclerView() {
         int[] lineCount = new int[2];
-//        listString[0] = getListString0;
-//        listString[1] = getListString1;
         for (int listNum = 0; listNum < 2; listNum++) {
             String tempList = listString[listNum].replaceAll("\n", "");
             lineCount[listNum] = listString[listNum].length() - tempList.length();
@@ -573,11 +542,6 @@ public class MainActivity extends AppCompatActivity {
         playingState = 0;
         mainEditTextScrollView.setVisibility(View.VISIBLE);
         mainRecyclerScrollView.setVisibility(View.INVISIBLE);
-//        for (int listNum = 0; listNum < 2; listNum++) {
-//            listEditText[listNum].setVisibility(View.VISIBLE);
-//            recyclerScrollView[listNum].setVisibility(View.INVISIBLE);
-//            bgRecyclerView[listNum].setVisibility(View.INVISIBLE);
-//        }
     }
 
     public void clickPlay(View view) {
@@ -665,7 +629,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickStop(View view) {
         playingState = 0;
-//        currentLine = 0;
         setMultipleEnable(false, true, true, false, false);
     }
 
@@ -714,7 +677,6 @@ public class MainActivity extends AppCompatActivity {
             listEditText[listNum].setTextSize(textSize[listNum]);
             listEditText[listNum].setText(listString[listNum]);
             initTTS(listNum);
-            setLanguageTtsButton(listNum);
             if (mainRecyclerScrollView.getVisibility() == View.VISIBLE) {
                 drawRecyclerView();
             }
@@ -939,7 +901,6 @@ public class MainActivity extends AppCompatActivity {
         String tempList1 = loadedString.substring(index[3] + 4, loadedString.length() - 1);
         listEditText[1].setText(tempList1);
         clickFinish(null);
-//        addBackgroundSpan();
         return true;
     }
 

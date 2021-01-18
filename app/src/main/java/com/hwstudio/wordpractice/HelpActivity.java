@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.google.android.gms.ads.InterstitialAd;
-
 public class HelpActivity extends AppCompatActivity {
 
     private final MobileService wsAd = new MobileService();

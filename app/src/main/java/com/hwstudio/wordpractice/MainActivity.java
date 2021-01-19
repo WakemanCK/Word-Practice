@@ -2,35 +2,24 @@ package com.hwstudio.wordpractice;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.media.session.MediaButtonReceiver;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothHeadset;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 
@@ -38,10 +27,7 @@ import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.session.MediaControllerCompat;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -51,7 +37,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -67,7 +52,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
@@ -192,7 +176,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             initTTS(0);
             initTTS(1);
-
+            ((AudioManager) getSystemService(AUDIO_SERVICE))
+                    .registerMediaButtonEventReceiver(new ComponentName(this, ButtonReceiver.class));
             if (defaultFile.startsWith("!NULL!")) {
                 showIntroduction();
             } else if (defaultFile.startsWith("!LIST!")) {
@@ -205,6 +190,31 @@ public class MainActivity extends AppCompatActivity {
             }
             setUtterance();
             delayHandler = new Handler();
+        }
+    }
+
+    public class ButtonReceiver extends BroadcastReceiver {
+        ButtonReceiver{
+            super();
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String intentAction = intent.getAction();
+            Toast.makeText(context, "debug " + intentAction, Toast.LENGTH_SHORT).show();
+            KeyEvent keyEvent = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+            if (keyEvent == null) {
+                return;
+            }
+            int action = keyEvent.getAction();
+            if (action == KeyEvent.ACTION_UP || action == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
+                if (playingState == 1) {
+                    clickPause(null);
+                } else {
+                    clickPlay(null);
+                }
+            }
+            abortBroadcast();
         }
     }
 

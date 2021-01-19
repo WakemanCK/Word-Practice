@@ -3,7 +3,7 @@
     package="com.hwstudio.wordpractice">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+<!--<uses-permission android:name="android.permission.BLUETOOTH"/>-->
     <queries>
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE" />
@@ -29,6 +29,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".MainActivity$ButtonReceiver"
+            android:enabled="true">
+            <intent-filter
+                android:priority="10000">
+                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

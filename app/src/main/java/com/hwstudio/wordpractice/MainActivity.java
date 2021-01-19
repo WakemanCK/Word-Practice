@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,7 +28,6 @@ import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     private String defaultFile, currentFile = "";
     private int repeatCount, currentLine, maxLine;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
-    private int playingState;  // 0 = stopped; 1 = playing; 2 = paused
+    private static int playingState;  // 0 = stopped; 1 = playing; 2 = paused
     public static TextToSpeech[] tts = new TextToSpeech[2];
     private ListAdapter.ViewHolder[] viewHolder = new ListAdapter.ViewHolder[2];
     private UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
             initTTS(1);
             ((AudioManager) getSystemService(AUDIO_SERVICE))
                     .registerMediaButtonEventReceiver(new ComponentName(this, ButtonReceiver.class));
+            ButtonReceiver.initActivity(this);
             if (defaultFile.startsWith("!NULL!")) {
                 showIntroduction();
             } else if (defaultFile.startsWith("!LIST!")) {
@@ -193,15 +194,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class ButtonReceiver extends BroadcastReceiver {
-        ButtonReceiver{
-            super();
+    public static class ButtonReceiver extends BroadcastReceiver {
+        private static MainActivity activity;
+
+        public static void initActivity(MainActivity getActivity) {
+            activity = getActivity;
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String intentAction = intent.getAction();
-            Toast.makeText(context, "debug " + intentAction, Toast.LENGTH_SHORT).show();
             KeyEvent keyEvent = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
             if (keyEvent == null) {
                 return;
@@ -209,24 +210,13 @@ public class MainActivity extends AppCompatActivity {
             int action = keyEvent.getAction();
             if (action == KeyEvent.ACTION_UP || action == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
                 if (playingState == 1) {
-                    clickPause(null);
+                    activity.clickPause(null);
                 } else {
-                    clickPlay(null);
+                    activity.clickPlay(null);
                 }
             }
-            abortBroadcast();
         }
     }
-
-    //debug/////////////
-
-//    public void clickHeadset() {
-//        if (playingState == 1) {
-//            clickPause(null);
-//        } else {
-//            clickPlay(null);
-//        }
-//    }
 
     private void showIntroduction() {
         IntroDialogFragment introDialogFragment = new IntroDialogFragment();
@@ -624,6 +614,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void speakString(int listNum) {
         viewHolder[listNum].highlightString();
+        if (wordString[listNum].contains("(")) {
+            int start = wordString[listNum].indexOf("(") + 1;
+            if (wordString[listNum].substring(start).contains(")")) {
+                int end = wordString[listNum].lastIndexOf(")");
+                wordString[listNum] = wordString[listNum].substring(start, end);
+            }
+        } else if (wordString[listNum].contains("（")) {
+            int start = wordString[listNum].indexOf("（") + 1;
+            if (wordString[listNum].substring(start).contains("）")) {
+                int end = wordString[listNum].lastIndexOf("）");
+                wordString[listNum] = wordString[listNum].substring(start, end);
+            }
+        }
         tts[listNum].setOnUtteranceProgressListener(utterance[listNum]);
         Bundle params = new Bundle();
         params.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, (soundVolume[listNum] + 1) / 7f);

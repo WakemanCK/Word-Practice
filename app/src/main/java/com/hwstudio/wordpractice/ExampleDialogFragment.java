@@ -96,7 +96,7 @@ public class ExampleDialogFragment extends DialogFragment {
         egListString[1][6] = "Sunday\nMonday\nTuesday\nWednesday\nThursday\nFriday\nSaturday\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember\nmorning\nnoon\nafternoon\nevening\nnight\nyear\nmonth\nweek\nday\nhour\nminute\nsecond";
         egListString[0][7] = mainActivity.getString(R.string.cnExamplePosition);
         egListString[1][7] = "above\nbelow\nleft\nright\nbetween\nin front of\nbehind\ninside\noutside\nnear\nnext to\neast\nsouth\nwest\nnorth";
-        egListString[0][8] = "上\n下\n左\n右\n中\n前\n後ろ\n内\n外\n辺\n隣\n東\n南\n西\n北";
+        egListString[0][8] = "上\n下\n左\n右\n中\n前\n後ろ\n内（うち）\n外\n辺\n隣\n東\n南\n西\n北";
         egListString[1][8] = "above\nbelow\nleft\nright\nbetween\nin front of\nbehind\ninside\noutside\nnear\nnext to\neast\nsouth\nwest\nnorth";
         egListString[0][9] = mainActivity.getString(R.string.cnExampleTransportation);
         egListString[1][9] = "bicycle\ncar\nbus\ntaxi\nmetro\ntrain\nhigh-speed rail\ntrain station\nship\nairplane\nairport\nticket\nbaggage";

@@ -18,9 +18,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     public static Locale[] language = new Locale[2];
     public static int wordDelay, lineDelay, repeatNum, repeatAtEnd;
     public static Set<String> selectedFilenames = new HashSet<>();
-    public static boolean hasListBackground;
+    public static boolean hasListBackground, hasFloatingWindow;
     public static int[] speechRate = new int[2];
     public static int[] soundVolume = new int[2];
     public static int[] pitch = new int[2];
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView[] bgRecyclerView = new RecyclerView[2];
     private BackgroundAdapter[] bgAdapter = new BackgroundAdapter[2];
     private RecyclerView.LayoutManager[] bgLayoutManager = new RecyclerView.LayoutManager[2];
+    private MenuItem floatingWindowButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Prepare action
         if (model.isChangingState()) {
+//            hasFloatingWindow = model.isHasFloatingWindow();
             currentLine = model.getCurrentLine();
             maxLine = model.getMaxLine();
             repeatCount = model.getRepeatCount();
@@ -191,6 +195,17 @@ public class MainActivity extends AppCompatActivity {
             }
             setUtterance();
             delayHandler = new Handler();
+            if (hasFloatingWindow){
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            floatingWindowButton.setIconTintMode(PorterDuff.Mode.XOR);
+                        }
+                    }
+                }, 100);
+            }
         }
     }
 
@@ -233,6 +248,7 @@ public class MainActivity extends AppCompatActivity {
         repeatAtEnd = sharedPref.getInt(getString(R.string.prefRepeatAtEnd), 1);
         selectedFilenames = sharedPref.getStringSet(getString(R.string.prefSelectedFiles), null);
         hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), false);
+        hasFloatingWindow = sharedPref.getBoolean(getString(R.string.prefHasFloatingWindow), false);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
         soundVolume[0] = sharedPref.getInt(getString(R.string.prefSoundVolume0), 6);
@@ -478,50 +494,52 @@ public class MainActivity extends AppCompatActivity {
     private void drawRecyclerView() {
         int[] lineCount = new int[2];
         for (int listNum = 0; listNum < 2; listNum++) {
-            String tempList = listString[listNum].replaceAll("\n", "");
-            lineCount[listNum] = listString[listNum].length() - tempList.length();
-            String[] tempString = new String[lineCount[listNum] + 1];
-            int wordStart = 0, wordEnd;
-            for (int i = 0; i < lineCount[listNum]; i++) {
-                wordEnd = listString[listNum].indexOf(10, wordStart);
-                tempString[i] = listString[listNum].substring(wordStart, wordEnd);
-                wordStart = wordEnd + 1;
-            }
-            tempString[lineCount[listNum]] = listString[listNum].substring(wordStart);
-            layoutManager[listNum] = new LinearLayoutManager(this);
-            listRecyclerView[listNum].setLayoutManager(layoutManager[listNum]);
-            listAdapter[listNum] = new ListAdapter(tempString, textSize[listNum]);
-            listRecyclerView[listNum].setAdapter(listAdapter[listNum]);
-            if (hasListBackground) {
-                bgLayoutManager[listNum] = new LinearLayoutManager(this);
-                bgRecyclerView[listNum].setLayoutManager(bgLayoutManager[listNum]);
-                bgAdapter[listNum] = new BackgroundAdapter(tempString, textSize[listNum]);
-                bgRecyclerView[listNum].setAdapter(bgAdapter[listNum]);
-                bgRecyclerView[listNum].setVisibility(View.VISIBLE);
-            } else {
-                bgRecyclerView[listNum].setVisibility(View.INVISIBLE);
-            }
-            listAdapter[listNum].setOnWordClickedListener(new ListAdapter.OnWordClickedListener() {
-                @Override
-                public void onWordClicked(int position) {
-                    if (!isListClicked) {
-                        int currentState = playingState;
-                        clickStop(null);
-                        currentLine = position;
-                        if (currentState == 1) {
-                            isListClicked = true;
-                        } else {
-                            if (viewHolder[0] != null) {
-                                viewHolder[0].clearHighlight();
+            if (listString[listNum] != null) {
+                String tempList = listString[listNum].replaceAll("\n", "");
+                lineCount[listNum] = listString[listNum].length() - tempList.length();
+                String[] tempString = new String[lineCount[listNum] + 1];
+                int wordStart = 0, wordEnd;
+                for (int i = 0; i < lineCount[listNum]; i++) {
+                    wordEnd = listString[listNum].indexOf(10, wordStart);
+                    tempString[i] = listString[listNum].substring(wordStart, wordEnd);
+                    wordStart = wordEnd + 1;
+                }
+                tempString[lineCount[listNum]] = listString[listNum].substring(wordStart);
+                layoutManager[listNum] = new LinearLayoutManager(this);
+                listRecyclerView[listNum].setLayoutManager(layoutManager[listNum]);
+                listAdapter[listNum] = new ListAdapter(tempString, textSize[listNum]);
+                listRecyclerView[listNum].setAdapter(listAdapter[listNum]);
+                if (hasListBackground) {
+                    bgLayoutManager[listNum] = new LinearLayoutManager(this);
+                    bgRecyclerView[listNum].setLayoutManager(bgLayoutManager[listNum]);
+                    bgAdapter[listNum] = new BackgroundAdapter(tempString, textSize[listNum]);
+                    bgRecyclerView[listNum].setAdapter(bgAdapter[listNum]);
+                    bgRecyclerView[listNum].setVisibility(View.VISIBLE);
+                } else {
+                    bgRecyclerView[listNum].setVisibility(View.INVISIBLE);
+                }
+                listAdapter[listNum].setOnWordClickedListener(new ListAdapter.OnWordClickedListener() {
+                    @Override
+                    public void onWordClicked(int position) {
+                        if (!isListClicked) {
+                            int currentState = playingState;
+                            clickStop(null);
+                            currentLine = position;
+                            if (currentState == 1) {
+                                isListClicked = true;
+                            } else {
+                                if (viewHolder[0] != null) {
+                                    viewHolder[0].clearHighlight();
+                                }
+                                if (viewHolder[1] != null) {
+                                    viewHolder[1].clearHighlight();
+                                }
+                                clickPlay(null);
                             }
-                            if (viewHolder[1] != null) {
-                                viewHolder[1].clearHighlight();
-                            }
-                            clickPlay(null);
                         }
                     }
-                }
-            });
+                });
+            }
         }
         maxLine = Math.max(lineCount[0], lineCount[1]);
         dummyRecyclerTextView.setTextSize(Math.max(textSize[0], textSize[1]) * 1.17f);
@@ -725,6 +743,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu getMenu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionmenu, getMenu);
+        floatingWindowButton = getMenu.findItem(R.id.floatingWindow);
         return true;
     }
 
@@ -732,6 +751,23 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.floatingWindow:
+                if (hasFloatingWindow){
+                    hasFloatingWindow=false;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        floatingWindowButton.setIconTintMode(PorterDuff.Mode.MULTIPLY);
+                    }
+                }else{
+                    hasFloatingWindow=true;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        floatingWindowButton.setIconTintMode(PorterDuff.Mode.XOR);
+                    }
+                }
+                SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(getString(R.string.prefHasFloatingWindow), hasFloatingWindow);
+                editor.apply();
+                break;
             case R.id.openSettings:
                 intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, OPEN_SETTINGS);
@@ -953,6 +989,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         // Save UI
+//        model.setHasFloatingWindow(hasFloatingWindow);
         model.setCanFinish(finishButton.isEnabled());
         model.setCanEdit(editButton.isEnabled());
         model.setCanPlay(playButton.isEnabled());

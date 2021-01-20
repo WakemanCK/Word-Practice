@@ -6,7 +6,7 @@ import android.speech.tts.TextToSpeech;
 import androidx.lifecycle.ViewModel;
 
 public class MainViewModel extends ViewModel {
-    private boolean isChangingState;
+    private boolean isChangingState;//, hasFloatingWindow;
     private boolean canFinish = true, canEdit, canPlay, canPause, canStop, hasRecycler;
     private String listString0, listString1, wordString0, wordString1, currentFile;
     private int currentLine, maxLine, repeatCount, playingState;
@@ -21,6 +21,14 @@ public class MainViewModel extends ViewModel {
     public void setChangingState(boolean changingState) {
         isChangingState = changingState;
     }
+
+//    public boolean isHasFloatingWindow() {
+//        return hasFloatingWindow;
+//    }
+//
+//    public void setHasFloatingWindow(boolean hasFloatingWindow) {
+//        this.hasFloatingWindow = hasFloatingWindow;
+//    }
 
     public boolean isCanFinish() {
         return canFinish;

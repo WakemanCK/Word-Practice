@@ -96,4 +96,6 @@
     <string name="cnExampleTransportation">自行車\n汽車\n公共汽車\n出租車\n地鐵\n火車\n高速鐵路\n火車站\n船\n飛機\n機場\n票\n行李</string>
     <string name="cnExampleFood">食物\n早餐\n午餐\n晚餐\n肉\n魚\n菜\n蛋\n飯\n麵\n麵包\n水果\n飲料\n水\n茶\n牛奶\n果汁\n咖啡\n酒\n啤酒</string>
     <string name="cnExampleConversation">早安\n午安\n晚安\n你好嗎\n謝謝\n拜託你了\n不好意思\n對不起\n等一等\n再見\n麻煩結帳\n不好意思，請問火車站在哪裡？\n不好意思，請問附近有廁所嗎？</string>
+    <string name="floatingWindow">Show floating windows</string>
+    <string name="prefHasFloatingWindow">prefHasFloatingWindow</string>
 </resources>

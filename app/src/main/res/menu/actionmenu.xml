@@ -2,16 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <!--  <item
-        android:id="@+id/loadLists"
-        android:icon="@drawable/ic_round_folder_open_24"
-        android:title="@string/loadLists"
+      <item
+        android:id="@+id/floatingWindow"
+        android:icon="@drawable/ic_baseline_flip_to_front_24"
+        android:title="@string/floatingWindow"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/saveLists"
-        android:icon="@drawable/ic_round_save_24"
-        android:title="@string/saveLists"
-        app:showAsAction="ifRoom" />-->
     <item
         android:id="@+id/loadExamples"
         android:title="@string/loadExamples"

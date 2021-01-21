@@ -3,7 +3,7 @@
     package="com.hwstudio.wordpractice">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<!--<uses-permission android:name="android.permission.BLUETOOTH"/>-->
+    <!--<uses-permission android:name="android.permission.BLUETOOTH"/>-->
     <queries>
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE" />
@@ -17,11 +17,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WordPractice">
-        <activity android:name=".HelpActivity"></activity>
+
+        <activity
+            android:name=".HelpActivity"
+            android:label="@string/helpMenu" />
+
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/settingsMenu"
-            android:screenOrientation="portrait" />
+            android:label="@string/settingsMenu" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,11 +34,11 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".MainActivity$ButtonReceiver"
+        <receiver
+            android:name=".MainActivity$ButtonReceiver"
             android:enabled="true">
-            <intent-filter
-                android:priority="10000">
-                <action android:name="android.intent.action.MEDIA_BUTTON"/>
+            <intent-filter android:priority="10000">
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
 

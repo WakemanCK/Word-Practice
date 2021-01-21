@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Variables
     private String defaultFile, currentFile = "";
-    private int repeatCount, currentLine, maxLine, originalColor;
+    private int repeatCount, currentLine, maxLine, originalColor, playOrientation;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private static int playingState;  // 0 = stopped; 1 = playing; 2 = paused
     public static TextToSpeech[] tts = new TextToSpeech[2];
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                             floatingTextView[0].setTextColor(Color.RED);
                         }
                         if (playingState == 1) {
-                            clickPlay(null);
+                            clickPlay();
                         }
                     }
                 }, 100);
@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                 if (playingState == 1) {
                     activity.clickPause(null);
                 } else {
-                    activity.clickPlay(null);
+                    activity.clickPlay();
                 }
             }
         }
@@ -258,7 +258,8 @@ public class MainActivity extends AppCompatActivity {
         selectedFilenames = sharedPref.getStringSet(getString(R.string.prefSelectedFiles), null);
         hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), false);
         hasFloatingWindow = sharedPref.getBoolean(getString(R.string.prefHasFloatingWindow), false);
-        lockOrientation=sharedPref.getBoolean(getString(R.string.prefLockOrientation), true);
+        lockOrientation = sharedPref.getBoolean(getString(R.string.prefLockOrientation), true);
+        speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
         soundVolume[0] = sharedPref.getInt(getString(R.string.prefSoundVolume0), 6);
         soundVolume[1] = sharedPref.getInt(getString(R.string.prefSoundVolume1), 6);
@@ -280,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         floatingTextView[0].setTextSize(textSize[0]);
         floatingTextView[1].setTextSize(textSize[1]);
         originalColor = floatingTextView[0].getCurrentTextColor();
-        floatingConstraintLayout=findViewById(R.id.floatingConstraintLayout);
+        floatingConstraintLayout = findViewById(R.id.floatingConstraintLayout);
         listEditText[0] = findViewById(R.id.list0EditText);
         listEditText[1] = findViewById(R.id.list1EditText);
         listEditText[0].setTextSize(textSize[0]);
@@ -297,8 +298,8 @@ public class MainActivity extends AppCompatActivity {
         langButton[1] = findViewById(R.id.lang1Button);
         finishButton = findViewById(R.id.finishButton);
         editButton = findViewById(R.id.editButton);
-        saveButton=findViewById(R.id.saveButton);
-        loadButton=findViewById(R.id.loadButton);
+        saveButton = findViewById(R.id.saveButton);
+        loadButton = findViewById(R.id.loadButton);
         playButton = findViewById(R.id.playButton);
         pauseButton = findViewById(R.id.pauseButton);
         stopButton = findViewById(R.id.stopButton);
@@ -347,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 isListClicked = false;
-                                clickPlay(null);
+                                clickPlay();
                             }
                         }, lineDelay * 500);
                     } else {
@@ -383,7 +384,7 @@ public class MainActivity extends AppCompatActivity {
                                 repeatCount = repeatNum;
                                 currentLine++;
                                 if (currentLine >= listAdapter[0].getItemCount() || currentLine >= listAdapter[1].getItemCount()) { // Either list ended
-                                    clickStop(null);
+                                    clickStop();
                                     currentLine = 0;
                                     scrollToWord(1);
                                     Toast.makeText(MainActivity.this, R.string.endOfListToast, Toast.LENGTH_SHORT).show();
@@ -394,8 +395,11 @@ public class MainActivity extends AppCompatActivity {
                                         public void onCompletion(MediaPlayer mediaPlayer) {
                                             mediaPlayer.release();
                                             switch (repeatAtEnd) {
+                                                case 0:
+                                                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                                                    break;
                                                 case 1:
-                                                    clickPlay(null);
+                                                    clickPlay();
                                                     break;
                                                 case 2:
                                                     playNextFile();
@@ -403,7 +407,6 @@ public class MainActivity extends AppCompatActivity {
                                                 case 3:
                                                     playRandomFile();
                                                     break;
-                                                default:
                                             }
                                         }
                                     });
@@ -422,7 +425,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 isListClicked = false;
-                                clickPlay(null);
+                                clickPlay();
                             }
                         }, lineDelay * 500);
                     } else {
@@ -462,7 +465,7 @@ public class MainActivity extends AppCompatActivity {
             String s = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
                     .getPath() + "/" + currentFile;
             if (loadSavedFile(s)) {
-                clickPlay(null);
+                clickPlay();
             } else {
                 playingState = 1;
                 repeatCount = 1;
@@ -485,7 +488,7 @@ public class MainActivity extends AppCompatActivity {
                     .getPath() + "/" + currentFile;
             loadSavedFile(s);
             if (loadSavedFile(s)) {
-                clickPlay(null);
+                clickPlay();
             } else {
                 playingState = 1;
                 repeatCount = 1;
@@ -501,12 +504,12 @@ public class MainActivity extends AppCompatActivity {
         playButton.setEnabled(canPlay);
         pauseButton.setEnabled(canPause);
         stopButton.setEnabled(canStop);
-        if (canStop){
+        if (canStop) {
             finishButton.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE);
             saveButton.setVisibility(View.GONE);
             loadButton.setVisibility(View.GONE);
-        } else{
+        } else {
             finishButton.setVisibility(View.VISIBLE);
             editButton.setVisibility(View.VISIBLE);
             saveButton.setVisibility(View.VISIBLE);
@@ -555,7 +558,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onWordClicked(int position) {
                         if (!isListClicked) {
                             int currentState = playingState;
-                            clickStop(null);
+                            clickStop();
                             currentLine = position;
                             if (currentState == 1) {
                                 isListClicked = true;
@@ -597,14 +600,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickPlay(View view) {
-        if (listEditText[0].getText().length() == 0 || listEditText[1].getText().length() == 0) {
-            Toast.makeText(this, R.string.emptyListErr, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        setMultipleEnable(false, true, false, true, true);
         if (lockOrientation) {
+            playOrientation = getResources().getConfiguration().orientation;
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+//            setRequestedOrientation(playOrientation);
+            if (listEditText[0].getText().length() == 0 || listEditText[1].getText().length() == 0) {
+                Toast.makeText(this, R.string.emptyListErr, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            clickPlay();
         }
+    }
+
+    public void clickPlay() {
+        setMultipleEnable(false, true, false, true, true);
         if (playingState == 2) {
             playingState = 1;
             if (isPlaying2ndLang) {
@@ -635,7 +644,7 @@ public class MainActivity extends AppCompatActivity {
                 scrollToWord(listNum);
                 viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine);
                 if (viewHolder[listNum] == null) {
-                    clickStop(null);
+                    clickStop();
                     currentLine = 0;
                 } else {
                     wordString[listNum] = viewHolder[listNum].getText();
@@ -709,15 +718,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickStop(View view) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        clickStop();
+    }
+
+    public void clickStop() {
         int tempState = playingState;
         playingState = 0;
         setMultipleEnable(false, true, true, false, false);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         floatingConstraintLayout.setVisibility(View.INVISIBLE);
-        if (tempState ==2){
+        if (tempState == 2) {
             if (isPlaying2ndLang) {
                 utterance[1].onDone(null);
-            }else{
+            } else {
                 utterance[0].onDone(null);
             }
         }
@@ -878,9 +891,16 @@ public class MainActivity extends AppCompatActivity {
             if (mainRecyclerScrollView.getVisibility() == View.VISIBLE) {
                 drawRecyclerView();
             }
-            if (lockOrientation){
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        }
+        if (lockOrientation) {
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+//            setRequestedOrientation(playOrientation);
+            if (playOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         }
     }
 

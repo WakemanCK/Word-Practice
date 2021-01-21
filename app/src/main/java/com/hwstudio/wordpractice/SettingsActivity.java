@@ -24,7 +24,7 @@ public class SettingsActivity extends AppCompatActivity {
     private SeekBar wordDelaySeekBar, lineDelaySeekBar, repeatNumSeekBar, speechRate0SeekBar, speechRate1SeekBar, volume0SeekBar, volume1SeekBar, pitch0SeekBar, pitch1SeekBar;
     private RadioGroup repeatAtEndGroup;
     private Button selectButton;
-    private CheckBox listBackgroundCheckBox;
+    private CheckBox listBackgroundCheckBox, lockOrientationCheckBox;
     private EditText textSize0EditText, textSize1EditText;
     private TextView wordDelayTextView, lineDelayTextView, repeatNumTextView;
 
@@ -54,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
         repeatAtEndGroup = findViewById(R.id.repeatAtEndGroup);
         selectButton = findViewById(R.id.selectFileButton);
         listBackgroundCheckBox = findViewById(R.id.listBackgroundCheckBox);
+        lockOrientationCheckBox = findViewById(R.id.lockOrientationCheckBox);
         speechRate0SeekBar = findViewById(R.id.speechRate0SeekBar);
         speechRate1SeekBar = findViewById(R.id.speechRate1SeekBar);
         volume0SeekBar = findViewById(R.id.volume0SeekBar);
@@ -79,6 +80,7 @@ public class SettingsActivity extends AppCompatActivity {
             selectButton.setVisibility(View.VISIBLE);
         }
         listBackgroundCheckBox.setChecked(MainActivity.hasListBackground);
+        lockOrientationCheckBox.setChecked(MainActivity.lockOrientation);
         speechRate0SeekBar.setProgress(MainActivity.speechRate[0]);
         speechRate1SeekBar.setProgress(MainActivity.speechRate[1]);
         volume0SeekBar.setProgress(MainActivity.soundVolume[0]);
@@ -148,6 +150,12 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 MainActivity.hasListBackground = b;
+            }
+        });
+        lockOrientationCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                MainActivity.lockOrientation = b;
             }
         });
         speechRate0SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -288,7 +296,9 @@ public class SettingsActivity extends AppCompatActivity {
         lineDelaySeekBar.setProgress(1);
         repeatNumSeekBar.setProgress(2);
         ((RadioButton)findViewById(R.id.repeatButton)).setChecked(true);
+        selectButton.setVisibility(View.INVISIBLE);
         listBackgroundCheckBox.setChecked(false);
+        lockOrientationCheckBox.setChecked(true);
         speechRate0SeekBar.setProgress(3);
         speechRate1SeekBar.setProgress(3);
         volume0SeekBar.setProgress(6);
@@ -325,6 +335,7 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putInt(getString(R.string.prefRepeatNum), MainActivity.repeatNum);
         editor.putInt(getString(R.string.prefRepeatAtEnd), MainActivity.repeatAtEnd);
         editor.putBoolean(getString(R.string.prefHasListBackground), MainActivity.hasListBackground);
+        editor.putBoolean(getString(R.string.prefLockOrientation), MainActivity.lockOrientation);
         editor.putInt(getString(R.string.prefSpeechRate0), MainActivity.speechRate[0]);
         editor.putInt(getString(R.string.prefSpeechRate1), MainActivity.speechRate[1]);
         editor.putInt(getString(R.string.prefSoundVolume0), MainActivity.soundVolume[0]);

@@ -150,6 +150,22 @@
                 app:layout_constraintBottom_toBottomOf="@+id/listBackgroundTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/listBackgroundTextView" />
+            <TextView
+                android:id="@+id/lockOrientationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/lockOrientationTextView"
+                app:layout_constraintStart_toStartOf="@+id/wordDelayTextView"
+                app:layout_constraintTop_toBottomOf="@+id/listBackgroundTextView" />
+
+            <CheckBox
+                android:id="@+id/lockOrientationCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/lockOrientationTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/lockOrientationTextView" />
 
             <View
                 android:id="@+id/divider"
@@ -159,7 +175,7 @@
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/listBackgroundTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/lockOrientationTextView" />
 
             <TextView
                 android:id="@+id/lang0TextView"

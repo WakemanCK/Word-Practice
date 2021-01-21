@@ -2,6 +2,7 @@ package com.hwstudio.wordpractice;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -16,8 +17,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     public static Locale[] language = new Locale[2];
     public static int wordDelay, lineDelay, repeatNum, repeatAtEnd;
     public static Set<String> selectedFilenames = new HashSet<>();
-    public static boolean hasListBackground, hasFloatingWindow;
+    public static boolean hasListBackground, hasFloatingWindow, lockOrientation;
     public static int[] speechRate = new int[2];
     public static int[] soundVolume = new int[2];
     public static int[] pitch = new int[2];
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Variables
     private String defaultFile, currentFile = "";
-    private int repeatCount, currentLine, maxLine;
+    private int repeatCount, currentLine, maxLine, originalColor;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     private static int playingState;  // 0 = stopped; 1 = playing; 2 = paused
     public static TextToSpeech[] tts = new TextToSpeech[2];
@@ -93,9 +96,11 @@ public class MainActivity extends AppCompatActivity {
     // Views
     private ScrollView mainRecyclerScrollView, mainEditTextScrollView;
     private TextView dummyRecyclerTextView;
+    private TextView[] floatingTextView = new TextView[2];
+    private ConstraintLayout floatingConstraintLayout;
     private EditText[] listEditText = new EditText[2];
     private Button[] langButton = new Button[2];
-    private Button finishButton, editButton;
+    private Button finishButton, editButton, saveButton, loadButton;
     private ImageButton playButton, pauseButton, stopButton, swapButton;
     private RecyclerView[] listRecyclerView = new RecyclerView[2];
     private ListAdapter[] listAdapter = new ListAdapter[2];
@@ -129,7 +134,17 @@ public class MainActivity extends AppCompatActivity {
         if (model.isHasRecycler()) {
             drawRecyclerView();
         }
-
+        if (hasFloatingWindow) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        floatingWindowButton.setIconTintMode(PorterDuff.Mode.XOR);
+                    }
+                }
+            }, 100);
+        }
         // Prepare action
         if (model.isChangingState()) {
 //            hasFloatingWindow = model.isHasFloatingWindow();
@@ -149,6 +164,9 @@ public class MainActivity extends AppCompatActivity {
             currentFile = model.getCurrentFile();
             Handler handler = new Handler();
             if (playingState > 0) {
+                if (hasFloatingWindow) {
+                    floatingConstraintLayout.setVisibility(View.VISIBLE);
+                }
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -157,9 +175,11 @@ public class MainActivity extends AppCompatActivity {
                         if (isPlaying2ndLang) {
                             viewHolder[1].highlightString();
                             scrollToWord(1);
+                            floatingTextView[1].setTextColor(Color.RED);
                         } else {
                             viewHolder[0].highlightString();
                             scrollToWord(0);
+                            floatingTextView[0].setTextColor(Color.RED);
                         }
                         if (playingState == 1) {
                             clickPlay(null);
@@ -195,17 +215,6 @@ public class MainActivity extends AppCompatActivity {
             }
             setUtterance();
             delayHandler = new Handler();
-            if (hasFloatingWindow){
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            floatingWindowButton.setIconTintMode(PorterDuff.Mode.XOR);
-                        }
-                    }
-                }, 100);
-            }
         }
     }
 
@@ -249,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
         selectedFilenames = sharedPref.getStringSet(getString(R.string.prefSelectedFiles), null);
         hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), false);
         hasFloatingWindow = sharedPref.getBoolean(getString(R.string.prefHasFloatingWindow), false);
-        speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
+        lockOrientation=sharedPref.getBoolean(getString(R.string.prefLockOrientation), true);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
         soundVolume[0] = sharedPref.getInt(getString(R.string.prefSoundVolume0), 6);
         soundVolume[1] = sharedPref.getInt(getString(R.string.prefSoundVolume1), 6);
@@ -266,6 +275,12 @@ public class MainActivity extends AppCompatActivity {
         mainRecyclerScrollView = findViewById(R.id.recyclerScrollView);
         mainEditTextScrollView = findViewById(R.id.editTextScrollView);
         dummyRecyclerTextView = findViewById(R.id.dummyRecyclerTextView);
+        floatingTextView[0] = findViewById(R.id.lang0FloatingTextView);
+        floatingTextView[1] = findViewById(R.id.lang1FloatingTextView);
+        floatingTextView[0].setTextSize(textSize[0]);
+        floatingTextView[1].setTextSize(textSize[1]);
+        originalColor = floatingTextView[0].getCurrentTextColor();
+        floatingConstraintLayout=findViewById(R.id.floatingConstraintLayout);
         listEditText[0] = findViewById(R.id.list0EditText);
         listEditText[1] = findViewById(R.id.list1EditText);
         listEditText[0].setTextSize(textSize[0]);
@@ -282,6 +297,8 @@ public class MainActivity extends AppCompatActivity {
         langButton[1] = findViewById(R.id.lang1Button);
         finishButton = findViewById(R.id.finishButton);
         editButton = findViewById(R.id.editButton);
+        saveButton=findViewById(R.id.saveButton);
+        loadButton=findViewById(R.id.loadButton);
         playButton = findViewById(R.id.playButton);
         pauseButton = findViewById(R.id.pauseButton);
         stopButton = findViewById(R.id.stopButton);
@@ -310,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDone(String s) {
                 if (playingState == 1) {
                     viewHolder[0].clearHighlight();
+                    floatingTextView[0].setTextColor(originalColor);
                     delayHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -323,6 +341,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (playingState == 0) {
                     viewHolder[0].clearHighlight();
+                    floatingTextView[0].setTextColor(originalColor);
                     if (isListClicked) {
                         delayHandler.postDelayed(new Runnable() {
                             @Override
@@ -351,6 +370,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDone(String s) {
                 if (playingState == 1) {
                     viewHolder[1].clearHighlight();
+                    floatingTextView[1].setTextColor(originalColor);
                     delayHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -396,6 +416,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (playingState == 0) {
                     viewHolder[1].clearHighlight();
+                    floatingTextView[1].setTextColor(originalColor);
                     if (isListClicked) {
                         delayHandler.postDelayed(new Runnable() {
                             @Override
@@ -480,6 +501,17 @@ public class MainActivity extends AppCompatActivity {
         playButton.setEnabled(canPlay);
         pauseButton.setEnabled(canPause);
         stopButton.setEnabled(canStop);
+        if (canStop){
+            finishButton.setVisibility(View.GONE);
+            editButton.setVisibility(View.GONE);
+            saveButton.setVisibility(View.GONE);
+            loadButton.setVisibility(View.GONE);
+        } else{
+            finishButton.setVisibility(View.VISIBLE);
+            editButton.setVisibility(View.VISIBLE);
+            saveButton.setVisibility(View.VISIBLE);
+            loadButton.setVisibility(View.VISIBLE);
+        }
     }
 
     public void clickFinish(View view) {
@@ -530,9 +562,11 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 if (viewHolder[0] != null) {
                                     viewHolder[0].clearHighlight();
+                                    floatingTextView[0].setTextColor(originalColor);
                                 }
                                 if (viewHolder[1] != null) {
                                     viewHolder[1].clearHighlight();
+                                    floatingTextView[1].setTextColor(originalColor);
                                 }
                                 clickPlay(null);
                             }
@@ -568,6 +602,9 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         setMultipleEnable(false, true, false, true, true);
+        if (lockOrientation) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        }
         if (playingState == 2) {
             playingState = 1;
             if (isPlaying2ndLang) {
@@ -579,6 +616,9 @@ public class MainActivity extends AppCompatActivity {
             playingState = 1;
             for (int i = 0; i < 2; i++) {
                 listString[i] = listEditText[i].getText().toString();
+            }
+            if (hasFloatingWindow) {
+                floatingConstraintLayout.setVisibility(View.VISIBLE);
             }
             isRepeating = false;
             repeatCount = repeatNum;
@@ -632,6 +672,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void speakString(int listNum) {
         viewHolder[listNum].highlightString();
+        if (hasFloatingWindow) {
+            if (listNum == 0) {
+                floatingTextView[0].setText(wordString[0]);
+                floatingTextView[1].setText(((ListAdapter.ViewHolder)
+                        listRecyclerView[1].findViewHolderForAdapterPosition(currentLine)).getText());
+            }
+            floatingTextView[listNum].setTextColor(Color.RED);
+//            floatingTextView[listNum].setText(wordString[listNum]);
+//            floatingTextView[listNum].setVisibility(View.VISIBLE);
+        }
         if (wordString[listNum].contains("(")) {
             int start = wordString[listNum].indexOf("(") + 1;
             if (wordString[listNum].substring(start).contains(")")) {
@@ -659,8 +709,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickStop(View view) {
+        int tempState = playingState;
         playingState = 0;
         setMultipleEnable(false, true, true, false, false);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        floatingConstraintLayout.setVisibility(View.INVISIBLE);
+        if (tempState ==2){
+            if (isPlaying2ndLang) {
+                utterance[1].onDone(null);
+            }else{
+                utterance[0].onDone(null);
+            }
+        }
     }
 
     public void clickLang0(View view) {
@@ -707,6 +767,7 @@ public class MainActivity extends AppCompatActivity {
         for (int listNum = 0; listNum < 2; listNum++) {
             listEditText[listNum].setTextSize(textSize[listNum]);
             listEditText[listNum].setText(listString[listNum]);
+            floatingTextView[listNum].setTextSize(textSize[listNum]);
             initTTS(listNum);
             if (mainRecyclerScrollView.getVisibility() == View.VISIBLE) {
                 drawRecyclerView();
@@ -752,16 +813,18 @@ public class MainActivity extends AppCompatActivity {
         Intent intent;
         switch (item.getItemId()) {
             case R.id.floatingWindow:
-                if (hasFloatingWindow){
-                    hasFloatingWindow=false;
+                if (hasFloatingWindow) {
+                    hasFloatingWindow = false;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         floatingWindowButton.setIconTintMode(PorterDuff.Mode.MULTIPLY);
                     }
-                }else{
-                    hasFloatingWindow=true;
+                    floatingConstraintLayout.setVisibility(View.INVISIBLE);
+                } else {
+                    hasFloatingWindow = true;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         floatingWindowButton.setIconTintMode(PorterDuff.Mode.XOR);
                     }
+                    floatingConstraintLayout.setVisibility(View.VISIBLE);
                 }
                 SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -770,6 +833,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.openSettings:
                 intent = new Intent(this, SettingsActivity.class);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 startActivityForResult(intent, OPEN_SETTINGS);
                 break;
             case R.id.loadExamples:
@@ -807,10 +871,15 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == OPEN_SETTINGS) {
             listEditText[0].setTextSize(textSize[0]);
             listEditText[1].setTextSize(textSize[1]);
+            floatingTextView[0].setTextSize(textSize[0]);
+            floatingTextView[1].setTextSize(textSize[1]);
             listEditText[0].setText(listString[0]);
             listEditText[1].setText(listString[1]);
             if (mainRecyclerScrollView.getVisibility() == View.VISIBLE) {
                 drawRecyclerView();
+            }
+            if (lockOrientation){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
             }
         }
     }

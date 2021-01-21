@@ -98,4 +98,6 @@
     <string name="cnExampleConversation">早安\n午安\n晚安\n你好嗎\n謝謝\n拜託你了\n不好意思\n對不起\n等一等\n再見\n麻煩結帳\n不好意思，請問火車站在哪裡？\n不好意思，請問附近有廁所嗎？</string>
     <string name="floatingWindow">Show floating windows</string>
     <string name="prefHasFloatingWindow">prefHasFloatingWindow</string>
+    <string name="lockOrientationTextView">Lock screen orientation when playing</string>
+    <string name="prefLockOrientation">prefLockOrientation</string>
 </resources>

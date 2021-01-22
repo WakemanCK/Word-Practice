@@ -216,6 +216,33 @@ public class MainActivity extends AppCompatActivity {
             setUtterance();
             delayHandler = new Handler();
         }
+        // Added to hide keyboard
+        final View activityRootView = findViewById(R.id.mainScrollView);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                final int rootViewHeight = activityRootView.getHeight();
+                activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (rootViewHeight - activityRootView.getHeight() > 100) {
+                            findViewById(R.id.mainDummyTextView).setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+            }
+        }, 100);
+    }
+    
+    public void closeKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        try {
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (NullPointerException e3) {
+            e3.printStackTrace();
+        }
+        findViewById(R.id.mainDummyTextView).setVisibility(View.INVISIBLE);
     }
 
     public static class ButtonReceiver extends BroadcastReceiver {

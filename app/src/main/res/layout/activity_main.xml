@@ -358,7 +358,7 @@
         android:layout_height="0dp"
         android:onClick="mainCloseKeyboard"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/adFrameLayout"
+        app:layout_constraintBottom_toTopOf="@id/finishButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     

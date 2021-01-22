@@ -33,12 +33,16 @@ import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -56,7 +60,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
@@ -90,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
     private UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private Handler delayHandler;
     public static String[] listString = new String[2];
+    //    private String[][] lineString = new String[2][];
+    private List<String>[] lineString = new List[2];
     private String[] wordString = new String[2];
     private MainViewModel model;
 
@@ -217,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
             delayHandler = new Handler();
         }
         // Added to hide keyboard
-        final View activityRootView = findViewById(R.id.mainScrollView);
+        final View activityRootView = findViewById(R.id.recyclerScrollView);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -234,8 +242,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 100);
     }
-    
-    public void closeKeyboard(View view) {
+
+    public void mainCloseKeyboard(View view) {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         try {
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
@@ -415,6 +423,7 @@ public class MainActivity extends AppCompatActivity {
                                     currentLine = 0;
                                     scrollToWord(1);
                                     Toast.makeText(MainActivity.this, R.string.endOfListToast, Toast.LENGTH_SHORT).show();
+                                    Log.i("debug", "end of list");
                                     MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.long_beep);
                                     mediaPlayer.start();
                                     mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -559,22 +568,22 @@ public class MainActivity extends AppCompatActivity {
             if (listString[listNum] != null) {
                 String tempList = listString[listNum].replaceAll("\n", "");
                 lineCount[listNum] = listString[listNum].length() - tempList.length();
-                String[] tempString = new String[lineCount[listNum] + 1];
                 int wordStart = 0, wordEnd;
+                lineString[listNum] = new ArrayList<>();
                 for (int i = 0; i < lineCount[listNum]; i++) {
                     wordEnd = listString[listNum].indexOf(10, wordStart);
-                    tempString[i] = listString[listNum].substring(wordStart, wordEnd);
+                    lineString[listNum].add(listString[listNum].substring(wordStart, wordEnd));
                     wordStart = wordEnd + 1;
                 }
-                tempString[lineCount[listNum]] = listString[listNum].substring(wordStart);
+                lineString[listNum].add(listString[listNum].substring(wordStart));
                 layoutManager[listNum] = new LinearLayoutManager(this);
                 listRecyclerView[listNum].setLayoutManager(layoutManager[listNum]);
-                listAdapter[listNum] = new ListAdapter(tempString, textSize[listNum]);
+                listAdapter[listNum] = new ListAdapter(lineString[listNum], textSize[listNum]);
                 listRecyclerView[listNum].setAdapter(listAdapter[listNum]);
                 if (hasListBackground) {
                     bgLayoutManager[listNum] = new LinearLayoutManager(this);
                     bgRecyclerView[listNum].setLayoutManager(bgLayoutManager[listNum]);
-                    bgAdapter[listNum] = new BackgroundAdapter(tempString, textSize[listNum]);
+                    bgAdapter[listNum] = new BackgroundAdapter(lineString[listNum], textSize[listNum]);
                     bgRecyclerView[listNum].setAdapter(bgAdapter[listNum]);
                     bgRecyclerView[listNum].setVisibility(View.VISIBLE);
                 } else {
@@ -616,6 +625,7 @@ public class MainActivity extends AppCompatActivity {
         mainRecyclerScrollView.setVisibility(View.VISIBLE);
         if (lineCount[0] != lineCount[1]) {
             Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
+            Log.i("debug", "unequal length err");
         }
     }
 
@@ -633,14 +643,17 @@ public class MainActivity extends AppCompatActivity {
 //            setRequestedOrientation(playOrientation);
             if (listEditText[0].getText().length() == 0 || listEditText[1].getText().length() == 0) {
                 Toast.makeText(this, R.string.emptyListErr, Toast.LENGTH_SHORT).show();
+                Log.i("debug", "empty list err");
                 return;
             }
-            clickPlay();
         }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        clickPlay();
     }
 
     public void clickPlay() {
         setMultipleEnable(false, true, false, true, true);
+        Log.i("debug", "playing state = " + playingState);
         if (playingState == 2) {
             playingState = 1;
             if (isPlaying2ndLang) {
@@ -653,17 +666,19 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < 2; i++) {
                 listString[i] = listEditText[i].getText().toString();
             }
+            Log.i("debug", "listString 0 = " + listString[0]);
             if (hasFloatingWindow) {
                 floatingConstraintLayout.setVisibility(View.VISIBLE);
             }
             isRepeating = false;
             repeatCount = repeatNum;
+            Log.i("debug", "repeatCount = "+repeatCount);
             pickWord(0);
         }
     }
 
     private void pickWord(int listNum) {
-        listRecyclerView[listNum].scrollToPosition(currentLine);
+//        listRecyclerView[listNum].scrollToPosition(currentLine);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -671,10 +686,11 @@ public class MainActivity extends AppCompatActivity {
                 scrollToWord(listNum);
                 viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine);
                 if (viewHolder[listNum] == null) {
+                    Log.i("debug", "no viewHolder");
                     clickStop();
                     currentLine = 0;
                 } else {
-                    wordString[listNum] = viewHolder[listNum].getText();
+                    wordString[listNum] = lineString[listNum].get(currentLine);
                     speakString(listNum);
                 }
             }
@@ -711,8 +727,7 @@ public class MainActivity extends AppCompatActivity {
         if (hasFloatingWindow) {
             if (listNum == 0) {
                 floatingTextView[0].setText(wordString[0]);
-                floatingTextView[1].setText(((ListAdapter.ViewHolder)
-                        listRecyclerView[1].findViewHolderForAdapterPosition(currentLine)).getText());
+                floatingTextView[1].setText(lineString[1].get(currentLine));
             }
             floatingTextView[listNum].setTextColor(Color.RED);
 //            floatingTextView[listNum].setText(wordString[listNum]);
@@ -746,6 +761,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickStop(View view) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         clickStop();
     }
 
@@ -859,12 +875,16 @@ public class MainActivity extends AppCompatActivity {
                         floatingWindowButton.setIconTintMode(PorterDuff.Mode.MULTIPLY);
                     }
                     floatingConstraintLayout.setVisibility(View.INVISIBLE);
+                    Toast.makeText(this, R.string.normalListToast, Toast.LENGTH_SHORT).show();
                 } else {
                     hasFloatingWindow = true;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         floatingWindowButton.setIconTintMode(PorterDuff.Mode.XOR);
                     }
-                    floatingConstraintLayout.setVisibility(View.VISIBLE);
+                    if (playingState > 0) {
+                        floatingConstraintLayout.setVisibility(View.VISIBLE);
+                    }
+                    Toast.makeText(this, R.string.singleLineToast, Toast.LENGTH_SHORT).show();
                 }
                 SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -951,6 +971,7 @@ public class MainActivity extends AppCompatActivity {
                 saveList();
             } else {
                 Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.noPermissionErr), Toast.LENGTH_SHORT).show();
+                Log.i("debug", "no permission err");
             }
         }
     }
@@ -987,6 +1008,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Toast.makeText(context, String.format(context.getString(R.string.saveListText), fileName), Toast.LENGTH_LONG).show();
+        Log.i("debug", "save list");
         saveDefaultFile(fileString);
     }
 
@@ -1010,13 +1032,16 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (IOException e) {
             Toast.makeText(this, String.format(getString(R.string.fileNotFoundErr), currentFile), Toast.LENGTH_SHORT).show();
+            Log.i("debug", "file not found err");
             return false;
         }
         if (analyzeFileSuccess(loadedString.toString())) {
             Toast.makeText(this, String.format(getString(R.string.fileLoadSuccess), currentFile), Toast.LENGTH_SHORT).show();
+            Log.i("debug", "file load success");
             return true;
         } else {
             Toast.makeText(this, String.format(getString(R.string.fileFormatErr), currentFile), Toast.LENGTH_SHORT).show();
+            Log.i("debug", "file format err");
             return false;
         }
     }
@@ -1033,13 +1058,16 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (IOException e) {
             Toast.makeText(this, String.format(getString(R.string.fileNotFoundErr), currentFile), Toast.LENGTH_SHORT).show();
+            Log.i("debug", "file not found err");
             return false;
         }
         if (analyzeFileSuccess(loadedString.toString())) {
             Toast.makeText(this, String.format(getString(R.string.fileLoadSuccess), currentFile), Toast.LENGTH_SHORT).show();
+            Log.i("debug", "file load success");
             return true;
         } else {
             Toast.makeText(this, String.format(getString(R.string.fileFormatErr), currentFile), Toast.LENGTH_SHORT).show();
+            Log.i("debug", "file format err");
             return false;
         }
     }

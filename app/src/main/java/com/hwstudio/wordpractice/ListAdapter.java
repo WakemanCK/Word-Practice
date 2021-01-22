@@ -10,9 +10,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
-    private final String[] localDataSet;
+    private final List<String> localDataSet;
     private final int textSize;
     private OnWordClickedListener onWordClickedListener;
 
@@ -49,9 +51,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             return textView;
         }
 
-        public String getText() {
+/*        public String getText() {
             return textView.getText().toString();
-        }
+        }*/
 
         public void highlightString() {
             textView.setTextColor(Color.RED);
@@ -62,7 +64,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         }
     }
 
-    public ListAdapter(String[] dataSet, int getTextSize) {
+    public ListAdapter(List<String> dataSet, int getTextSize) {
         localDataSet = dataSet;
         textSize = getTextSize;
     }
@@ -78,11 +80,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ListAdapter.ViewHolder viewHolder, final int position) {
         viewHolder.getTextView().setTextSize(textSize);
-        viewHolder.getTextView().setText(localDataSet[position]);
+        viewHolder.getTextView().setText(localDataSet.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return localDataSet.length;
+        return localDataSet.size();
     }
 }

@@ -100,4 +100,6 @@
     <string name="prefHasFloatingWindow">prefHasFloatingWindow</string>
     <string name="lockOrientationTextView">Lock screen orientation when playing</string>
     <string name="prefLockOrientation">prefLockOrientation</string>
+    <string name="normalListToast">Play mode: normal lists</string>
+    <string name="singleLineToast">Play mode: single line</string>
 </resources>

@@ -8,9 +8,11 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 public class BackgroundAdapter extends RecyclerView.Adapter<BackgroundAdapter.ViewHolder> {
 
-    private final String[] localDataSet;
+    private final List<String> localDataSet;
     private final int textSize;
     private final int[] color = new int[5];
 
@@ -33,7 +35,7 @@ public class BackgroundAdapter extends RecyclerView.Adapter<BackgroundAdapter.Vi
         }
     }
 
-    public BackgroundAdapter(String[] dataSet, int getTextSize) {//}, boolean getHasBackground) {
+    public BackgroundAdapter(List<String> dataSet, int getTextSize) {//}, boolean getHasBackground) {
         localDataSet = dataSet;
         textSize = getTextSize;
         color[0] = R.color.gray0;
@@ -58,7 +60,7 @@ public class BackgroundAdapter extends RecyclerView.Adapter<BackgroundAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return localDataSet.length;
+        return localDataSet.size();
     }
 }
 

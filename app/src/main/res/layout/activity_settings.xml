@@ -354,6 +354,16 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
+     <TextView
+        android:id="@+id/settingDummyTextView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:onClick="settingCloseKeyboard"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/adFrameLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    
     <FrameLayout
         android:id="@+id/adFrameLayout"
         android:layout_width="0dp"

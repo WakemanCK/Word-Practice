@@ -42,8 +42,35 @@ public class SettingsActivity extends AppCompatActivity {
         initView();
         setView();
         setListener();
+        // Added for hiding keyboard
+        final View activityRootView = findViewById(R.id.settingScrollView);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                final int rootViewHeight = activityRootView.getHeight();
+                activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (rootViewHeight - activityRootView.getHeight() > 100) {
+                            findViewById(R.id.settingDummyTextView).setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+            }
+        }, 100);
     }
 
+    public void settingCloseKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        try {
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } catch (NullPointerException e3) {
+            e3.printStackTrace();
+        }
+        findViewById(R.id.settingDummyTextView).setVisibility(View.INVISIBLE);
+    }
+    
     private void initView() {
         wordDelayTextView = findViewById(R.id.wordDelayTextView);
         lineDelayTextView = findViewById(R.id.lineDelayTextView);

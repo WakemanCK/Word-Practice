@@ -362,7 +362,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDone(String s) {
                 if (playingState == 1) {
-                    viewHolder[0].clearHighlight();
+                    if (viewHolder[0] != null) {
+                        viewHolder[0].clearHighlight();
+                    }
                     floatingTextView[0].setTextColor(originalColor);
                     delayHandler.postDelayed(new Runnable() {
                         @Override
@@ -376,7 +378,9 @@ public class MainActivity extends AppCompatActivity {
                     }, wordDelay * 500);
                 }
                 if (playingState == 0) {
-                    viewHolder[0].clearHighlight();
+                    if (viewHolder[0] != null) {
+                        viewHolder[0].clearHighlight();
+                    }
                     floatingTextView[0].setTextColor(originalColor);
                     if (isListClicked) {
                         delayHandler.postDelayed(new Runnable() {
@@ -405,7 +409,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDone(String s) {
                 if (playingState == 1) {
-                    viewHolder[1].clearHighlight();
+                    if (viewHolder[0] != null) {
+                        viewHolder[1].clearHighlight();
+                    }
                     floatingTextView[1].setTextColor(originalColor);
                     delayHandler.postDelayed(new Runnable() {
                         @Override
@@ -454,7 +460,9 @@ public class MainActivity extends AppCompatActivity {
                     }, lineDelay * 500);
                 }
                 if (playingState == 0) {
-                    viewHolder[1].clearHighlight();
+                    if (viewHolder[1] != null) {
+                        viewHolder[1].clearHighlight();
+                    }
                     floatingTextView[1].setTextColor(originalColor);
                     if (isListClicked) {
                         delayHandler.postDelayed(new Runnable() {
@@ -477,6 +485,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void playNextFile() {
+        Log.i("debug", "playNextFile");
         if (selectedFilenames == null) {
             return;
         }
@@ -685,14 +694,14 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 scrollToWord(listNum);
                 viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine);
-                if (viewHolder[listNum] == null) {
-                    Log.i("debug", "no viewHolder");
-                    clickStop();
-                    currentLine = 0;
-                } else {
+//                if (viewHolder[listNum] == null) {
+                    Log.i("debug", "pickWord");
+//                    clickStop();
+//                    currentLine = 0;
+//                } else {
                     wordString[listNum] = lineString[listNum].get(currentLine);
                     speakString(listNum);
-                }
+//                }
             }
         }, 100);
     }
@@ -723,7 +732,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void speakString(int listNum) {
-        viewHolder[listNum].highlightString();
+        if (viewHolder[listNum] != null) {
+            viewHolder[listNum].highlightString();
+        }
         if (hasFloatingWindow) {
             if (listNum == 0) {
                 floatingTextView[0].setText(wordString[0]);
@@ -1047,6 +1058,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean loadSavedFile(String defaultFile) {
+        Log.i("debug", "load saved file");
         File inputFile = new File(defaultFile);
         currentFile = inputFile.getName();
         StringBuilder loadedString = new StringBuilder();

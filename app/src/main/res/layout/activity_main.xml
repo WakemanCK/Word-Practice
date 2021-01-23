@@ -277,7 +277,7 @@
         app:layout_constraintEnd_toStartOf="@+id/pauseButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_round_play_circle_24" />
+        app:srcCompat="@drawable/ic_round_play_circle_48" />
 
     <ImageButton
         android:id="@+id/pauseButton"
@@ -291,7 +291,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/playButton"
         app:layout_constraintTop_toTopOf="@+id/playButton"
-        app:srcCompat="@drawable/ic_round_pause_circle_24" />
+        app:srcCompat="@drawable/ic_round_pause_circle_48" />
 
     <ImageButton
         android:id="@+id/stopButton"
@@ -306,7 +306,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/pauseButton"
         app:layout_constraintTop_toTopOf="@+id/playButton"
-        app:srcCompat="@drawable/ic_round_stop_circle_24" />
+        app:srcCompat="@drawable/ic_round_stop_circle_48" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/floatingConstraintLayout"

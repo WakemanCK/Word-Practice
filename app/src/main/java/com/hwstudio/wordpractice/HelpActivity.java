@@ -66,6 +66,8 @@ public class HelpActivity extends AppCompatActivity {
         addColor(helpString, getString(R.string.helpText14d));
         helpString.append(getString(R.string.helpText14e));
         helpString.append(getString(R.string.helpText15));
+        helpString.setSpan(new ImageSpan(this, R.drawable.ic_baseline_flip_to_front_24), helpString.length() - 1, helpString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        helpString.append(getString(R.string.helpText16));
         helpText.setText(helpString, TextView.BufferType.SPANNABLE);
     }
 

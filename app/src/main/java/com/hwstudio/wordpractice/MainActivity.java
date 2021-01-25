@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     public static Locale[] language = new Locale[2];
     public static int wordDelay, lineDelay, repeatNum, repeatAtEnd;
     public static Set<String> selectedFilenames = new HashSet<>();
-    public static boolean hasListBackground, hasFloatingWindow, lockOrientation;
+    public static boolean hasListBackground, isSingleLineMode, lockOrientation;
     public static int[] speechRate = new int[2];
     public static int[] soundVolume = new int[2];
     public static int[] pitch = new int[2];
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView[] bgRecyclerView = new RecyclerView[2];
     private BackgroundAdapter[] bgAdapter = new BackgroundAdapter[2];
     private RecyclerView.LayoutManager[] bgLayoutManager = new RecyclerView.LayoutManager[2];
-    private MenuItem floatingWindowButton;
+    private MenuItem displayModeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,13 +142,13 @@ public class MainActivity extends AppCompatActivity {
         if (model.isHasRecycler()) {
             drawRecyclerView();
         }
-        if (hasFloatingWindow) {
+        if (isSingleLineMode) {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        floatingWindowButton.setIconTintMode(PorterDuff.Mode.XOR);
+                        displayModeButton.setIconTintMode(PorterDuff.Mode.XOR);
                     }
                 }
             }, 100);
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             currentFile = model.getCurrentFile();
             Handler handler = new Handler();
             if (playingState > 0) {
-                if (hasFloatingWindow) {
+                if (isSingleLineMode) {
                     floatingConstraintLayout.setVisibility(View.VISIBLE);
                 }
                 handler.postDelayed(new Runnable() {
@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
         repeatAtEnd = sharedPref.getInt(getString(R.string.prefRepeatAtEnd), 1);
         selectedFilenames = sharedPref.getStringSet(getString(R.string.prefSelectedFiles), null);
         hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), false);
-        hasFloatingWindow = sharedPref.getBoolean(getString(R.string.prefHasFloatingWindow), false);
+        isSingleLineMode = sharedPref.getBoolean(getString(R.string.prefHasFloatingWindow), false);
         lockOrientation = sharedPref.getBoolean(getString(R.string.prefLockOrientation), true);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
@@ -676,7 +676,7 @@ public class MainActivity extends AppCompatActivity {
                 listString[i] = listEditText[i].getText().toString();
             }
             Log.i("debug", "listString 0 = " + listString[0]);
-            if (hasFloatingWindow) {
+            if (isSingleLineMode) {
                 floatingConstraintLayout.setVisibility(View.VISIBLE);
             }
             isRepeating = false;
@@ -735,7 +735,7 @@ public class MainActivity extends AppCompatActivity {
         if (viewHolder[listNum] != null) {
             viewHolder[listNum].highlightString();
         }
-        if (hasFloatingWindow) {
+        if (isSingleLineMode) {
             if (listNum == 0) {
                 floatingTextView[0].setText(wordString[0]);
                 floatingTextView[1].setText(lineString[1].get(currentLine));
@@ -871,7 +871,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu getMenu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionmenu, getMenu);
-        floatingWindowButton = getMenu.findItem(R.id.floatingWindow);
+        displayModeButton = getMenu.findItem(R.id.displayMode);
         return true;
     }
 
@@ -879,18 +879,18 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
-            case R.id.floatingWindow:
-                if (hasFloatingWindow) {
-                    hasFloatingWindow = false;
+            case R.id.displayMode:
+                if (isSingleLineMode) {
+                    isSingleLineMode = false;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        floatingWindowButton.setIconTintMode(PorterDuff.Mode.MULTIPLY);
+                        displayModeButton.setIconTintMode(PorterDuff.Mode.MULTIPLY);
                     }
                     floatingConstraintLayout.setVisibility(View.INVISIBLE);
                     Toast.makeText(this, R.string.normalListToast, Toast.LENGTH_SHORT).show();
                 } else {
-                    hasFloatingWindow = true;
+                    isSingleLineMode = true;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        floatingWindowButton.setIconTintMode(PorterDuff.Mode.XOR);
+                        displayModeButton.setIconTintMode(PorterDuff.Mode.XOR);
                     }
                     if (playingState > 0) {
                         floatingConstraintLayout.setVisibility(View.VISIBLE);
@@ -899,7 +899,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(getString(R.string.prefHasFloatingWindow), hasFloatingWindow);
+                editor.putBoolean(getString(R.string.prefHasFloatingWindow), isSingleLineMode);
                 editor.apply();
                 break;
             case R.id.openSettings:

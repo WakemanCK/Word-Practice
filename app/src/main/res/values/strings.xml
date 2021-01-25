@@ -18,9 +18,8 @@
     <string name="prefRepeatAtEnd" translatable="false">prefRepeatAtEnd</string>
     <string name="prefDefaultFile" translatable="false">prefDefaultFile</string>
     <string name="prefSelectedFiles" translatable="false">prefSelectedFiles</string>
-    <string name="playButton">Play</string>
-    <string name="loadLists">Load lists</string>
-    <string name="saveLists">Save lists</string>
+    <string name="prefHasFloatingWindow" translatable="false">prefHasFloatingWindow</string>
+    <string name="prefLockOrientation" translatable="false">prefLockOrientation</string>
     <string name="loadExamples">Load examples</string>
     <string name="settingsMenu">Settings</string>
     <string name="helpMenu">Help</string>
@@ -30,12 +29,10 @@
     <string name="okText">OK</string>
     <string name="saveButton">Save</string>
     <string name="loadButton">Load</string>
-    <string name="fileName">File name</string>
     <string name="saveDialogTextView">Please enter a file name</string>
     <string name="cancelButton">Cancel</string>
     <string name="noPermissionErr">Error: no storage \nwrite permission. \nList is NOT saved!</string>
     <string name="saveListText">Word lists are saved to %s.txt.</string>
-    <string name="fileLoadedText">Word lists are loaded.</string>
     <string name="fileLoadSuccess">%s is loaded.</string>
     <string name="fileFormatErr">%s is not a correct word lists file!</string>
     <string name="lang0TextView">Language 1</string>
@@ -47,9 +44,9 @@
     <string name="lineDelayTextView">"Delay between lines: "</string>
     <string name="repeatNumTextView">"Repeat how many times: "</string>
     <string name="textSizeTextView">Text size (18–48)</string>
-    <string name="listBackgroundTextView">Word lists background color</string>
+    <string name="listBackgroundTextView">Multi-color background</string>
     <string name="clearButton">Clear both word lists</string>
-    <string name="clearListToast">Both word lists are reset.</string>
+    <string name="clearListToast">Both word lists are cleared.</string>
     <string name="resetButton">Reset all settings to default</string>
     <string name="emptyListErr">Please enter some words to the lists!</string>
     <string name="unequalLengthErr">Warning: the lists are not equal in length!</string>
@@ -57,7 +54,6 @@
     <string name="editButton">Edit</string>
     <string name="editText0Hint">Please \nenter \nthe word \nlist for \nlanguage \n1 here.</string>
     <string name="editText1Hint">Please \nenter \nthe word \nlist for \nlanguage \n2 here.</string>
-    <string name="pauseButton">Pause</string>
     <string name="pickLanguage0Title">Please choose language 1</string>
     <string name="pickLanguage1Title">Please choose language 2</string>
     <string name="repeatAtEndTextView">At the end of the list:</string>
@@ -70,10 +66,14 @@
     <string name="selectFileButton">Select files</string>
     <string name="fileNotFoundErr">File not found: %s!</string>
     <string name="noReadPermissionErr">Error: no storage \nread permission.</string>
-    <string name="noFilesErr">No .txt file found in the Document directory!</string>
-    <string name="selectFileDialogTitle">Select files that will be played:</string>
-    <string name="shareMessageText">Word Practice\nA great tool to help you memorize words of new languages.\n</string>
+    <string name="noFilesErr">No .txt file found in the Documents directory!</string>
+    <string name="selectFileDialogTitle">Please select files that will be played:</string>
+    <string name="shareMessageText">Word Practice\nA great tool to help you memorize words of new languages!\n</string>
     <string name="chooseAppText">Please choose the way you want to share the app</string>
+    <string name="displayMode">Display mode</string>
+    <string name="lockOrientationTextView">Lock screen orientation when playing</string>
+    <string name="normalListToast">Display mode: normal lists</string>
+    <string name="singleLineToast">Display mode: single line</string>
     <string name="egNumber">Numbers</string>
     <string name="egCEColor">Chinese vs English (Color)</string>
     <string name="egJEColor">Japanese vs English (Color)</string>
@@ -96,12 +96,6 @@
     <string name="cnExampleTransportation">自行車\n汽車\n公共汽車\n出租車\n地鐵\n火車\n高速鐵路\n火車站\n船\n飛機\n機場\n票\n行李</string>
     <string name="cnExampleFood">食物\n早餐\n午餐\n晚餐\n肉\n魚\n菜\n蛋\n飯\n麵\n麵包\n水果\n飲料\n水\n茶\n牛奶\n果汁\n咖啡\n酒\n啤酒</string>
     <string name="cnExampleConversation">早安\n午安\n晚安\n你好嗎\n謝謝\n拜託你了\n不好意思\n對不起\n等一等\n再見\n麻煩結帳\n不好意思，請問火車站在哪裡？\n不好意思，請問附近有廁所嗎？</string>
-    <string name="floatingWindow">Show floating windows</string>
-    <string name="prefHasFloatingWindow">prefHasFloatingWindow</string>
-    <string name="lockOrientationTextView">Lock screen orientation when playing</string>
-    <string name="prefLockOrientation">prefLockOrientation</string>
-    <string name="normalListToast">Play mode: normal lists</string>
-    <string name="singleLineToast">Play mode: single line</string>
     <string name="helpText01">Thanks for using Word Practice!\n\n</string>
     <string name="generalTextView">General</string>
     <string name="helpText02">"\nTo begin, you can click the three dots at the top right corner and choose "</string>

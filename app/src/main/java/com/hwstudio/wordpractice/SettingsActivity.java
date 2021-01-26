@@ -6,15 +6,11 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Display;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
@@ -49,19 +45,13 @@ public class SettingsActivity extends AppCompatActivity {
         // Added for hiding keyboard
         final View activityRootView = findViewById(R.id.settingScrollView);
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                final int rootViewHeight = activityRootView.getHeight();
-                activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        if (rootViewHeight - activityRootView.getHeight() > 100) {
-                            findViewById(R.id.settingDummyTextView).setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
-            }
+        handler.postDelayed(() -> {
+            final int rootViewHeight = activityRootView.getHeight();
+            activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+                if (rootViewHeight - activityRootView.getHeight() > 100) {
+                    findViewById(R.id.settingDummyTextView).setVisibility(View.VISIBLE);
+                }
+            });
         }, 100);
     }
 
@@ -74,7 +64,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
         findViewById(R.id.settingDummyTextView).setVisibility(View.INVISIBLE);
     }
-    
+
     private void initView() {
         wordDelayTextView = findViewById(R.id.wordDelayTextView);
         lineDelayTextView = findViewById(R.id.lineDelayTextView);
@@ -177,18 +167,8 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-        listBackgroundCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                MainActivity.hasListBackground = b;
-            }
-        });
-        lockOrientationCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                MainActivity.lockOrientation = b;
-            }
-        });
+        listBackgroundCheckBox.setOnCheckedChangeListener((compoundButton, b) -> MainActivity.hasListBackground = b);
+        lockOrientationCheckBox.setOnCheckedChangeListener((compoundButton, b) -> MainActivity.lockOrientation = b);
         speechRate0SeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -312,11 +292,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void clickSelectFile(View view) {
-        SelectFileDialogFragment selectFileDialogFragment = new SelectFileDialogFragment(this);
+        SelectFileDialogFragment selectFileDialogFragment = new SelectFileDialogFragment();
         selectFileDialogFragment.show(getSupportFragmentManager(), "selectFiles");
     }
 
     public void clickClear(View view) {
+        MainActivity.playingState = 0;
         MainActivity.listString[0] = "";
         MainActivity.listString[1] = "";
         Toast.makeText(this, R.string.clearListToast, Toast.LENGTH_SHORT).show();
@@ -326,7 +307,7 @@ public class SettingsActivity extends AppCompatActivity {
         wordDelaySeekBar.setProgress(0);
         lineDelaySeekBar.setProgress(1);
         repeatNumSeekBar.setProgress(2);
-        ((RadioButton)findViewById(R.id.repeatButton)).setChecked(true);
+        ((RadioButton) findViewById(R.id.repeatButton)).setChecked(true);
         selectButton.setVisibility(View.INVISIBLE);
         listBackgroundCheckBox.setChecked(false);
         lockOrientationCheckBox.setChecked(true);

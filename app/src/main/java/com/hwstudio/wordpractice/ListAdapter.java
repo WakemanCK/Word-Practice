@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,14 +33,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             super(view);
             textView = view.findViewById(R.id.itemTextView);
             originalColor = textView.getCurrentTextColor();
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (onWordClickedListener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            onWordClickedListener.onWordClicked(position);
-                        }
+            view.setOnClickListener(view1 -> {
+                if (onWordClickedListener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        onWordClickedListener.onWordClicked(position);
                     }
                 }
             });
@@ -50,10 +46,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         public TextView getTextView() {
             return textView;
         }
-
-/*        public String getText() {
-            return textView.getText().toString();
-        }*/
 
         public void highlightString() {
             textView.setTextColor(Color.RED);

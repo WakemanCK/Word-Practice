@@ -13,18 +13,13 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 public class MobileService {
     InterstitialAd mInterstitialAd;
 
     public void initBanner(Context getContext, FrameLayout getLayout, Display getDisplay) {
         AdView mAdView;
-        MobileAds.initialize(getContext, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
+        MobileAds.initialize(getContext, initializationStatus -> {
         });
         mAdView = new AdView(getContext);
         mAdView.setAdUnitId("ca-app-pub-1067337728169403/5258231779");
@@ -41,10 +36,7 @@ public class MobileService {
     }
 
     public void initInter(Context getContext) {
-        MobileAds.initialize(getContext, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
+        MobileAds.initialize(getContext, initializationStatus -> {
         });
         mInterstitialAd = new InterstitialAd(getContext);
         mInterstitialAd.setAdUnitId("ca-app-pub-1067337728169403/5557614670");

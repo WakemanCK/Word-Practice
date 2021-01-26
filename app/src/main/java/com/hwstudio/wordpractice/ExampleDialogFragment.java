@@ -2,9 +2,9 @@ package com.hwstudio.wordpractice;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.Locale;
@@ -18,6 +18,7 @@ public class ExampleDialogFragment extends DialogFragment {
         this.mainActivity = mainActivity;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         String[] exampleList = {getString(R.string.egNumber), getString(R.string.egCEColor), getString(R.string.egJEColor), getString(R.string.egCEBody), getString(R.string.egJEBody)
@@ -27,18 +28,12 @@ public class ExampleDialogFragment extends DialogFragment {
         defineExample();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.exampleTitle)
-                .setItems(exampleList, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        for (int listNum = 0; listNum < 2; listNum++) {
-                            mainActivity.showExample(item, egLanguage[0][item], egLanguage[1][item]
-                                    , egListString[0][item], egListString[1][item]);
-                        }
+                .setItems(exampleList, (dialog, item) -> {
+                    for (int listNum = 0; listNum < 2; listNum++) {
+                        mainActivity.showExample(item, egLanguage[0][item], egLanguage[1][item]
+                                , egListString[0][item], egListString[1][item]);
                     }
-                }).setNegativeButton(R.string.cancelButton, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
+                }).setNegativeButton(R.string.cancelButton, (dialogInterface, i) -> {
         });
         return builder.create();
     }

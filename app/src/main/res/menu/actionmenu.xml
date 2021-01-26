@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-      <item
+    <item
         android:id="@+id/displayMode"
         android:icon="@drawable/ic_baseline_flip_to_front_24"
         android:title="@string/displayMode"

@@ -99,9 +99,9 @@
     <string name="helpText01">Thanks for using Word Practice!\n\n</string>
     <string name="generalTextView">General</string>
     <string name="helpText02">"\nTo begin, you can click the three dots at the top right corner and choose "</string>
-    <string name="helpText03">", copy and paste word lists you had found, or type the words directly. (If you copy and paste or type directly, remember to click "</string>
-    <string name="helpText04">" when you are done.)\n\nYou can save the lists by clicking the "</string>
-    <string name="helpText05">" button. Click the "</string>
+    <string name="helpText03">", copy and paste word lists you had found, or type the words directly. (If you copy and paste or type directly, remember to click ~"</string>
+    <string name="helpText04">" when you are done.)\n\nYou can save the lists by clicking the ~"</string>
+    <string name="helpText05">" button. Click the ~"</string>
     <string name="helpText06">" button to load any previously saved list. The lists are saved in .txt format files which can be edited with text editors. When editing the files, make sure you do not change the keywords "</string>
     <string name="helpText06b" translatable="false">"&lt;LANGUAGE_1&gt;"</string>
     <string name="helpText06c">", "</string>
@@ -118,12 +118,12 @@
     <string name="helpText11">" page. Click the three dots at the top right corner and choose "</string>
     <string name="helpText12">" to open it.\n\n"</string>
     <string name="tipsText">Tips</string>
-    <string name="helpText13">\nThe app uses Google\'s Text-to-Speech engine to produce the sound of the words. The pronunciation of the words is accurate in general but I cannot guarantee it is 100% correct. If you are in doubt about the pronunciation of certain words, please consult other reliable sources for clarification. If you find a significant error in the pronunciation of certain, consider reporting the word directly to Google.\n\n</string>
+    <string name="helpText13">\nThe app uses Google\'s Text-to-Speech engine to produce the sound of the words. The pronunciation of the words is accurate in general but I cannot guarantee it is 100\% correct. If you are in doubt about the pronunciation of certain words, please consult other reliable sources for clarification. If you find a significant error in the pronunciation of certain, consider reporting the word directly to Google.\n\n</string>
     <string name="helpText14">"Some languages may have several pronunciations for the same word. For example, the Japanese word 内 can be pronounced as うち or ない. You can tell the app which pronunciation to use by using "</string>
     <string name="helpText14b" translatable="false">"( )"</string>
     <string name="helpText14c">" or "</string>
     <string name="helpText14d" translatable="false">"（ ）"</string>
     <string name="helpText14e">" to enclose the preferred pronunciation. For example, entering 内（うち）to the list will tell the app to pronounce うち.\n\n</string>
-    <string name="helpText15">"When practicing sentences, the lists may not be able to display the whole sentences. In that case, you can press "</string>
+    <string name="helpText15">"When practicing sentences, the lists may not be able to display the whole sentences. In that case, you can press ~"</string>
     <string name="helpText16">" at the top right corner to turn on the single-line mode. In this mode, only the words/sentences of the active line of the two languages are displayed using the whole screen. This makes sure the whole sentence can be seen."</string>
 </resources>

@@ -2,7 +2,6 @@ package com.hwstudio.wordpractice;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -26,9 +25,7 @@ public class AboutDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.aboutMenu)
                 .setMessage(s)
-                .setPositiveButton(R.string.okText, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
+                .setPositiveButton(R.string.okText, (dialog, id) -> {
                 });
         return builder.create();
     }

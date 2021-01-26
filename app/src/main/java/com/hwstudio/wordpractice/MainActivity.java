@@ -33,14 +33,12 @@ import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -74,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int LOAD_FILE = 11;
     private static final int REQUEST_WRITE_PERMISSION = 30;
     private static final int REQUEST_READ_PERMISSION = 31;
-//    private static final int REQUEST_READ_PERMISSION_FROM_LOAD_SAVED_FILE = 32;
 
     // Settings
     public static Locale[] language = new Locale[2];
@@ -90,13 +87,12 @@ public class MainActivity extends AppCompatActivity {
     private String defaultFile, currentFile = "";
     private int repeatCount, currentLine, maxLine, originalColor, playOrientation;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
-    private static int playingState;  // 0 = stopped; 1 = playing; 2 = paused
+    public static int playingState;  // 0 = stopped; 1 = playing; 2 = paused
     public static TextToSpeech[] tts = new TextToSpeech[2];
     private ListAdapter.ViewHolder[] viewHolder = new ListAdapter.ViewHolder[2];
     private UtteranceProgressListener[] utterance = new UtteranceProgressListener[2];
     private Handler delayHandler;
     public static String[] listString = new String[2];
-    //    private String[][] lineString = new String[2][];
     private List<String>[] lineString = new List[2];
     private String[] wordString = new String[2];
     private MainViewModel model;
@@ -144,18 +140,14 @@ public class MainActivity extends AppCompatActivity {
         }
         if (isSingleLineMode) {
             Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        displayModeButton.setIconTintMode(PorterDuff.Mode.XOR);
-                    }
+            handler.postDelayed(() -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    displayModeButton.setIconTintMode(PorterDuff.Mode.XOR);
                 }
             }, 100);
         }
         // Prepare action
         if (model.isChangingState()) {
-//            hasFloatingWindow = model.isHasFloatingWindow();
             currentLine = model.getCurrentLine();
             maxLine = model.getMaxLine();
             repeatCount = model.getRepeatCount();
@@ -175,35 +167,29 @@ public class MainActivity extends AppCompatActivity {
                 if (isSingleLineMode) {
                     floatingConstraintLayout.setVisibility(View.VISIBLE);
                 }
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewHolder[0] = (ListAdapter.ViewHolder) listRecyclerView[0].findViewHolderForAdapterPosition(currentLine);
-                        viewHolder[1] = (ListAdapter.ViewHolder) listRecyclerView[1].findViewHolderForAdapterPosition(currentLine);
-                        if (isPlaying2ndLang) {
-                            viewHolder[1].highlightString();
-                            scrollToWord(1);
-                            floatingTextView[1].setTextColor(Color.RED);
-                        } else {
-                            viewHolder[0].highlightString();
-                            scrollToWord(0);
-                            floatingTextView[0].setTextColor(Color.RED);
-                        }
-                        if (playingState == 1) {
-                            clickPlay();
-                        }
+                handler.postDelayed(() -> {
+                    viewHolder[0] = (ListAdapter.ViewHolder) listRecyclerView[0].findViewHolderForAdapterPosition(currentLine);
+                    viewHolder[1] = (ListAdapter.ViewHolder) listRecyclerView[1].findViewHolderForAdapterPosition(currentLine);
+                    if (isPlaying2ndLang) {
+                        viewHolder[1].highlightString();
+                        scrollToWord(1);
+                        floatingTextView[1].setTextColor(Color.RED);
+                    } else {
+                        viewHolder[0].highlightString();
+                        scrollToWord(0);
+                        floatingTextView[0].setTextColor(Color.RED);
+                    }
+                    if (playingState == 1) {
+                        clickPlay();
                     }
                 }, 100);
             }
             Handler handler2 = new Handler();
-            handler2.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    String s = language[0].getDisplayName().replace("(", "\n(");
-                    langButton[0].setText(s);
-                    s = language[1].getDisplayName().replace("(", "\n(");
-                    langButton[1].setText(s);
-                }
+            handler2.postDelayed(() -> {
+                String s = language[0].getDisplayName().replace("(", "\n(");
+                langButton[0].setText(s);
+                s = language[1].getDisplayName().replace("(", "\n(");
+                langButton[1].setText(s);
             }, 500);
         } else {
             initTTS(0);
@@ -227,19 +213,13 @@ public class MainActivity extends AppCompatActivity {
         // Added to hide keyboard
         final View activityRootView = findViewById(R.id.recyclerScrollView);
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                final int rootViewHeight = activityRootView.getHeight();
-                activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        if (rootViewHeight - activityRootView.getHeight() > 100) {
-                            findViewById(R.id.mainDummyTextView).setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
-            }
+        handler.postDelayed(() -> {
+            final int rootViewHeight = activityRootView.getHeight();
+            activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+                if (rootViewHeight - activityRootView.getHeight() > 100) {
+                    findViewById(R.id.mainDummyTextView).setVisibility(View.VISIBLE);
+                }
+            });
         }, 100);
     }
 
@@ -262,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            KeyEvent keyEvent = (KeyEvent) intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+            KeyEvent keyEvent = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
             if (keyEvent == null) {
                 return;
             }
@@ -342,12 +322,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTTS(int listNum) {
-        tts[listNum] = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
-                setLanguageTtsButton(listNum);
-            }
-        });
+        tts[listNum] = new TextToSpeech(this, i -> setLanguageTtsButton(listNum));
         setSpeechRate(listNum);
         setPitch(listNum);
     }
@@ -366,14 +341,11 @@ public class MainActivity extends AppCompatActivity {
                         viewHolder[0].clearHighlight();
                     }
                     floatingTextView[0].setTextColor(originalColor);
-                    delayHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isRepeating) {
-                                speakString(1);
-                            } else {
-                                pickWord(1);
-                            }
+                    delayHandler.postDelayed(() -> {
+                        if (isRepeating) {
+                            speakString(1);
+                        } else {
+                            pickWord(1);
                         }
                     }, wordDelay * 500);
                 }
@@ -383,12 +355,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     floatingTextView[0].setTextColor(originalColor);
                     if (isListClicked) {
-                        delayHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                isListClicked = false;
-                                clickPlay();
-                            }
+                        delayHandler.postDelayed(() -> {
+                            isListClicked = false;
+                            clickPlay();
                         }, lineDelay * 500);
                     } else {
                         currentLine = 0;
@@ -413,48 +382,41 @@ public class MainActivity extends AppCompatActivity {
                         viewHolder[1].clearHighlight();
                     }
                     floatingTextView[1].setTextColor(originalColor);
-                    delayHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (repeatCount > 1) {
-                                repeatCount--;
-                                isRepeating = true;
-                                speakString(0);
+                    delayHandler.postDelayed(() -> {
+                        if (repeatCount > 1) {
+                            repeatCount--;
+                            isRepeating = true;
+                            speakString(0);
+                        } else {
+                            isRepeating = false;
+                            repeatCount = repeatNum;
+                            currentLine++;
+                            if (currentLine >= listAdapter[0].getItemCount() || currentLine >= listAdapter[1].getItemCount()) { // Either list ended
+                                clickStop();
+                                currentLine = 0;
+                                scrollToWord(1);
+                                Toast.makeText(MainActivity.this, R.string.endOfListToast, Toast.LENGTH_SHORT).show();
+                                MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.long_beep);
+                                mediaPlayer.start();
+                                mediaPlayer.setOnCompletionListener(mediaPlayer1 -> {
+                                    mediaPlayer1.release();
+                                    switch (repeatAtEnd) {
+                                        case 0:
+                                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                                            break;
+                                        case 1:
+                                            clickPlay();
+                                            break;
+                                        case 2:
+                                            playNextFile();
+                                            break;
+                                        case 3:
+                                            playRandomFile();
+                                            break;
+                                    }
+                                });
                             } else {
-                                isRepeating = false;
-                                repeatCount = repeatNum;
-                                currentLine++;
-                                if (currentLine >= listAdapter[0].getItemCount() || currentLine >= listAdapter[1].getItemCount()) { // Either list ended
-                                    clickStop();
-                                    currentLine = 0;
-                                    scrollToWord(1);
-                                    Toast.makeText(MainActivity.this, R.string.endOfListToast, Toast.LENGTH_SHORT).show();
-                                    Log.i("debug", "end of list");
-                                    MediaPlayer mediaPlayer = MediaPlayer.create(MainActivity.this, R.raw.long_beep);
-                                    mediaPlayer.start();
-                                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                        @Override
-                                        public void onCompletion(MediaPlayer mediaPlayer) {
-                                            mediaPlayer.release();
-                                            switch (repeatAtEnd) {
-                                                case 0:
-                                                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                                                    break;
-                                                case 1:
-                                                    clickPlay();
-                                                    break;
-                                                case 2:
-                                                    playNextFile();
-                                                    break;
-                                                case 3:
-                                                    playRandomFile();
-                                                    break;
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    pickWord(0);
-                                }
+                                pickWord(0);
                             }
                         }
                     }, lineDelay * 500);
@@ -465,12 +427,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     floatingTextView[1].setTextColor(originalColor);
                     if (isListClicked) {
-                        delayHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                isListClicked = false;
-                                clickPlay();
-                            }
+                        delayHandler.postDelayed(() -> {
+                            isListClicked = false;
+                            clickPlay();
                         }, lineDelay * 500);
                     } else {
                         currentLine = 0;
@@ -485,7 +444,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void playNextFile() {
-        Log.i("debug", "playNextFile");
         if (selectedFilenames == null) {
             return;
         }
@@ -598,26 +556,23 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     bgRecyclerView[listNum].setVisibility(View.INVISIBLE);
                 }
-                listAdapter[listNum].setOnWordClickedListener(new ListAdapter.OnWordClickedListener() {
-                    @Override
-                    public void onWordClicked(int position) {
-                        if (!isListClicked) {
-                            int currentState = playingState;
-                            clickStop();
-                            currentLine = position;
-                            if (currentState == 1) {
-                                isListClicked = true;
-                            } else {
-                                if (viewHolder[0] != null) {
-                                    viewHolder[0].clearHighlight();
-                                    floatingTextView[0].setTextColor(originalColor);
-                                }
-                                if (viewHolder[1] != null) {
-                                    viewHolder[1].clearHighlight();
-                                    floatingTextView[1].setTextColor(originalColor);
-                                }
-                                clickPlay(null);
+                listAdapter[listNum].setOnWordClickedListener(position -> {
+                    if (!isListClicked) {
+                        int currentState = playingState;
+                        clickStop();
+                        currentLine = position;
+                        if (currentState == 1) {
+                            isListClicked = true;
+                        } else {
+                            if (viewHolder[0] != null) {
+                                viewHolder[0].clearHighlight();
+                                floatingTextView[0].setTextColor(originalColor);
                             }
+                            if (viewHolder[1] != null) {
+                                viewHolder[1].clearHighlight();
+                                floatingTextView[1].setTextColor(originalColor);
+                            }
+                            clickPlay(null);
                         }
                     }
                 });
@@ -634,7 +589,6 @@ public class MainActivity extends AppCompatActivity {
         mainRecyclerScrollView.setVisibility(View.VISIBLE);
         if (lineCount[0] != lineCount[1]) {
             Toast.makeText(this, R.string.unequalLengthErr, Toast.LENGTH_SHORT).show();
-            Log.i("debug", "unequal length err");
         }
     }
 
@@ -649,10 +603,8 @@ public class MainActivity extends AppCompatActivity {
         if (lockOrientation) {
             playOrientation = getResources().getConfiguration().orientation;
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-//            setRequestedOrientation(playOrientation);
             if (listEditText[0].getText().length() == 0 || listEditText[1].getText().length() == 0) {
                 Toast.makeText(this, R.string.emptyListErr, Toast.LENGTH_SHORT).show();
-                Log.i("debug", "empty list err");
                 return;
             }
         }
@@ -662,7 +614,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickPlay() {
         setMultipleEnable(false, true, false, true, true);
-        Log.i("debug", "playing state = " + playingState);
         if (playingState == 2) {
             playingState = 1;
             if (isPlaying2ndLang) {
@@ -675,34 +626,22 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < 2; i++) {
                 listString[i] = listEditText[i].getText().toString();
             }
-            Log.i("debug", "listString 0 = " + listString[0]);
             if (isSingleLineMode) {
                 floatingConstraintLayout.setVisibility(View.VISIBLE);
             }
             isRepeating = false;
             repeatCount = repeatNum;
-            Log.i("debug", "repeatCount = "+repeatCount);
             pickWord(0);
         }
     }
 
     private void pickWord(int listNum) {
-//        listRecyclerView[listNum].scrollToPosition(currentLine);
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                scrollToWord(listNum);
-                viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine);
-//                if (viewHolder[listNum] == null) {
-                    Log.i("debug", "pickWord");
-//                    clickStop();
-//                    currentLine = 0;
-//                } else {
-                    wordString[listNum] = lineString[listNum].get(currentLine);
-                    speakString(listNum);
-//                }
-            }
+        handler.postDelayed(() -> {
+            scrollToWord(listNum);
+            viewHolder[listNum] = (ListAdapter.ViewHolder) listRecyclerView[listNum].findViewHolderForAdapterPosition(currentLine);
+            wordString[listNum] = lineString[listNum].get(currentLine);
+            speakString(listNum);
         }, 100);
     }
 
@@ -741,8 +680,6 @@ public class MainActivity extends AppCompatActivity {
                 floatingTextView[1].setText(lineString[1].get(currentLine));
             }
             floatingTextView[listNum].setTextColor(Color.RED);
-//            floatingTextView[listNum].setText(wordString[listNum]);
-//            floatingTextView[listNum].setVisibility(View.VISIBLE);
         }
         if (wordString[listNum].contains("(")) {
             int start = wordString[listNum].indexOf("(") + 1;
@@ -793,12 +730,7 @@ public class MainActivity extends AppCompatActivity {
     public void clickLang0(View view) {
         langButton[0].setEnabled(false);
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                langButton[0].setEnabled(true);
-            }
-        }, 100);
+        handler.postDelayed(() -> langButton[0].setEnabled(true), 100);
         LanguageDialogFragment lang0Fragment = new LanguageDialogFragment(this, getString(R.string.pickLanguage0Title));
         lang0Fragment.show(getSupportFragmentManager(), "lang0");
     }
@@ -806,12 +738,7 @@ public class MainActivity extends AppCompatActivity {
     public void clickLang1(View view) {
         langButton[1].setEnabled(false);
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                langButton[1].setEnabled(true);
-            }
-        }, 100);
+        handler.postDelayed(() -> langButton[1].setEnabled(true), 100);
         LanguageDialogFragment lang1Fragment = new LanguageDialogFragment(this, getString(R.string.pickLanguage1Title));
         lang1Fragment.show(getSupportFragmentManager(), "lang1");
     }
@@ -819,12 +746,7 @@ public class MainActivity extends AppCompatActivity {
     public void clickSwap(View view) {
         swapButton.setEnabled(false);
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                swapButton.setEnabled(true);
-            }
-        }, 100);
+        handler.postDelayed(() -> swapButton.setEnabled(true), 100);
         swap(language);
         swap(listString);
         swapInt(speechRate);
@@ -951,8 +873,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (lockOrientation) {
-//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-//            setRequestedOrientation(playOrientation);
             if (playOrientation == Configuration.ORIENTATION_LANDSCAPE) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             } else {
@@ -982,7 +902,6 @@ public class MainActivity extends AppCompatActivity {
                 saveList();
             } else {
                 Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.noPermissionErr), Toast.LENGTH_SHORT).show();
-                Log.i("debug", "no permission err");
             }
         }
     }
@@ -1019,7 +938,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Toast.makeText(context, String.format(context.getString(R.string.saveListText), fileName), Toast.LENGTH_LONG).show();
-        Log.i("debug", "save list");
         saveDefaultFile(fileString);
     }
 
@@ -1043,22 +961,18 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (IOException e) {
             Toast.makeText(this, String.format(getString(R.string.fileNotFoundErr), currentFile), Toast.LENGTH_SHORT).show();
-            Log.i("debug", "file not found err");
             return false;
         }
         if (analyzeFileSuccess(loadedString.toString())) {
             Toast.makeText(this, String.format(getString(R.string.fileLoadSuccess), currentFile), Toast.LENGTH_SHORT).show();
-            Log.i("debug", "file load success");
             return true;
         } else {
             Toast.makeText(this, String.format(getString(R.string.fileFormatErr), currentFile), Toast.LENGTH_SHORT).show();
-            Log.i("debug", "file format err");
             return false;
         }
     }
 
     private boolean loadSavedFile(String defaultFile) {
-        Log.i("debug", "load saved file");
         File inputFile = new File(defaultFile);
         currentFile = inputFile.getName();
         StringBuilder loadedString = new StringBuilder();
@@ -1070,16 +984,13 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (IOException e) {
             Toast.makeText(this, String.format(getString(R.string.fileNotFoundErr), currentFile), Toast.LENGTH_SHORT).show();
-            Log.i("debug", "file not found err");
             return false;
         }
         if (analyzeFileSuccess(loadedString.toString())) {
             Toast.makeText(this, String.format(getString(R.string.fileLoadSuccess), currentFile), Toast.LENGTH_SHORT).show();
-            Log.i("debug", "file load success");
             return true;
         } else {
             Toast.makeText(this, String.format(getString(R.string.fileFormatErr), currentFile), Toast.LENGTH_SHORT).show();
-            Log.i("debug", "file format err");
             return false;
         }
     }
@@ -1145,7 +1056,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         // Save UI
-//        model.setHasFloatingWindow(hasFloatingWindow);
         model.setCanFinish(finishButton.isEnabled());
         model.setCanEdit(editButton.isEnabled());
         model.setCanPlay(playButton.isEnabled());

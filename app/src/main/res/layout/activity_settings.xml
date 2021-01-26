@@ -150,6 +150,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/listBackgroundTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/listBackgroundTextView" />
+
             <TextView
                 android:id="@+id/lockOrientationTextView"
                 android:layout_width="wrap_content"
@@ -354,7 +355,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-     <TextView
+    <TextView
         android:id="@+id/settingDummyTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -363,14 +364,13 @@
         app:layout_constraintBottom_toTopOf="@id/adFrameLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    
+
     <FrameLayout
         android:id="@+id/adFrameLayout"
         android:layout_width="0dp"
         android:layout_height="64dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-    </FrameLayout>
+        app:layout_constraintStart_toStartOf="parent"></FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

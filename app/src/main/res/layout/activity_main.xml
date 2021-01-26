@@ -334,10 +334,10 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toTopOf="@+id/lang1FloatingTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lang0FloatingTextView"
-            app:layout_constraintBottom_toTopOf="@+id/lang1FloatingTextView"
             app:layout_constraintVertical_bias="0.5" />
 
         <TextView
@@ -352,7 +352,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
+    <TextView
         android:id="@+id/mainDummyTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -361,7 +361,7 @@
         app:layout_constraintBottom_toTopOf="@id/finishButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    
+
     <FrameLayout
         android:id="@+id/adFrameLayout"
         android:layout_width="0dp"

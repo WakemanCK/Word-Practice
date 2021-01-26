@@ -88,9 +88,9 @@
     <string name="helpText06e">，</string>
     <string name="helpText06g">以及</string>
     <string name="helpText06i">这几个关键字，否则应用就不能读取这些档案。\n\n"</string>
-    <string name="helpText07">\n按底部的</string>
-    <string name="helpText08">键来开始播放。你也可以按列表上的生字来由该行开始播放。按</string>
-    <string name="helpText09">键来暂停，</string>
+    <string name="helpText07">\n按底部的~</string>
+    <string name="helpText08">键来开始播放。你也可以按列表上的生字来由该行开始播放。按~</string>
+    <string name="helpText09">键来暂停，~</string>
     <string name="helpText10">键来停止。\n\n你可以按顶部的语言键来选择语言。你也可以在</string>
     <string name="helpText11">页面设定语音速度，词语之间的延迟，每个词语重复多少次等等。按右上角的三点再选</string>
     <string name="helpText12">来开启该页面。\n\n"</string>
@@ -99,6 +99,6 @@
     <string name="helpText14">有些语言可能会有一字多音的情况。例如日文的 内 字，可以发音为 うち 或 ない。你可以用</string>
     <string name="helpText14c">或</string>
     <string name="helpText14e">包着你想要的发音来告诉应用这是你想要的。例如输入 内（うち）到列表上，应用就会读成 うち。\n\n</string>
-    <string name="helpText15">当输入句子时，列表可能不能够列出整句句子。这时候，你可以按右上角的</string>
+    <string name="helpText15">当输入句子时，列表可能不能够列出整句句子。这时候，你可以按右上角的~</string>
     <string name="helpText16">来开启单句模式。在这模式下，正在读出的词语或句子的两种语言会以全页显示。这便能确保整句句子都会被显示出来。</string>
 </resources>

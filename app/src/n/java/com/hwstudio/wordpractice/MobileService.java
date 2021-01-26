@@ -17,9 +17,9 @@ public class MobileService {
     public void showInter() {
     }
 
-    public  void rateApp(Context getContext) {
+    public void rateApp(Context getContext) {
     }
 
-    public  void shareApp(Context getContext) {
+    public void shareApp(Context getContext) {
     }
 }

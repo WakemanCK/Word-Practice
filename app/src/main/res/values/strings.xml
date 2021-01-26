@@ -68,7 +68,7 @@
     <string name="noReadPermissionErr">Error: no storage \nread permission.</string>
     <string name="noFilesErr">No .txt file found in the Documents directory!</string>
     <string name="selectFileDialogTitle">Please select files that will be played:</string>
-    <string name="shareMessageText">Word Practice\nA great tool to help you memorize words of new languages!\n</string>
+    <string name="shareMessageText">Word Practice\nA great tool to help you memorize the pronunciation of words of new languages!\n</string>
     <string name="chooseAppText">Please choose the way you want to share the app</string>
     <string name="displayMode">Display mode</string>
     <string name="lockOrientationTextView">Lock screen orientation when playing</string>

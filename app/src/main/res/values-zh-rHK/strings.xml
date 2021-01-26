@@ -49,7 +49,7 @@
     <string name="noReadPermissionErr">錯誤：沒有讀取\n儲存空間的權限。</string>
     <string name="noFilesErr">Documents 目錄中沒有 .txt檔案！</string>
     <string name="selectFileDialogTitle">請選擇準備使用的檔案：</string>
-    <string name="shareMessageText">讀生字\n一個助你記憶新學語言的好工具！\n</string>
+    <string name="shareMessageText">讀生字\n一個幫助你記住生字發音的好工具！\n</string>
     <string name="chooseAppText">請選擇分享應用的方法</string>
     <string name="displayMode">顯示模式</string>
     <string name="lockOrientationTextView">播放時鎖定畫面方向</string>

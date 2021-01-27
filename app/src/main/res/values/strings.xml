@@ -18,7 +18,7 @@
     <string name="prefRepeatAtEnd" translatable="false">prefRepeatAtEnd</string>
     <string name="prefDefaultFile" translatable="false">prefDefaultFile</string>
     <string name="prefSelectedFiles" translatable="false">prefSelectedFiles</string>
-    <string name="prefHasFloatingWindow" translatable="false">prefHasFloatingWindow</string>
+    <string name="prefIsSingleLineMode" translatable="false">prefIsSingleLineMode</string>
     <string name="prefLockOrientation" translatable="false">prefLockOrientation</string>
     <string name="loadExamples">Load examples</string>
     <string name="settingsMenu">Settings</string>
@@ -31,7 +31,7 @@
     <string name="loadButton">Load</string>
     <string name="saveDialogTextView">Please enter a file name</string>
     <string name="cancelButton">Cancel</string>
-    <string name="noPermissionErr">Error: no storage \nwrite permission. \nList is NOT saved!</string>
+    <string name="noWritePermissionErr">Error: no storage \nwrite permission. \nList is NOT saved!</string>
     <string name="saveListText">Word lists are saved to %s.txt.</string>
     <string name="fileLoadSuccess">%s is loaded.</string>
     <string name="fileFormatErr">%s is not a correct word lists file!</string>

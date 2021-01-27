@@ -1,9 +1,14 @@
 package com.hwstudio.wordpractice;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Display;
@@ -21,6 +26,7 @@ import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private static final int REQUEST_READ_PERMISSION = 31;
     private SeekBar wordDelaySeekBar, lineDelaySeekBar, repeatNumSeekBar, speechRate0SeekBar, speechRate1SeekBar, volume0SeekBar, volume1SeekBar, pitch0SeekBar, pitch1SeekBar;
     private RadioGroup repeatAtEndGroup;
     private Button selectButton;
@@ -292,6 +298,30 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void clickSelectFile(View view) {
+            // Check has read permission
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                clickSelectFile();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_READ_PERMISSION);
+            }
+        }
+
+        @Override
+        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+        @NonNull int[] grantResults) {
+            if (requestCode == REQUEST_READ_PERMISSION) {
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    clickSelectFile();
+                } else {
+                    Toast.makeText(SettingsActivity.this, getString(R.string.noReadPermissionErr), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+    public void clickSelectFile() {
         SelectFileDialogFragment selectFileDialogFragment = new SelectFileDialogFragment();
         selectFileDialogFragment.show(getSupportFragmentManager(), "selectFiles");
     }

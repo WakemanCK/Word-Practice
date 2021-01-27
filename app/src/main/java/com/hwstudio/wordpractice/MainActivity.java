@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int OPEN_SETTINGS = 10;
     private static final int LOAD_FILE = 11;
     private static final int REQUEST_WRITE_PERMISSION = 30;
-    private static final int REQUEST_READ_PERMISSION = 31;
 
     // Settings
     public static Locale[] language = new Locale[2];
@@ -125,8 +124,7 @@ public class MainActivity extends AppCompatActivity {
         Display display = getWindowManager().getDefaultDisplay();
         mainAd.initBanner(this, adContainerView, display);
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                REQUEST_READ_PERMISSION);
+        // Init
         loadSettings();
         initView();
 
@@ -268,11 +266,11 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
         wordDelay = sharedPref.getInt(getString(R.string.prefWordDelay), 0);
         lineDelay = sharedPref.getInt(getString(R.string.prefLineDelay), 1);
-        repeatNum = sharedPref.getInt(getString(R.string.prefRepeatNum), 2);
+        repeatNum = sharedPref.getInt(getString(R.string.prefRepeatNum), 3);
         repeatAtEnd = sharedPref.getInt(getString(R.string.prefRepeatAtEnd), 1);
         selectedFilenames = sharedPref.getStringSet(getString(R.string.prefSelectedFiles), null);
         hasListBackground = sharedPref.getBoolean(getString(R.string.prefHasListBackground), false);
-        isSingleLineMode = sharedPref.getBoolean(getString(R.string.prefHasFloatingWindow), false);
+        isSingleLineMode = sharedPref.getBoolean(getString(R.string.prefIsSingleLineMode), false);
         lockOrientation = sharedPref.getBoolean(getString(R.string.prefLockOrientation), true);
         speechRate[0] = sharedPref.getInt(getString(R.string.prefSpeechRate0), 3);
         speechRate[1] = sharedPref.getInt(getString(R.string.prefSpeechRate1), 3);
@@ -821,7 +819,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean(getString(R.string.prefHasFloatingWindow), isSingleLineMode);
+                editor.putBoolean(getString(R.string.prefIsSingleLineMode), isSingleLineMode);
                 editor.apply();
                 break;
             case R.id.openSettings:
@@ -883,7 +881,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickSave(View view) {
-        // Check has permission
+        // Check has write permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
             saveList();
@@ -901,7 +899,7 @@ public class MainActivity extends AppCompatActivity {
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 saveList();
             } else {
-                Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.noPermissionErr), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, MainActivity.this.getString(R.string.noWritePermissionErr), Toast.LENGTH_SHORT).show();
             }
         }
     }

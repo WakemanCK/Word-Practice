@@ -40,6 +40,12 @@ android {
             versionCode 3
             versionName '1.00g'
         }
+        h {
+            dimension 'msType'
+            applicationIdSuffix '.h'
+            versionCode 4
+            versionName '1.00h'
+        }
     }
 }
 
@@ -52,6 +58,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
     implementation 'androidx.recyclerview:recyclerview-selection:1.0.0'
     gImplementation 'com.google.android.gms:play-services-ads-lite:19.7.0'
+    hImplementation 'com.huawei.hms:ads-lite:13.4.34.301'
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 public class HelpActivity extends AppCompatActivity {
 
-    private final MobileService wsAd = new MobileService();
+    private final MobileService msAd = new MobileService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class HelpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_help);
 
         // Load ad
-        wsAd.initInter(this);
+        msAd.initInter(getApplicationContext());
 
         TextView helpText = findViewById(R.id.helpTextView);
         SpannableStringBuilder helpString = new SpannableStringBuilder(getString(R.string.helpText01));
@@ -74,7 +74,7 @@ public class HelpActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         // Show ad
-        wsAd.showInter();
+        msAd.showInter(this);
         super.onDestroy();
     }
 

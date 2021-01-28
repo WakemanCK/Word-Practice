@@ -10,17 +10,18 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Locale;
 
 public class ExampleDialogFragment extends DialogFragment {
-    private final MainActivity mainActivity;
-    Locale[][] egLanguage = new Locale[2][15];
-    String[][] egListString = new String[2][15];
+    private MainActivity mainActivity;
+    private Locale[][] egLanguage = new Locale[2][15];
+    private String[][] egListString = new String[2][15];
 
-    public ExampleDialogFragment(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
+    public void newInstance(){
+        mainActivity = MainActivity.model.getMainActivity();
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        mainActivity = MainActivity.model.getMainActivity();
         String[] exampleList = {getString(R.string.egNumber), getString(R.string.egCEColor), getString(R.string.egJEColor), getString(R.string.egCEBody), getString(R.string.egJEBody)
                 , getString(R.string.egCEDate), getString(R.string.egJEDate), getString(R.string.egCEPosition), getString(R.string.egJEPosition)
                 , getString(R.string.egCETransportation), getString(R.string.egJETransportation), getString(R.string.egCEFood), getString(R.string.egJEFood)

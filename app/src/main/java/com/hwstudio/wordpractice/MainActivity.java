@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     public static String[] listString = new String[2];
     private List<String>[] lineString = new List[2];
     private String[] wordString = new String[2];
-    private MainViewModel model;
+    public static MainViewModel model;
 
     // Views
     private ScrollView mainRecyclerScrollView, mainEditTextScrollView;
@@ -127,9 +127,8 @@ public class MainActivity extends AppCompatActivity {
         // Init
         loadSettings();
         initView();
-
-        // Prepare UI
         model = new ViewModelProvider(this).get(MainViewModel.class);
+        model.setMainActivity(this);
         setMultipleEnable(model.isCanFinish(), model.isCanEdit(), model.isCanPlay(), model.isCanPause(), model.isCanStop());
         listString[0] = model.getListString0();
         listString[1] = model.getListString1();
@@ -198,7 +197,8 @@ public class MainActivity extends AppCompatActivity {
             if (defaultFile.startsWith("!NULL!")) {
                 showIntroduction();
             } else if (defaultFile.startsWith("!LIST!")) {
-                ExampleDialogFragment exampleDialogFragment = new ExampleDialogFragment(this);
+                ExampleDialogFragment exampleDialogFragment = new ExampleDialogFragment();
+                exampleDialogFragment.newInstance();
                 exampleDialogFragment.chooseExample(Integer.parseInt(defaultFile.substring(6)));
             } else if (!loadFile(Uri.parse(defaultFile))) {
                 if (!loadSavedFile(defaultFile)) {
@@ -208,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
             setUtterance();
             delayHandler = new Handler();
         }
+
         // Added to hide keyboard
         final View activityRootView = findViewById(R.id.recyclerScrollView);
         Handler handler = new Handler();
@@ -1019,7 +1020,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadExamples() {
-        ExampleDialogFragment exampleDialogFragment = new ExampleDialogFragment(this);
+        ExampleDialogFragment exampleDialogFragment = new ExampleDialogFragment();
         exampleDialogFragment.show(getSupportFragmentManager(), "example");
     }
 

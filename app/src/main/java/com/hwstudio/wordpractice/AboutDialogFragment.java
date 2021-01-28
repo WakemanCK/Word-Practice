@@ -17,8 +17,8 @@ public class AboutDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         PackageInfo packageInfo = null;
         try {
-            packageInfo = getContext().getApplicationContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
+            packageInfo = getActivity().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+        } catch (NullPointerException | PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         String s = String.format(Locale.ENGLISH, "%s v%s\nWakeman Chau\nhauwingstudio@hotmail.com\n© 2021\nAll rights reserved", getString(R.string.app_name), packageInfo.versionName);

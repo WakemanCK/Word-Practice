@@ -6,6 +6,7 @@ import android.speech.tts.TextToSpeech;
 import androidx.lifecycle.ViewModel;
 
 public class MainViewModel extends ViewModel {
+    private MainActivity mainActivity;
     private boolean isChangingState;
     private boolean canFinish = true, canEdit, canPlay, canPause, canStop, hasRecycler;
     private String listString0, listString1, wordString0, wordString1, currentFile;
@@ -20,6 +21,14 @@ public class MainViewModel extends ViewModel {
 
     public void setChangingState(boolean changingState) {
         isChangingState = changingState;
+    }
+
+    public MainActivity getMainActivity() {
+        return mainActivity;
+    }
+
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
     }
 
     public boolean isCanFinish() {

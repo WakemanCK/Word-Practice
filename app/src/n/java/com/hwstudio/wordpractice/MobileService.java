@@ -1,5 +1,6 @@
 package com.hwstudio.wordpractice;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.Display;
 import android.view.View;
@@ -7,19 +8,19 @@ import android.widget.FrameLayout;
 
 public class MobileService {
 
-    public void initBanner(Context getContext, FrameLayout getLayout, Display getDisplay) {
+    public void initBanner(Context context, FrameLayout getLayout, Display getDisplay) {
         getLayout.setVisibility(View.GONE);
     }
 
-    public void initInter(Context getContext) {
+    public void initInter(Context context) {
     }
 
-    public void showInter() {
+    public void showInter(Activity activity) {
     }
 
-    public void rateApp(Context getContext) {
+    public void rateApp(Context context) {
     }
 
-    public void shareApp(Context getContext) {
+    public void shareApp(Context context) {
     }
 }

@@ -1,5 +1,6 @@
 package com.hwstudio.wordpractice;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -8,22 +9,27 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class MobileService {
-    InterstitialAd mInterstitialAd;
+    private InterstitialAd interstitialAd;
 
     public void initBanner(Context getContext, FrameLayout getLayout, Display getDisplay) {
-        AdView mAdView;
+        AdView adView;
         MobileAds.initialize(getContext, initializationStatus -> {
         });
-        mAdView = new AdView(getContext);
-        mAdView.setAdUnitId("ca-app-pub-1067337728169403/5258231779");
-        getLayout.addView(mAdView);
+        adView = new AdView(getContext);
+        adView.setAdUnitId("ca-app-pub-1067337728169403/5258231779");
+        getLayout.addView(adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         DisplayMetrics outMetrics = new DisplayMetrics();
         getDisplay.getMetrics(outMetrics);
@@ -31,21 +37,34 @@ public class MobileService {
         float density = outMetrics.density;
         int adWidth = (int) (widthPixels / density);
         AdSize adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(getContext, adWidth);
-        mAdView.setAdSize(adSize);
-        mAdView.loadAd(adRequest);
+        adView.setAdSize(adSize);
+        adView.loadAd(adRequest);
     }
 
-    public void initInter(Context getContext) {
-        MobileAds.initialize(getContext, initializationStatus -> {
+    public void initInter(Context context) {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(context, "ca-app-pub-1067337728169403/5557614670", adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd getAd) {
+                interstitialAd = getAd;
+                interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdShowedFullScreenContent() {
+                        interstitialAd = null;
+                    }
+                });
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                interstitialAd = null;
+            }
         });
-        mInterstitialAd = new InterstitialAd(getContext);
-        mInterstitialAd.setAdUnitId("ca-app-pub-1067337728169403/5557614670");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
-    public void showInter() {
-        if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
+    public void showInter(Activity activity) {
+        if (interstitialAd != null) {
+            interstitialAd.show(activity);
         }
     }
 

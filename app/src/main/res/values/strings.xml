@@ -125,5 +125,5 @@
     <string name="helpText14d" translatable="false">"（ ）"</string>
     <string name="helpText14e">" to enclose the preferred pronunciation. For example, entering 内（うち）to the list will tell the app to pronounce うち.\n\n</string>
     <string name="helpText15">"When practicing sentences, the lists may not be able to display the whole sentences. In that case, you can press ~"</string>
-    <string name="helpText16">" at the top right corner to turn on the single-line mode. In this mode, only the words/sentences of the active line of the two languages are displayed using the whole screen. This makes sure the whole sentence can be seen.\n"</string>
+    <string name="helpText16">" at the top right corner to turn on the single-line mode. In this mode, only the words/sentences of the active line of the two languages are displayed using the whole screen. This makes sure the whole sentence can be seen.\n\n"</string>
 </resources>

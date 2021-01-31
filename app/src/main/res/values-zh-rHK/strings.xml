@@ -47,6 +47,7 @@
     <string name="selectFileButton">選擇檔案</string>
     <string name="fileNotFoundErr">找不到檔案 %s！</string>
     <string name="noReadPermissionErr">錯誤：沒有讀取\n儲存空間的權限。</string>
+    <string name="languageNotSupportedErr">文字轉語音引擎不支援%s！請安裝支援的引擎，並在設定頁面選取。</string>
     <string name="noFilesErr">Documents 目錄中沒有 .txt檔案！</string>
     <string name="selectFileDialogTitle">請選擇準備使用的檔案：</string>
     <string name="shareMessageText">讀生字\n一個幫助你記住生字發音的好工具！\n</string>
@@ -83,22 +84,23 @@
     <string name="helpText03">，或複製和貼上你找到的生字表，或直接自己輸入生字（如果你是複製和貼上或自己輸入生字，完成時請記得按</string>
     <string name="helpText04">。）\n\n你可以按</string>
     <string name="helpText05">鍵來儲存列表。按</string>
-    <string name="helpText06">鍵來讀取之前儲存了的列表。列表是以 .txt格式儲存，可以用文字編輯應用編輯。編輯應用時，請不要更改</string>
+    <string name="helpText06">鍵來讀取之前儲存了的列表。列表是以 .txt格式儲存，可以用文字編輯應用編輯。編輯時，請不要更改</string>
     <string name="helpText06c">，</string>
     <string name="helpText06e">，</string>
     <string name="helpText06g">以及</string>
     <string name="helpText06i">這幾個關鍵字，否則應用就不能讀取這些檔案。\n\n"</string>
     <string name="helpText07">\n按底部的~</string>
-    <string name="helpText08">鍵來開始播放。你也可以按列表上的生字來由該行開始播放。按~</string>
+    <string name="helpText08">鍵來開始播放。你也可以按列表上的生字由該行開始播放。按~</string>
     <string name="helpText09">鍵來暫停，~</string>
     <string name="helpText10">鍵來停止。\n\n你可以按頂部的語言鍵來選擇語言。你也可以在</string>
     <string name="helpText11">頁面設定語音速度，詞語之間的延遲，每個詞語重覆多少次等等。按右上角的三點再選</string>
     <string name="helpText12">來開啟該頁面。\n\n"</string>
     <string name="tipsText">提示</string>
-    <string name="helpText13">\n本應用使用谷歌的文字轉語音引擎來生成文字的語音。文字發音在大部份情況下也是準確，但我也不能保證是100%正確。如果你對個別詞語的發音有懷疑，請參考其他可靠的來源來確認。如果你發現一些重要的錯誤，你可考慮直接報告給谷歌知道。\n\n</string>
+    <string name="helpText13">\n本應用使用裝置預設的文字轉語音引擎來生成文字的語音。如果你對個別詞語的發音有懷疑，請參考其他可靠的來源來確認。如果普遍的發音效果不能接受，建議安裝新的文字轉語音引擎。另外也有機會預設的引擎不支援你想要的語言。這時也需要安裝新的引擎來解決。安裝後，請在裝置的設定頁面選擇該引擎再重啟應用。\n\n</string>
+    <string name="helpText13b">部份引擎需要你先在裝置的設定頁面下載語言資料檔案才能正常運作。\n\n</string>
     <string name="helpText14">有些語言可能會有一字多音的情況。例如日文的 内 字，可以發音為 うち 或 ない。你可以用</string>
     <string name="helpText14c">或</string>
     <string name="helpText14e">包著你想要的發音來告訴應用這是你想要的。例如輸入 内（うち）到列表上，應用就會讀成 うち。\n\n</string>
     <string name="helpText15">當輸入句子時，列表可能不能夠列出整句句子。這時候，你可以按右上角的~</string>
-    <string name="helpText16">來開啟單句模式。在這模式下，正在讀出的詞語或句子的兩種語言會以全頁顯示。這便能確保整句句子都會被顯示出來。</string>
+    <string name="helpText16">來開啟單句模式。在這模式下，正在讀出的詞語或句子的兩種語言會以全頁顯示。這便能確保整句句子都會被顯示出來。\n\n</string>
 </resources>

@@ -60,6 +60,7 @@ public class HelpActivity extends AppCompatActivity {
         helpString.append(getString(R.string.helpText12));
         addHeadline(helpString, getString(R.string.tipsText));
         helpString.append(getString(R.string.helpText13));
+        helpString.append(getString(R.string.helpText13b));
         helpString.append(getString(R.string.helpText14));
         addColor(helpString, getString(R.string.helpText14b));
         helpString.append(getString(R.string.helpText14c));

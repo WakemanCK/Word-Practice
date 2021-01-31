@@ -18,8 +18,8 @@
     <string name="prefRepeatAtEnd" translatable="false">prefRepeatAtEnd</string>
     <string name="prefDefaultFile" translatable="false">prefDefaultFile</string>
     <string name="prefSelectedFiles" translatable="false">prefSelectedFiles</string>
-    <string name="prefIsSingleLineMode" translatable="false">prefIsSingleLineMode</string>
     <string name="prefLockOrientation" translatable="false">prefLockOrientation</string>
+    <string name="prefIsSingleLineMode" translatable="false">prefIsSingleLineMode</string>
     <string name="loadExamples">Load examples</string>
     <string name="settingsMenu">Settings</string>
     <string name="helpMenu">Help</string>
@@ -67,6 +67,7 @@
     <string name="fileNotFoundErr">File not found: %s!</string>
     <string name="noReadPermissionErr">Error: no storage \nread permission.</string>
     <string name="noFilesErr">No .txt file found in the Documents directory!</string>
+    <string name="languageNotSupportedErr">%s is not supported by the text-to-speech engine! Please install one that supports and select it on the settings page.</string>
     <string name="selectFileDialogTitle">Please select files that will be played:</string>
     <string name="shareMessageText">Word Practice\nA great tool to help you memorize the pronunciation of words of new languages!\n</string>
     <string name="chooseAppText">Please choose the way you want to share the app</string>
@@ -118,7 +119,8 @@
     <string name="helpText11">" page. Click the three dots at the top right corner and choose "</string>
     <string name="helpText12">" to open it.\n\n"</string>
     <string name="tipsText">Tips</string>
-    <string name="helpText13">\nThe app uses Google\'s Text-to-Speech engine to produce the sound of the words. The pronunciation of the words is accurate in general but I cannot guarantee it is 100\% correct. If you are in doubt about the pronunciation of certain words, please consult other reliable sources for clarification. If you find a significant error in the pronunciation of certain, consider reporting the word directly to Google.\n\n</string>
+    <string name="helpText13">\nThe app uses your device\'s Text-to-Speech engine to produce the sound of the words. If you are in doubt about the pronunciation of certain words, please consult other reliable sources for clarification. If you find the quality of the voice unacceptable in general, consider installing a new engine. If the language you want is not supported by the current engine, you also need to install a new one. Remember to select the correct engine on the settings page of your device and restart the app afterward.\n\n</string>
+    <string name="helpText13b">Some engine may require you to download the language data files on the settings page of your device first to have it works properly.\n\n</string>
     <string name="helpText14">"Some languages may have several pronunciations for the same word. For example, the Japanese word 内 can be pronounced as うち or ない. You can tell the app which pronunciation to use by using "</string>
     <string name="helpText14b" translatable="false">"( )"</string>
     <string name="helpText14c">" or "</string>

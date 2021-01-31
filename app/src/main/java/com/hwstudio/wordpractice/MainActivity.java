@@ -1,3 +1,10 @@
+/*  Word Practice v1.01
+Wakeman Chau
+hauwingstudio@hotmail.com
+© 2021
+All rights reserved
+*/
+
 package com.hwstudio.wordpractice;
 
 import androidx.annotation.NonNull;
@@ -612,6 +619,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickPlay() {
+        if (tts[0].isLanguageAvailable(language[0]) < 0){
+            Toast.makeText(this, String.format(getString(R.string.languageNotSupportedErr), language[0].getDisplayName()), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (tts[1].isLanguageAvailable(language[1]) < 0){
+            Toast.makeText(this, String.format(getString(R.string.languageNotSupportedErr), language[1].getDisplayName()), Toast.LENGTH_SHORT).show();
+            return;
+        }
         setMultipleEnable(false, true, false, true, true);
         if (playingState == 2) {
             playingState = 1;
@@ -645,11 +660,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void scrollToWord(int listNum) {
-        float scaledPixel = textSize[listNum] * 10 / getResources().getDisplayMetrics().scaledDensity;
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            mainRecyclerScrollView.smoothScrollTo(0, (int) ((currentLine - 1) * scaledPixel));
+            mainRecyclerScrollView.smoothScrollTo(0, listRecyclerView[listNum].getHeight()*(currentLine-1)/lineString[listNum].size());
         } else {
-            mainRecyclerScrollView.smoothScrollTo(0, (int) (currentLine * scaledPixel));
+            mainRecyclerScrollView.smoothScrollTo(0, listRecyclerView[listNum].getHeight()*currentLine/lineString[listNum].size());
         }
     }
 

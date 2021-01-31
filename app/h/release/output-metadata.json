@@ -10,8 +10,8 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 4,
-      "versionName": "1.00h",
+      "versionCode": 7,
+      "versionName": "1.01h",
       "outputFile": "app-h-release.apk"
     }
   ]

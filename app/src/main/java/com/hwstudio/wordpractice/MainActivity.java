@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,6 +36,7 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import android.os.Handler;
+import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
@@ -60,6 +60,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int OPEN_SETTINGS = 10;
     private static final int LOAD_FILE = 11;
+    private static final int SAVE_FILE = 12;
     private static final int REQUEST_WRITE_PERMISSION = 30;
 
     // Settings
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Variables
     private String defaultFile, currentFile = "";
-    private int repeatCount, currentLine, maxLine, originalColor, playOrientation;
+    private int repeatCount, currentLine, maxLine, originalColor;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     public static int playingState;  // 0 = stopped; 1 = playing; 2 = paused
     public static TextToSpeech[] tts = new TextToSpeech[2];
@@ -123,6 +125,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (model != null) {
+            if (model.getOrientationMode() == 1) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+            }
+            if (model.getOrientationMode() == 2) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+            }
+        }
         setContentView(R.layout.activity_main);
 
         // Load banner ad
@@ -409,6 +421,7 @@ public class MainActivity extends AppCompatActivity {
                                     switch (repeatAtEnd) {
                                         case 0:
                                             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                                            model.setOrientationMode(0);
                                             break;
                                         case 1:
                                             clickPlay();
@@ -607,23 +620,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickPlay(View view) {
         if (lockOrientation) {
-            playOrientation = getResources().getConfiguration().orientation;
+            if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                model.setOrientationMode(1);
+            } else {
+                model.setOrientationMode(2);
+            }
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
             if (listEditText[0].getText().length() == 0 || listEditText[1].getText().length() == 0) {
                 Toast.makeText(this, R.string.emptyListErr, Toast.LENGTH_SHORT).show();
                 return;
             }
+        } else {
+            model.setOrientationMode(0);
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         clickPlay();
     }
 
     public void clickPlay() {
-        if (tts[0].isLanguageAvailable(language[0]) < 0){
+        if (tts[0].isLanguageAvailable(language[0]) < 0) {
             Toast.makeText(this, String.format(getString(R.string.languageNotSupportedErr), language[0].getDisplayName()), Toast.LENGTH_SHORT).show();
             return;
         }
-        if (tts[1].isLanguageAvailable(language[1]) < 0){
+        if (tts[1].isLanguageAvailable(language[1]) < 0) {
             Toast.makeText(this, String.format(getString(R.string.languageNotSupportedErr), language[1].getDisplayName()), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -661,9 +680,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void scrollToWord(int listNum) {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            mainRecyclerScrollView.smoothScrollTo(0, listRecyclerView[listNum].getHeight()*(currentLine-1)/lineString[listNum].size());
+            mainRecyclerScrollView.smoothScrollTo(0, listRecyclerView[listNum].getHeight() * (currentLine - 1) / lineString[listNum].size());
         } else {
-            mainRecyclerScrollView.smoothScrollTo(0, listRecyclerView[listNum].getHeight()*currentLine/lineString[listNum].size());
+            mainRecyclerScrollView.smoothScrollTo(0, listRecyclerView[listNum].getHeight() * currentLine / lineString[listNum].size());
         }
     }
 
@@ -722,6 +741,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickStop(View view) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        model.setOrientationMode(0);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         clickStop();
     }
@@ -744,7 +764,8 @@ public class MainActivity extends AppCompatActivity {
         langButton[0].setEnabled(false);
         Handler handler = new Handler();
         handler.postDelayed(() -> langButton[0].setEnabled(true), 100);
-        LanguageDialogFragment lang0Fragment = new LanguageDialogFragment(this, getString(R.string.pickLanguage0Title));
+        LanguageDialogFragment lang0Fragment = new LanguageDialogFragment();
+        lang0Fragment.newInstance();
         lang0Fragment.show(getSupportFragmentManager(), "lang0");
     }
 
@@ -752,7 +773,8 @@ public class MainActivity extends AppCompatActivity {
         langButton[1].setEnabled(false);
         Handler handler = new Handler();
         handler.postDelayed(() -> langButton[1].setEnabled(true), 100);
-        LanguageDialogFragment lang1Fragment = new LanguageDialogFragment(this, getString(R.string.pickLanguage1Title));
+        LanguageDialogFragment lang1Fragment = new LanguageDialogFragment();
+        lang1Fragment.newInstance();
         lang1Fragment.show(getSupportFragmentManager(), "lang1");
     }
 
@@ -839,7 +861,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.openSettings:
                 intent = new Intent(this, SettingsActivity.class);
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 startActivityForResult(intent, OPEN_SETTINGS);
                 break;
             case R.id.loadExamples:
@@ -867,6 +888,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SAVE_FILE && resultCode == RESULT_OK) {
+            if (data != null) {
+                Uri fileUri = data.getData();
+                String saveString = // Format:   <LANGUAGE_1> Locale name here <1>
+                        "<LANGUAGE_1>" + language[0].toLanguageTag() + "<1>\n" + listString[0] +
+                                "\n\n<LANGUAGE_2>" + language[1].toLanguageTag() + "<2>\n" + listString[1];
+                try {
+                    ParcelFileDescriptor outputParcel = getContentResolver().openFileDescriptor(fileUri, "w");
+                    FileDescriptor outputFile = outputParcel.getFileDescriptor();
+                    DataOutputStream out = new DataOutputStream(new BufferedOutputStream(
+                            new FileOutputStream(outputFile)));
+                    out.writeUTF(saveString);
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(this, String.format(getString(R.string.saveListText), fileUri.getLastPathSegment()), Toast.LENGTH_LONG).show();
+                saveDefaultFile(fileUri.toString());
+            }
+        }
         if (requestCode == LOAD_FILE && resultCode == RESULT_OK) {
             if (data != null) {
                 Uri fileUri = data.getData();
@@ -885,14 +926,6 @@ public class MainActivity extends AppCompatActivity {
                 drawRecyclerView();
             }
         }
-        if (lockOrientation) {
-            if (playOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            } else {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            }
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-        }
     }
 
     public void clickSave(View view) {
@@ -907,8 +940,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_WRITE_PERMISSION) {
             if (grantResults.length > 0 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -922,44 +954,19 @@ public class MainActivity extends AppCompatActivity {
     private void saveList() {
         listString[0] = listEditText[0].getText().toString();
         listString[1] = listEditText[1].getText().toString();
-        DialogFragment saveDialogFragment = new SaveDialogFragment(this);
-        saveDialogFragment.show(getSupportFragmentManager(), "save");
-    }
-
-    public void saveFile(String fileName, Context context) {
-        String saveString = // Format:   <LANGUAGE_1> Locale name here <1>
-                "<LANGUAGE_1>" + language[0].toLanguageTag() + "<1>\n" + listString[0] +
-                        "\n\n<LANGUAGE_2>" + language[1].toLanguageTag() + "<2>\n" + listString[1];
-        int i = 0;
-        if (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-                .getPath() + "/" + fileName + ".txt").exists()) {
-            do {
-                i++;
-            } while (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-                    .getPath() + "/" + fileName + i + ".txt").exists());
-            fileName = fileName + i;
-        }
-        String fileString = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-                .getPath() + "/" + fileName + ".txt";
-        File outputFile = new File(fileString);
-        try {
-            DataOutputStream out = new DataOutputStream(new BufferedOutputStream(
-                    new FileOutputStream(outputFile)));
-            out.writeUTF(saveString);
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Toast.makeText(context, String.format(context.getString(R.string.saveListText), fileName), Toast.LENGTH_LONG).show();
-        saveDefaultFile(fileString);
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TITLE, "WordPracticeLists");
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
+        startActivityForResult(intent, SAVE_FILE);
     }
 
     public void clickLoad(View view) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("text/plain");
-        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI,
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
         startActivityForResult(intent, LOAD_FILE);
     }
 

@@ -10,10 +10,9 @@
     <string name="okText">確定</string>
     <string name="saveButton">儲存</string>
     <string name="loadButton">讀取</string>
-    <string name="saveDialogTextView">請輸入檔案名稱</string>
     <string name="cancelButton">取消</string>
     <string name="noWritePermissionErr">錯誤：儲存權限。\n列表沒有被儲存！</string>
-    <string name="saveListText">列表已儲到 %s.txt。</string>
+    <string name="saveListText">列表已儲到 %s。</string>
     <string name="fileLoadSuccess">成功讀取 %s。</string>
     <string name="fileFormatErr">%s 不是一個正確的列表檔案！</string>
     <string name="lang0TextView">語言１</string>

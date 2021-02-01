@@ -33,10 +33,12 @@ public class SelectFileDialogFragment extends DialogFragment {
             return builder.create();
         } else {
             boolean[] checkedFiles = new boolean[listedArray.length];
-            for (int i = 0; i < listedArray.length; i++) {
-                if (MainActivity.selectedFilenames.contains(listedArray[i])) {
-                    checkedFiles[i] = true;
-                    currentFiles.add(listedArray[i]);
+            if (MainActivity.selectedFilenames != null) {
+                for (int i = 0; i < listedArray.length; i++) {
+                    if (MainActivity.selectedFilenames.contains(listedArray[i])) {
+                        checkedFiles[i] = true;
+                        currentFiles.add(listedArray[i]);
+                    }
                 }
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

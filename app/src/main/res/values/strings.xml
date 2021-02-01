@@ -29,10 +29,9 @@
     <string name="okText">OK</string>
     <string name="saveButton">Save</string>
     <string name="loadButton">Load</string>
-    <string name="saveDialogTextView">Please enter a file name</string>
     <string name="cancelButton">Cancel</string>
     <string name="noWritePermissionErr">Error: no storage \nwrite permission. \nList is NOT saved!</string>
-    <string name="saveListText">Word lists are saved to %s.txt.</string>
+    <string name="saveListText">Word lists are saved to %s.</string>
     <string name="fileLoadSuccess">%s is loaded.</string>
     <string name="fileFormatErr">%s is not a correct word lists file!</string>
     <string name="lang0TextView">Language 1</string>

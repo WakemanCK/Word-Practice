@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 public class MainViewModel extends ViewModel {
     private MainActivity mainActivity;
     private boolean isChangingState;
+    private int orientationMode;
     private boolean canFinish = true, canEdit, canPlay, canPause, canStop, hasRecycler;
     private String listString0, listString1, wordString0, wordString1, currentFile;
     private int currentLine, maxLine, repeatCount, playingState;
@@ -21,6 +22,14 @@ public class MainViewModel extends ViewModel {
 
     public void setChangingState(boolean changingState) {
         isChangingState = changingState;
+    }
+
+    public int getOrientationMode() {
+        return orientationMode;
+    }
+
+    public void setOrientationMode(int orientationMode) { // 0 = unlocked; 1 = portrait; 2 = landscape
+        this.orientationMode = orientationMode;
     }
 
     public MainActivity getMainActivity() {

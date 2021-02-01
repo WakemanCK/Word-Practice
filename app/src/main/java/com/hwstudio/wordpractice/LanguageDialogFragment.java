@@ -18,17 +18,16 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class LanguageDialogFragment extends DialogFragment {
 
-    private final MainActivity mainActivity;
-    private final String dialogTitle;
+    private MainActivity mainActivity;
 
-    public LanguageDialogFragment(MainActivity mainActivity, String getTitle) {
-        this.mainActivity = mainActivity;
-        dialogTitle = getTitle;
+    public void newInstance(){
+        mainActivity = MainActivity.model.getMainActivity();
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        mainActivity = MainActivity.model.getMainActivity();
         Locale[] locales = Locale.getAvailableLocales();
         List<Locale> localeList = new ArrayList<>();
         List<String> localeString = new ArrayList<>();
@@ -40,10 +39,16 @@ public class LanguageDialogFragment extends DialogFragment {
         }
         String[] stringArray = localeString.toArray(new String[0]);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        String dialogTitle;
+        if ("lang0".equals(getTag())){
+            dialogTitle = getString(R.string.pickLanguage0Title);
+        }else{
+            dialogTitle = getString(R.string.pickLanguage1Title);
+        }
         builder.setTitle(dialogTitle)
                 .setItems(stringArray, (dialog, item) -> {
                     int listNum;
-                    if (getTag().equals("lang0")) {
+                    if ("lang0".equals(getTag())) {
                         listNum = 0;
                     } else {
                         listNum = 1;

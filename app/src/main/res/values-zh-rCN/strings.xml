@@ -102,4 +102,5 @@
     <string name="helpText14e">包着你想要的发音来告诉应用这是你想要的。例如输入 内（うち）到列表上，应用就会读成 うち。\n\n</string>
     <string name="helpText15">当输入句子时，列表可能不能够列出整句句子。这时候，你可以按右上角的~</string>
     <string name="helpText16">来开启单句模式。在这模式下，正在读出的词语或句子的两种语言会以全页显示。这便能确保整句句子都会被显示出来。\n\n</string>
+    <string name="privacyPolicy">隐私政策</string>
 </resources>

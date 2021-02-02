@@ -881,6 +881,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.openAbout:
                 showAbout();
                 break;
+            case R.id.openPrivacyPolicy:
+                MobileService msPrivacy = new MobileService();
+                msPrivacy.openPrivacyPolicy(this);
         }
         return super.onOptionsItemSelected(item);
     }

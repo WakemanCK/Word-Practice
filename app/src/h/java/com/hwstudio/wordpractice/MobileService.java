@@ -68,4 +68,9 @@ public class MobileService {
         intent.putExtra(Intent.EXTRA_TEXT, shareMessage);
         getContext.startActivity(Intent.createChooser(intent, getContext.getString(R.string.chooseAppText)));
     }
+
+    public void openPrivacyPolicy(Context getContext) {
+        Intent rateIntent = rateIntentForUrl("https://wakemanck.github.io/Word-Practice/HMSVersionPrivacyPolicy.html");
+        getContext.startActivity(rateIntent);
+    }
 }

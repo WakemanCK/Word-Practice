@@ -31,20 +31,20 @@ android {
         n {
             dimension 'msType'
             applicationIdSuffix '.n'
-            versionCode 5
-            versionName '1.01n'
+            versionCode 8
+            versionName '1.011n'
         }
         g {
             dimension 'msType'
             applicationIdSuffix '.g'
-            versionCode 6
-            versionName '1.01g'
+            versionCode 9
+            versionName '1.011g'
         }
         h {
             dimension 'msType'
             applicationIdSuffix '.h'
-            versionCode 7
-            versionName '1.01h'
+            versionCode 10
+            versionName '1.011h'
         }
     }
 }

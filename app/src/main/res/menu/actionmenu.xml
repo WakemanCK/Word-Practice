@@ -31,4 +31,8 @@
         android:id="@+id/openAbout"
         android:title="@string/aboutMenu"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/openPrivacyPolicy"
+        android:title="@string/privacyPolicy"
+        app:showAsAction="never" />
 </menu>

@@ -1,4 +1,4 @@
-/*  Word Practice v1.01
+/*  Word Practice v1.012
 Wakeman Chau
 hauwingstudio@hotmail.com
 © 2021
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     public static int[] textSize = new int[2];
 
     // Variables
-    private String defaultFile, currentFile = "";
+    private String defaultText, currentFile = "";
     private int repeatCount, currentLine, maxLine, originalColor;
     private boolean isRepeating, isPlaying2ndLang, isListClicked;
     public static int playingState;  // 0 = stopped; 1 = playing; 2 = paused
@@ -213,16 +213,14 @@ public class MainActivity extends AppCompatActivity {
             ((AudioManager) getSystemService(AUDIO_SERVICE))
                     .registerMediaButtonEventReceiver(new ComponentName(this, ButtonReceiver.class));
             ButtonReceiver.initActivity(this);
-            if (defaultFile.startsWith("!NULL!")) {
+            if (defaultText.startsWith("!NULL!")) {
                 showIntroduction();
-            } else if (defaultFile.startsWith("!LIST!")) {
+            } else if (defaultText.startsWith("!LIST!")) {
                 ExampleDialogFragment exampleDialogFragment = new ExampleDialogFragment();
                 exampleDialogFragment.newInstance();
-                exampleDialogFragment.chooseExample(Integer.parseInt(defaultFile.substring(6)));
-            } else if (!loadFile(Uri.parse(defaultFile))) {
-                if (!loadSavedFile(defaultFile)) {
-                    showIntroduction();
-                }
+                exampleDialogFragment.chooseExample(Integer.parseInt(defaultText.substring(6)));
+            } else {
+                analyzeFileSuccess(defaultText);
             }
             setUtterance();
             delayHandler = new Handler();
@@ -302,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
         textSize[1] = sharedPref.getInt(getString(R.string.prefTextSize1), 36);
         language[0] = Locale.forLanguageTag(sharedPref.getString(getString(R.string.prefLanguage0), "zh-CN"));
         language[1] = Locale.forLanguageTag(sharedPref.getString(getString(R.string.prefLanguage1), "en-US"));
-        defaultFile = sharedPref.getString(getString(R.string.prefDefaultFile), "!NULL!");
+        defaultText = sharedPref.getString(getString(R.string.prefDefaultText), "!NULL!");
     }
 
     private void initView() {
@@ -365,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             pickWord(1);
                         }
-                    }, wordDelay * 500);
+                    }, wordDelay * 500L);
                 }
                 if (playingState == 0) {
                     if (viewHolder[0] != null) {
@@ -376,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
                         delayHandler.postDelayed(() -> {
                             isListClicked = false;
                             clickPlay();
-                        }, lineDelay * 500);
+                        }, lineDelay * 500L);
                     } else {
                         currentLine = 0;
                     }
@@ -438,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
                                 pickWord(0);
                             }
                         }
-                    }, lineDelay * 500);
+                    }, lineDelay * 500L);
                 }
                 if (playingState == 0) {
                     if (viewHolder[1] != null) {
@@ -449,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
                         delayHandler.postDelayed(() -> {
                             isListClicked = false;
                             clickPlay();
-                        }, lineDelay * 500);
+                        }, lineDelay * 500L);
                     } else {
                         currentLine = 0;
                     }
@@ -908,14 +906,13 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Toast.makeText(this, String.format(getString(R.string.saveListText), fileUri.getLastPathSegment()), Toast.LENGTH_LONG).show();
-                saveDefaultFile(fileUri.toString());
+                saveDefaultText(saveString);
             }
         }
         if (requestCode == LOAD_FILE && resultCode == RESULT_OK) {
             if (data != null) {
                 Uri fileUri = data.getData();
-                loadFile(fileUri);
-                saveDefaultFile(fileUri.toString());
+                loadUri(fileUri);
             }
         }
         if (requestCode == OPEN_SETTINGS) {
@@ -973,7 +970,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, LOAD_FILE);
     }
 
-    private boolean loadFile(Uri fileUri) {
+    private void loadUri(Uri fileUri) {
         StringBuilder loadedString = new StringBuilder();
         currentFile = fileUri.getLastPathSegment();
         try (InputStream inputStream = getContentResolver().openInputStream(fileUri);
@@ -984,19 +981,17 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (IOException e) {
             Toast.makeText(this, String.format(getString(R.string.fileNotFoundErr), currentFile), Toast.LENGTH_SHORT).show();
-            return false;
+            return;
         }
         if (analyzeFileSuccess(loadedString.toString())) {
             Toast.makeText(this, String.format(getString(R.string.fileLoadSuccess), currentFile), Toast.LENGTH_SHORT).show();
-            return true;
         } else {
             Toast.makeText(this, String.format(getString(R.string.fileFormatErr), currentFile), Toast.LENGTH_SHORT).show();
-            return false;
         }
     }
 
-    private boolean loadSavedFile(String defaultFile) {
-        File inputFile = new File(defaultFile);
+    private boolean loadSavedFile(String savedFile) {
+        File inputFile = new File(savedFile);
         currentFile = inputFile.getName();
         StringBuilder loadedString = new StringBuilder();
         try (InputStream inputStream = new FileInputStream(inputFile);
@@ -1040,6 +1035,7 @@ public class MainActivity extends AppCompatActivity {
         String tempList1 = loadedString.substring(index[3] + 4, loadedString.length() - 1);
         listEditText[1].setText(tempList1);
         clickFinish(null);
+        saveDefaultText(loadedString);
         return true;
     }
 
@@ -1061,13 +1057,13 @@ public class MainActivity extends AppCompatActivity {
             drawRecyclerView();
         }
         clickFinish(null);
-        saveDefaultFile("!LIST!" + exampleNum);
+        saveDefaultText("!LIST!" + exampleNum);
     }
 
-    public void saveDefaultFile(String fileUri) {
+    public void saveDefaultText(String savedString) {
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.prefSharedPref), MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(getString(R.string.prefDefaultFile), fileUri);
+        editor.putString(getString(R.string.prefDefaultText), savedString);
         editor.apply();
     }
 

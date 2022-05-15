@@ -16,7 +16,7 @@
     <string name="prefTextSize1" translatable="false">prefTextSize1</string>
     <string name="prefHasListBackground" translatable="false">prefHasListBackground</string>
     <string name="prefRepeatAtEnd" translatable="false">prefRepeatAtEnd</string>
-    <string name="prefDefaultFile" translatable="false">prefDefaultFile</string>
+    <string name="prefDefaultText" translatable="false">prefDefaultText</string>
     <string name="prefSelectedFiles" translatable="false">prefSelectedFiles</string>
     <string name="prefLockOrientation" translatable="false">prefLockOrientation</string>
     <string name="prefIsSingleLineMode" translatable="false">prefIsSingleLineMode</string>

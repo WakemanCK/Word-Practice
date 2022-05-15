@@ -3,6 +3,7 @@
     package="com.hwstudio.wordpractice">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <queries>
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE" />
@@ -25,7 +26,8 @@
             android:name=".SettingsActivity"
             android:label="@string/settingsMenu" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,7 +37,8 @@
 
         <receiver
             android:name=".MainActivity$ButtonReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter android:priority="10000">
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
